@@ -21,6 +21,7 @@ class Elmohandes extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.getRoute,
+      initialRoute: RoutesManager.loginView,
     );
   }
 }
