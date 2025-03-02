@@ -1,6 +1,6 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/auth/domain/entities/auth_entities.dart';
-import 'package:elmohandes/features/auth/domain/repositories/auth_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/auth_entities.dart';
+import '../repositories/auth_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

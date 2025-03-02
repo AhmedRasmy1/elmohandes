@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:elmohandes/features/auth/data/models/auth_model.dart';
+import 'package:elmohandes/features/home/data/models/products_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
+import '../../../features/auth/data/models/auth_model.dart';
 import '../api_constants.dart';
+
 part 'api_manager.g.dart';
 
 @injectable
@@ -19,4 +21,7 @@ abstract class ApiService {
     @Field('email') String email,
     @Field('password') String password,
   );
+
+  @GET(ApiConstants.allProducts)
+  Future<List<ProductsModel>> getAllProducts();
 }

@@ -1,4 +1,4 @@
-import 'package:elmohandes/core/resources/style_manager.dart';
+import 'style_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'color_manager.dart';

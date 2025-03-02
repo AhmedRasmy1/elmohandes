@@ -20,6 +20,15 @@ import '../../features/auth/domain/repositories/auth_repo.dart' as _i723;
 import '../../features/auth/domain/use_cases/login_use_case.dart' as _i1038;
 import '../../features/auth/presentation/viewmodel/cubit/login_cubit.dart'
     as _i641;
+import '../../features/home/data/data_sources/products_data_sources.dart'
+    as _i920;
+import '../../features/home/data/data_sources_impl/products_data_sources_impl.dart'
+    as _i132;
+import '../../features/home/data/reposatory/products_repo_impl.dart' as _i59;
+import '../../features/home/domain/reposatory/products_repo.dart' as _i322;
+import '../../features/home/domain/use_case/products_use_case.dart' as _i256;
+import '../../features/home/presentation/viewmodels/cubit/products_cubit.dart'
+    as _i677;
 import '../api/api_manager/api_manager.dart' as _i680;
 import '../api/dio_module.dart' as _i784;
 
@@ -37,8 +46,16 @@ extension GetItInjectableX on _i174.GetIt {
     final dioModule = _$DioModule();
     gh.lazySingleton<_i361.Dio>(() => dioModule.providerDio());
     gh.factory<_i680.ApiService>(() => _i680.ApiService(gh<_i361.Dio>()));
+    gh.factory<_i920.ProductsDataSources>(
+        () => _i132.ProductsDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i322.ProductsRepo>(
+        () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
     gh.factory<_i1072.LoginDataSourceImpl>(
         () => _i1072.LoginDataSourceImpl(gh<_i680.ApiService>()));
+    gh.factory<_i256.ProductsUseCase>(
+        () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
+    gh.factory<_i677.ProductsCubit>(
+        () => _i677.ProductsCubit(gh<_i256.ProductsUseCase>()));
     gh.factory<_i723.LoginRepo>(
         () => _i198.LoginRepoImpl(gh<_i1072.LoginDataSourceImpl>()));
     gh.factory<_i1038.LoginUseCase>(

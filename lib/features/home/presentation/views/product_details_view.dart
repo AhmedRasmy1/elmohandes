@@ -12,9 +12,9 @@ class ProductDetailsPage extends StatefulWidget {
   });
 
   final String? productName;
-  final double? price;
-  final double? discount;
-  final double? priceAfterDiscount;
+  final num? price;
+  final num? discount;
+  final num? priceAfterDiscount;
   final String? image;
   final String? country;
 
@@ -32,93 +32,111 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'تفاصيل المنتج',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: isDesktop ? 24 : 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          /// صورة المنتج - تاخد نص الشاشة
-          Container(
-            height: screenHeight * 0.4,
-            width: screenWidth,
-            decoration: BoxDecoration(
-              image: widget.image != null
-                  ? DecorationImage(
-                      image: AssetImage('assets/images/hafara.jpeg'),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-              color: widget.image == null ? Colors.grey.shade300 : null,
-            ),
-            child: widget.image == null
-                ? const Icon(Icons.image, size: 100, color: Colors.blue)
+      body: isDesktop
+          ? _buildDesktopLayout(screenHeight, screenWidth)
+          : _buildMobileLayout(screenHeight, screenWidth),
+    );
+  }
+
+  Widget _buildMobileLayout(double screenHeight, double screenWidth) {
+    return Column(
+      children: [
+        Container(
+          height: screenHeight * 0.4,
+          width: screenWidth,
+          decoration: BoxDecoration(
+            image: widget.image != null
+                ? DecorationImage(
+                    image: AssetImage('assets/images/hafara.jpeg'),
+                    fit: BoxFit.cover,
+                  )
                 : null,
+            color: widget.image == null ? Colors.grey.shade300 : null,
+          ),
+          child: widget.image == null
+              ? const Icon(Icons.image, size: 100, color: Colors.blue)
+              : null,
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: _buildProductDetails(),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _customButton('تعديل المنتج', Colors.blue, () {}),
+              const SizedBox(width: 10),
+              _customButton('شراء المنتج', Colors.green, () {}),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout(double screenHeight, double screenWidth) {
+    return Padding(
+      padding: EdgeInsets.all(screenWidth * 0.03),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image section
+          Expanded(
+            flex: 5,
+            child: Container(
+              height: screenHeight * 0.7,
+              decoration: BoxDecoration(
+                image: widget.image != null
+                    ? DecorationImage(
+                        image: AssetImage('assets/images/hafara.jpeg'),
+                        fit: BoxFit.contain,
+                      )
+                    : null,
+                color: widget.image == null ? Colors.grey.shade300 : null,
+              ),
+              child: widget.image == null
+                  ? const Icon(Icons.image, size: 150, color: Colors.blue)
+                  : null,
+            ),
           ),
 
-          /// باقي التفاصيل
+          // Details section
           Expanded(
+            flex: 5,
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(screenWidth * 0.03),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.productName ?? "اسم المنتج غير متوفر",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'السعر: ${widget.price} جنيه',
-                    style: const TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                  Text(
-                    'التخفيض: ${widget.discount}%',
-                    style: const TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                  Text(
-                    'بعد الخصم: ${widget.priceAfterDiscount} جنيه',
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'بلد المنشأ: ${widget.country}',
-                    style: const TextStyle(color: Colors.black, fontSize: 16),
+                  _buildProductDetails(isDesktop: true),
+                  const Spacer(),
+                  // Buttons for desktop
+                  Row(
+                    children: [
+                      _customButton('تعديل المنتج', Colors.blue, () {},
+                          isDesktop: true),
+                      const SizedBox(width: 20),
+                      _customButton('شراء المنتج', Colors.green, () {},
+                          isDesktop: true),
+                    ],
                   ),
                 ],
               ),
-            ),
-          ),
-
-          /// الأزرار في الأسفل
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _customButton('تعديل المنتج', Colors.blue, () {
-                  // تعديل المنتج
-                }),
-                _customButton('شراء المنتج', Colors.green, () {
-                  // شراء المنتج
-                }),
-              ],
             ),
           ),
         ],
@@ -126,21 +144,64 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _customButton(String text, Color color, VoidCallback onPressed) {
+  Widget _buildProductDetails({bool isDesktop = false}) {
+    final double titleSize = isDesktop ? 30 : 22;
+    final double textSize = isDesktop ? 20 : 16;
+    final double priceSize = isDesktop ? 24 : 18;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.productName ?? "اسم المنتج غير متوفر",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: titleSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: isDesktop ? 20 : 10),
+        Text(
+          'السعر: ${widget.price} جنيه',
+          style: TextStyle(color: Colors.black, fontSize: textSize),
+        ),
+        Text(
+          'التخفيض: ${widget.discount}%',
+          style: TextStyle(color: Colors.black, fontSize: textSize),
+        ),
+        Text(
+          'بعد الخصم: ${widget.priceAfterDiscount} جنيه',
+          style: TextStyle(
+            color: Colors.green,
+            fontSize: priceSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: isDesktop ? 20 : 10),
+        Text(
+          'بلد المنشأ: ${widget.country}',
+          style: TextStyle(color: Colors.black, fontSize: textSize),
+        ),
+      ],
+    );
+  }
+
+  Widget _customButton(String text, Color color, VoidCallback onPressed,
+      {bool isDesktop = false}) {
     return Expanded(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(isDesktop ? 15 : 10)),
+          padding: EdgeInsets.symmetric(vertical: isDesktop ? 20 : 15),
         ),
         onPressed: onPressed,
         child: Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: isDesktop ? 20 : 16,
             fontWeight: FontWeight.bold,
           ),
         ),

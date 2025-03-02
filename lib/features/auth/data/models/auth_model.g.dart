@@ -12,7 +12,7 @@ Login _$LoginFromJson(Map<String, dynamic> json) => Login(
       firstName: json['firstName'] as String?,
       lastName: json['lastName'] as String?,
       token: json['token'] as String?,
-      expiresIn: (json['expiresIn'] as num?)?.toInt(),
+      expiresIn: json['expiresIn'] as num?,
     );
 
 Map<String, dynamic> _$LoginToJson(Login instance) => <String, dynamic>{

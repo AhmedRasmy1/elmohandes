@@ -1,8 +1,8 @@
-import 'package:elmohandes/core/api/api_extentions.dart';
-import 'package:elmohandes/core/api/api_manager/api_manager.dart';
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/auth/data/data_sources/login_data_sources.dart';
-import 'package:elmohandes/features/auth/domain/entities/auth_entities.dart';
+import '../../../../core/api/api_extentions.dart';
+import '../../../../core/api/api_manager/api_manager.dart';
+import '../../../../core/common/api_result.dart';
+import '../data_sources/login_data_sources.dart';
+import '../../domain/entities/auth_entities.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

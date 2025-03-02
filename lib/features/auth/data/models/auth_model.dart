@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/auth/domain/entities/auth_entities.dart';
+import '../../domain/entities/auth_entities.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_model.g.dart';

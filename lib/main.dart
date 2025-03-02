@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/core/resources/font_manager.dart';
-import 'package:elmohandes/core/resources/routes_manager.dart';
-import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-import 'package:elmohandes/core/utils/my_bloc_observer.dart';
+import 'core/di/di.dart';
+import 'core/resources/font_manager.dart';
+import 'core/resources/routes_manager.dart';
+import 'core/utils/cashed_data_shared_preferences.dart';
+import 'core/utils/my_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
