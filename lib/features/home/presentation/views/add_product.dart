@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:elmohandes/core/resources/font_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddProduct extends StatefulWidget {
   final String fontFamily;
@@ -15,8 +17,8 @@ class _AddProductState extends State<AddProduct> {
   final TextEditingController _price = TextEditingController();
   final TextEditingController _discount = TextEditingController();
   final TextEditingController _priceAfterDiscount = TextEditingController();
-  final TextEditingController _image = TextEditingController();
   final TextEditingController _country = TextEditingController();
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -38,6 +40,16 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   void dispose() {
     _discount.removeListener(_calculateDiscountedPrice);
@@ -46,7 +58,6 @@ class _AddProductState extends State<AddProduct> {
     _price.dispose();
     _discount.dispose();
     _priceAfterDiscount.dispose();
-    _image.dispose();
     super.dispose();
   }
 
@@ -59,148 +70,78 @@ class _AddProductState extends State<AddProduct> {
             padding: const EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
             child: Form(
               key: _formKey,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  bool isMobile = constraints.maxWidth < 600;
-                  return Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    "إضافة منتج",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                      fontFamily: FontFamily.cairoSemiBold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                      controller: _productName, label: "إسم المنتج"),
+                  _buildTextField(
+                      controller: _price,
+                      label: "السعر",
+                      keyboardType: TextInputType.number),
+                  _buildTextField(
+                      controller: _discount,
+                      label: "الخصم (%)",
+                      keyboardType: TextInputType.number),
+                  _buildTextField(
+                      controller: _priceAfterDiscount,
+                      label: "السعر بعد الخصم",
+                      readOnly: true),
+                  _buildTextField(controller: _country, label: "بلد الصنع"),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: _pickImage,
                     child: Container(
-                      width: isMobile ? constraints.maxWidth * 0.9 : 400,
-                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      height: 150,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 20),
-                          Text(
-                            "إضافة منتج",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                              fontFamily: FontFamily.cairoSemiBold,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          /// حقل إسم المنتج
-                          _buildTextField(
-                            controller: _productName,
-                            label: "إسم المنتج",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "يرجى إدخال إسم المنتج";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          /// حقل السعر
-                          _buildTextField(
-                            controller: _price,
-                            label: "السعر",
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "يرجى إدخال السعر";
-                              }
-                              if (double.tryParse(value) == null) {
-                                return "يرجى إدخال رقم صالح";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          /// حقل الخصم
-                          _buildTextField(
-                            controller: _discount,
-                            label: "الخصم (%)",
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "يرجى إدخال نسبة الخصم";
-                              }
-                              final discountVal = double.tryParse(value);
-                              if (discountVal == null ||
-                                  discountVal < 0 ||
-                                  discountVal > 100) {
-                                return "يرجى إدخال نسبة بين 0 و 100";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          _buildTextField(
-                            controller: _priceAfterDiscount,
-                            label: "السعر بعد الخصم",
-                            readOnly: true,
-                          ),
-
-                          /// حقل الصورة
-                          _buildTextField(
-                            controller: _image,
-                            label: "الصورة",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "يرجى إدخال رابط الصورة";
-                              }
-                              return null;
-                            },
-                          ),
-                          _buildTextField(
-                            controller: _country,
-                            label: "بلد الصنع",
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "يرجى إدخال بلد الصنع";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          /// زر الإضافة
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  // تنفيذ إضافة المنتج هنا
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Text(
-                                "إضافة المنتج",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: FontFamily.cairo,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: _selectedImage == null
+                          ? const Center(child: Text("اختر صورة للمنتج"))
+                          : Image.file(_selectedImage!, fit: BoxFit.contain),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() &&
+                            _selectedImage != null) {
+                          // تنفيذ إضافة المنتج هنا
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        "إضافة المنتج",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontFamily: FontFamily.cairo,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
           ),
@@ -213,7 +154,6 @@ class _AddProductState extends State<AddProduct> {
     required TextEditingController controller,
     required String label,
     TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
     bool readOnly = false,
   }) {
     return Padding(
@@ -230,7 +170,12 @@ class _AddProductState extends State<AddProduct> {
           border: OutlineInputBorder(),
         ),
         style: TextStyle(fontFamily: widget.fontFamily),
-        validator: validator,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "يرجى إدخال $label";
+          }
+          return null;
+        },
       ),
     );
   }

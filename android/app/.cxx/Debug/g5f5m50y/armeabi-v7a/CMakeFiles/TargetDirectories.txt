@@ -1,0 +1,2 @@
+D:/mousa_project/elmohandes/android/app/.cxx/Debug/g5f5m50y/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/mousa_project/elmohandes/android/app/.cxx/Debug/g5f5m50y/armeabi-v7a/CMakeFiles/rebuild_cache.dir
