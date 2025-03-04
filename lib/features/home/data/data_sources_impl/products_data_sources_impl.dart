@@ -1,8 +1,8 @@
-import 'package:elmohandes/core/api/api_extentions.dart';
-import 'package:elmohandes/core/api/api_manager/api_manager.dart';
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/data/data_sources/products_data_sources.dart';
-import 'package:elmohandes/features/home/domain/entities/products_entity.dart';
+import '../../../../core/api/api_extentions.dart';
+import '../../../../core/api/api_manager/api_manager.dart';
+import '../../../../core/common/api_result.dart';
+import '../data_sources/products_data_sources.dart';
+import '../../domain/entities/products_entity.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: ProductsDataSources)

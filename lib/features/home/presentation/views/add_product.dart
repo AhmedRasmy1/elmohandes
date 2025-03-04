@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/core/resources/font_manager.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/cubit/addproduct_cubit.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/resources/font_manager.dart';
+import '../viewmodels/cubit/addproduct_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';

@@ -1,6 +1,6 @@
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/productss/products_cubit.dart';
-import 'package:elmohandes/features/home/presentation/views/add_product.dart';
+import '../../../../core/di/di.dart';
+import '../viewmodels/productss/products_cubit.dart';
+import 'add_product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'product_details_view.dart';

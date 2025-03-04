@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:elmohandes/features/home/data/models/add_product_model.dart';
-import 'package:elmohandes/features/home/data/models/products_model.dart';
+import '../../../features/home/data/models/add_product_model.dart';
+import '../../../features/home/data/models/products_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../features/auth/data/models/auth_model.dart';

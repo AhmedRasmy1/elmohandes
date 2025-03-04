@@ -1,6 +1,6 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/domain/entities/add_product_entity.dart';
-import 'package:elmohandes/features/home/domain/reposatory/add_product_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/add_product_entity.dart';
+import '../reposatory/add_product_repo.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dio/dio.dart';
 
