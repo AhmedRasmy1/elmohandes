@@ -20,15 +20,25 @@ import '../../features/auth/domain/repositories/auth_repo.dart' as _i723;
 import '../../features/auth/domain/use_cases/login_use_case.dart' as _i1038;
 import '../../features/auth/presentation/viewmodel/cubit/login_cubit.dart'
     as _i641;
+import '../../features/home/data/data_sources/add_product_data_sources.dart'
+    as _i578;
 import '../../features/home/data/data_sources/products_data_sources.dart'
     as _i920;
+import '../../features/home/data/data_sources_impl/add_product_data_sources_impl.dart'
+    as _i28;
 import '../../features/home/data/data_sources_impl/products_data_sources_impl.dart'
     as _i132;
+import '../../features/home/data/reposatory/add_product_repo_impl.dart'
+    as _i135;
 import '../../features/home/data/reposatory/products_repo_impl.dart' as _i59;
+import '../../features/home/domain/reposatory/add_product_repo.dart' as _i686;
 import '../../features/home/domain/reposatory/products_repo.dart' as _i322;
+import '../../features/home/domain/use_case/add_product_use_case.dart' as _i170;
 import '../../features/home/domain/use_case/products_use_case.dart' as _i256;
-import '../../features/home/presentation/viewmodels/cubit/products_cubit.dart'
-    as _i677;
+import '../../features/home/presentation/viewmodels/cubit/addproduct_cubit.dart'
+    as _i803;
+import '../../features/home/presentation/viewmodels/productss/products_cubit.dart'
+    as _i346;
 import '../api/api_manager/api_manager.dart' as _i680;
 import '../api/dio_module.dart' as _i784;
 
@@ -48,16 +58,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i680.ApiService>(() => _i680.ApiService(gh<_i361.Dio>()));
     gh.factory<_i920.ProductsDataSources>(
         () => _i132.ProductsDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i578.AddProductDataSources>(
+        () => _i28.AddProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
     gh.factory<_i1072.LoginDataSourceImpl>(
         () => _i1072.LoginDataSourceImpl(gh<_i680.ApiService>()));
+    gh.factory<_i686.AddProductRepo>(
+        () => _i135.AddProductRepoImpl(gh<_i578.AddProductDataSources>()));
+    gh.factory<_i170.AddProductUseCase>(
+        () => _i170.AddProductUseCase(gh<_i686.AddProductRepo>()));
     gh.factory<_i256.ProductsUseCase>(
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
-    gh.factory<_i677.ProductsCubit>(
-        () => _i677.ProductsCubit(gh<_i256.ProductsUseCase>()));
+    gh.factory<_i346.ProductsCubit>(
+        () => _i346.ProductsCubit(gh<_i256.ProductsUseCase>()));
     gh.factory<_i723.LoginRepo>(
         () => _i198.LoginRepoImpl(gh<_i1072.LoginDataSourceImpl>()));
+    gh.factory<_i803.AddproductCubit>(
+        () => _i803.AddproductCubit(gh<_i170.AddProductUseCase>()));
     gh.factory<_i1038.LoginUseCase>(
         () => _i1038.LoginUseCase(gh<_i723.LoginRepo>()));
     gh.factory<_i641.LoginCubit>(

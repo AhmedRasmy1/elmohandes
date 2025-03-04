@@ -1,5 +1,5 @@
 import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/cubit/products_cubit.dart';
+import 'package:elmohandes/features/home/presentation/viewmodels/productss/products_cubit.dart';
 import 'package:elmohandes/features/home/presentation/views/add_product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -81,23 +81,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 children: [
                   Expanded(
                     child: BlocConsumer<ProductsCubit, ProductsState>(
-                      listener: (context, state) {
-                        if (state is ProductsFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('حدث خطأ ما'),
-                          ));
-                        }
-                        if (state is ProductsSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('تم تحميل المنتجات بنجاح'),
-                          ));
-                        }
-                        if (state is ProductsLoading) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('جاري تحميل المنتجات'),
-                          ));
-                        }
-                      },
+                      listener: (context, state) {},
                       builder: (context, state) {
                         if (state is ProductsLoading) {
                           return const Center(
@@ -105,44 +89,50 @@ class _ProductsPageState extends State<ProductsPage> {
                           );
                         } else if (state is ProductsSuccess) {
                           final products = state.productsEntity;
-                          return GridView.builder(
-                            shrinkWrap: true,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: crossAxisCount,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              childAspectRatio: isDesktop ? 1 : 0.8,
-                            ),
-                            itemCount: products.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (_) {
-                                    return ProductDetailsPage(
-                                      productName: 'حفارة',
-                                      price: 200,
-                                      discount: 20,
-                                      priceAfterDiscount: 160,
-                                      image: 'assets/images/hafara.jpeg',
-                                      country: 'مصر',
-                                    );
-                                  }));
-                                },
-                                child: Center(
-                                    child: ProductCard(
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              viewModel.getAllProducts();
+                            },
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: crossAxisCount,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: isDesktop ? 1 : 0.8,
+                              ),
+                              itemCount: products.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) {
+                                      return ProductDetailsPage(
                                         productName:
                                             products[index].productName,
-                                        image: products[index].imageUrl,
                                         price: products[index].price,
                                         discount: products[index].discount,
-                                        countryOfRigion:
+                                        image: products[index].imageUrl,
+                                        country:
                                             products[index].countryOfOrigin,
-                                        isDesktop: isDesktop)),
-                              );
-                            },
+                                      );
+                                    }));
+                                  },
+                                  child: Center(
+                                      child: ProductCard(
+                                          productName:
+                                              products[index].productName,
+                                          image: products[index].imageUrl,
+                                          price: products[index].price,
+                                          discount: products[index].discount,
+                                          countryOfRigion:
+                                              products[index].countryOfOrigin,
+                                          isDesktop: isDesktop)),
+                                );
+                              },
+                            ),
                           );
                         } else {
                           return const Center(

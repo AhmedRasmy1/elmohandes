@@ -1,3 +1,5 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+
 import '../../../../core/di/di.dart';
 import '../../../../core/resources/assets_manager.dart';
 import '../../../../core/resources/font_manager.dart';
@@ -43,12 +45,25 @@ class _LoginPageState extends State<LoginPage> {
               );
             }
             if (state is LoginSuccess) {
-              Navigator.pushNamed(context, RoutesManager.productsPage);
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.success,
+                animType: AnimType.bottomSlide,
+                title: 'نجاح',
+                desc: 'تم تسجيل الدخول بنجاح',
+                btnOkOnPress: () {
+                  Navigator.pushNamed(context, RoutesManager.productsPage);
+                },
+              ).show();
             }
             if (state is LoginFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('حدث خطأ ما'),
-              ));
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.error,
+                animType: AnimType.bottomSlide,
+                title: 'راجع الايميل والباسور وحاول تاني',
+                btnOkOnPress: () {},
+              ).show();
             }
           },
           child: Stack(

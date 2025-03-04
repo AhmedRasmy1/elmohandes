@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_dialog: ^3.2.1
   bloc: ^9.0.0
   bloc_test: ^10.0.0
   cached_network_image: ^3.4.1
@@ -40,12 +41,14 @@ dependencies:
   flutter_svg: ^2.0.17
   get_it: ^8.0.3
   google_fonts: ^6.2.1
+  http_parser: ^4.1.2
   image_picker: ^1.1.2
   injectable: ^2.5.0
   intl: ^0.19.0
   json_annotation: ^4.9.0
   lottie: ^3.3.1
   meta: ^1.15.0
+  path: ^1.9.1
   pretty_dio_logger: ^1.4.0
   retrofit: ^4.4.2
   shared_preferences: ^2.5.2

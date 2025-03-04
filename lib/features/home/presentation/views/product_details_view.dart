@@ -6,7 +6,6 @@ class ProductDetailsPage extends StatefulWidget {
     this.productName,
     this.price,
     this.discount,
-    this.priceAfterDiscount,
     this.image,
     this.country,
   });
@@ -14,7 +13,13 @@ class ProductDetailsPage extends StatefulWidget {
   final String? productName;
   final num? price;
   final num? discount;
-  final num? priceAfterDiscount;
+  num? get priceAfterDiscount {
+    if (price != null && discount != null) {
+      return price! - (price! * discount! / 100);
+    }
+    return null;
+  }
+
   final String? image;
   final String? country;
 
@@ -58,7 +63,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           decoration: BoxDecoration(
             image: widget.image != null
                 ? DecorationImage(
-                    image: AssetImage('assets/images/hafara.jpeg'),
+                    image: NetworkImage(widget.image!),
                     fit: BoxFit.cover,
                   )
                 : null,
@@ -103,7 +108,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               decoration: BoxDecoration(
                 image: widget.image != null
                     ? DecorationImage(
-                        image: AssetImage('assets/images/hafara.jpeg'),
+                        image: NetworkImage(widget.image!),
                         fit: BoxFit.contain,
                       )
                     : null,
@@ -131,7 +136,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       _customButton('تعديل المنتج', Colors.blue, () {},
                           isDesktop: true),
                       const SizedBox(width: 20),
-                      _customButton('شراء المنتج', Colors.green, () {},
+                      _customButton('إضافة فاتورة', Colors.green, () {},
                           isDesktop: true),
                     ],
                   ),
