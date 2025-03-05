@@ -1,0 +1,13 @@
+import 'package:elmohandes/core/common/api_result.dart';
+import 'package:elmohandes/features/home/domain/entities/update_product_entity.dart';
+
+abstract class UpdateProductRepo {
+  Future<Result<UpdateProductEntity>> updateProduct({
+    required int id,
+    required String name,
+    required String countryOfOrigin,
+    required num price,
+    required num quantity,
+    required num discount,
+  });
+}

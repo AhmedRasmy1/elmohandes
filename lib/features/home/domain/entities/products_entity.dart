@@ -5,6 +5,7 @@ class ProductsEntity {
   final num? price;
   final num? quantity;
   final num? discount;
+  final int? id;
 
   ProductsEntity({
     this.productName,
@@ -13,5 +14,6 @@ class ProductsEntity {
     this.price,
     this.quantity,
     this.discount,
+    this.id,
   });
 }

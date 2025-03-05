@@ -1,3 +1,4 @@
+import 'package:elmohandes/features/home/presentation/views/update_product_view.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -84,9 +85,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _customButton('تعديل المنتج', Colors.blue, () {}),
+              _customButton('تعديل المنتج', Colors.blue, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdateProduct(
+                      productName: widget.productName as String,
+                      price: widget.price!.toString(),
+                      discount: widget.discount!.toString(),
+                      country: widget.country as String,
+                    ),
+                  ),
+                );
+              }),
               const SizedBox(width: 10),
-              _customButton('شراء المنتج', Colors.green, () {}),
+              _customButton('إضافة فاتورة', Colors.green, () {}),
             ],
           ),
         ),
@@ -133,8 +146,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   // Buttons for desktop
                   Row(
                     children: [
-                      _customButton('تعديل المنتج', Colors.blue, () {},
-                          isDesktop: true),
+                      _customButton('تعديل المنتج', Colors.blue, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateProduct(
+                              productName: widget.productName as String,
+                              price: widget.price!.toString(),
+                              discount: widget.discount!.toString(),
+                              country: widget.country as String,
+                            ),
+                          ),
+                        );
+                      }, isDesktop: true),
                       const SizedBox(width: 20),
                       _customButton('إضافة فاتورة', Colors.green, () {},
                           isDesktop: true),

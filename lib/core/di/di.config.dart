@@ -24,21 +24,33 @@ import '../../features/home/data/data_sources/add_product_data_sources.dart'
     as _i578;
 import '../../features/home/data/data_sources/products_data_sources.dart'
     as _i920;
+import '../../features/home/data/data_sources/update_product_data_sources.dart'
+    as _i319;
 import '../../features/home/data/data_sources_impl/add_product_data_sources_impl.dart'
     as _i28;
 import '../../features/home/data/data_sources_impl/products_data_sources_impl.dart'
     as _i132;
+import '../../features/home/data/data_sources_impl/update_product_data_sources_impl.dart'
+    as _i530;
 import '../../features/home/data/reposatory/add_product_repo_impl.dart'
     as _i135;
 import '../../features/home/data/reposatory/products_repo_impl.dart' as _i59;
+import '../../features/home/data/reposatory/update_product_repo_impl.dart'
+    as _i594;
 import '../../features/home/domain/reposatory/add_product_repo.dart' as _i686;
 import '../../features/home/domain/reposatory/products_repo.dart' as _i322;
+import '../../features/home/domain/reposatory/update_product_repo.dart'
+    as _i712;
 import '../../features/home/domain/use_case/add_product_use_case.dart' as _i170;
 import '../../features/home/domain/use_case/products_use_case.dart' as _i256;
-import '../../features/home/presentation/viewmodels/cubit/addproduct_cubit.dart'
-    as _i803;
+import '../../features/home/domain/use_case/update_product_use_case.dart'
+    as _i185;
+import '../../features/home/presentation/viewmodels/add_productss/addproduct_cubit.dart'
+    as _i384;
 import '../../features/home/presentation/viewmodels/productss/products_cubit.dart'
     as _i346;
+import '../../features/home/presentation/viewmodels/update_productss/update_products_cubit.dart'
+    as _i924;
 import '../api/api_manager/api_manager.dart' as _i680;
 import '../api/dio_module.dart' as _i784;
 
@@ -62,6 +74,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i28.AddProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
+    gh.factory<_i319.UpdateProductDataSources>(
+        () => _i530.UpdateProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i1072.LoginDataSourceImpl>(
         () => _i1072.LoginDataSourceImpl(gh<_i680.ApiService>()));
     gh.factory<_i686.AddProductRepo>(
@@ -72,10 +86,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
     gh.factory<_i346.ProductsCubit>(
         () => _i346.ProductsCubit(gh<_i256.ProductsUseCase>()));
+    gh.factory<_i712.UpdateProductRepo>(() =>
+        _i594.UpdateProductRepoImpl(gh<_i319.UpdateProductDataSources>()));
     gh.factory<_i723.LoginRepo>(
         () => _i198.LoginRepoImpl(gh<_i1072.LoginDataSourceImpl>()));
-    gh.factory<_i803.AddproductCubit>(
-        () => _i803.AddproductCubit(gh<_i170.AddProductUseCase>()));
+    gh.factory<_i384.AddproductCubit>(
+        () => _i384.AddproductCubit(gh<_i170.AddProductUseCase>()));
+    gh.factory<_i185.UpdateProductUseCase>(
+        () => _i185.UpdateProductUseCase(gh<_i712.UpdateProductRepo>()));
+    gh.factory<_i924.UpdateProductsCubit>(
+        () => _i924.UpdateProductsCubit(gh<_i185.UpdateProductUseCase>()));
     gh.factory<_i1038.LoginUseCase>(
         () => _i1038.LoginUseCase(gh<_i723.LoginRepo>()));
     gh.factory<_i641.LoginCubit>(

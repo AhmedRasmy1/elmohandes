@@ -8,6 +8,7 @@ class RoutesManager {
   static const String productDetailsPage = '/ProductDetailsPage';
   static const String loginView = '/LoginView';
   static const String productsPage = '/ProductsPage';
+  static const String updateProductPage = '/UpdateProductPage';
 }
 
 class RouteGenerator {
@@ -19,6 +20,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ProductsPage());
       case RoutesManager.productDetailsPage:
         return MaterialPageRoute(builder: (_) => ProductDetailsPage());
+      // case RoutesManager.updateProductPage:
+      //   return MaterialPageRoute(builder: (_) => UpdateProduct());
       default:
         return unDefinedRoute();
     }

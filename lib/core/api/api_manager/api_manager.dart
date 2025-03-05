@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/home/data/models/update_product_model.dart';
 import '../../../features/home/data/models/add_product_model.dart';
 import '../../../features/home/data/models/products_model.dart';
 import 'package:injectable/injectable.dart';
@@ -27,5 +28,15 @@ abstract class ApiService {
   @MultiPart()
   Future<AddProductModel> addProduct(
     @Body() FormData formData,
+  );
+
+  @PUT('${ApiConstants.updateProduct}/{id}')
+  Future<UpdateProduct> updateProduct(
+    @Path('id') int id,
+    @Field('name') String name,
+    @Field('countryOfOrigin') String countryOfOrigin,
+    @Field('price') num price,
+    @Field('quantity') num quantity,
+    @Field('discount') num discount,
   );
 }

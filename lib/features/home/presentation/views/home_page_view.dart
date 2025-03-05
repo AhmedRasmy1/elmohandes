@@ -1,3 +1,5 @@
+import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
+
 import '../../../../core/di/di.dart';
 import '../viewmodels/productss/products_cubit.dart';
 import 'add_product.dart';
@@ -107,6 +109,9 @@ class _ProductsPageState extends State<ProductsPage> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
+                                    CacheService.setData(
+                                        key: CacheConstants.productId,
+                                        value: products[index].id);
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (_) {
                                       return ProductDetailsPage(

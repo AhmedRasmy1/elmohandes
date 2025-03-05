@@ -35,6 +35,7 @@ class ProductsModel {
       price: price,
       quantity: quantity,
       discount: discount,
+      id: id,
     );
   }
 }
