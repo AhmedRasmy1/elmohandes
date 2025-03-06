@@ -11,6 +11,7 @@ class UpdateProduct extends StatefulWidget {
   final String price;
   final String discount;
   final String country;
+  final String quantity;
 
   const UpdateProduct({
     super.key,
@@ -19,6 +20,7 @@ class UpdateProduct extends StatefulWidget {
     required this.price,
     required this.discount,
     required this.country,
+    required this.quantity,
   });
 
   @override
@@ -33,7 +35,7 @@ class _UpdateProductState extends State<UpdateProduct> {
   late final TextEditingController _priceAfterDiscount =
       TextEditingController();
   late TextEditingController _country;
-  late final TextEditingController _quantity = TextEditingController();
+  late TextEditingController _quantity;
   late UpdateProductsCubit viewModel;
 
   @override
@@ -45,7 +47,7 @@ class _UpdateProductState extends State<UpdateProduct> {
     _discount = TextEditingController(text: widget.discount);
 
     _country = TextEditingController(text: widget.country);
-
+    _quantity = TextEditingController(text: widget.quantity);
     _price.addListener(_updatePriceAfterDiscount);
     _discount.addListener(_updatePriceAfterDiscount);
   }

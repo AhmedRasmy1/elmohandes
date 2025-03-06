@@ -9,6 +9,7 @@ class ProductDetailsPage extends StatefulWidget {
     this.discount,
     this.image,
     this.country,
+    this.quantity,
   });
 
   final String? productName;
@@ -23,6 +24,7 @@ class ProductDetailsPage extends StatefulWidget {
 
   final String? image;
   final String? country;
+  final num? quantity;
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -94,6 +96,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       price: widget.price!.toString(),
                       discount: widget.discount!.toString(),
                       country: widget.country as String,
+                      quantity: widget.quantity!.toString(),
                     ),
                   ),
                 );
@@ -155,6 +158,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               price: widget.price!.toString(),
                               discount: widget.discount!.toString(),
                               country: widget.country as String,
+                              quantity: widget.quantity!.toString(),
                             ),
                           ),
                         );
@@ -205,6 +209,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             fontSize: priceSize,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        Text(
+          'الكمية: ${widget.quantity}',
+          style: TextStyle(color: Colors.black, fontSize: textSize),
         ),
         SizedBox(height: isDesktop ? 20 : 10),
         Text(

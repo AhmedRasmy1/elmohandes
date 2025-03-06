@@ -122,6 +122,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                         image: products[index].imageUrl,
                                         country:
                                             products[index].countryOfOrigin,
+                                        quantity: products[index].quantity,
                                       );
                                     }));
                                   },
@@ -134,6 +135,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                           discount: products[index].discount,
                                           countryOfRigion:
                                               products[index].countryOfOrigin,
+                                          quantity: products[index].quantity,
                                           isDesktop: isDesktop)),
                                 );
                               },
@@ -192,6 +194,8 @@ class ProductCard extends StatelessWidget {
   final String? image;
   final num? price;
   final num? discount;
+  final String? countryOfRigion;
+  final num? quantity;
 
   num get calculatedPriceAfterDiscount {
     if (price != null && discount != null) {
@@ -200,7 +204,6 @@ class ProductCard extends StatelessWidget {
     return 0;
   }
 
-  final String? countryOfRigion;
   const ProductCard({
     super.key,
     required this.isDesktop,
@@ -209,91 +212,100 @@ class ProductCard extends StatelessWidget {
     this.price,
     this.discount,
     this.countryOfRigion,
+    this.quantity,
   });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double containerWidth = constraints.maxWidth;
-        double fontSizeTitle = isDesktop ? 18 : 16;
-        double fontSizeText = isDesktop ? 14 : 12;
+    double fontSizeTitle = isDesktop ? 18 : 16;
+    double fontSizeText = isDesktop ? 14 : 12;
 
-        return Container(
-          width: containerWidth,
-          decoration: BoxDecoration(
-            color: const Color(0xfff5f5f5),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FittedBox(
-                child: Container(
-                  width: containerWidth * 0.5,
-                  height: containerWidth * 0.5,
-                  constraints: const BoxConstraints(
-                    minWidth: 100,
-                    minHeight: 100,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: image != null
-                      ? Image.network(
+    return IntrinsicHeight(
+      child: Container(
+        width: 200,
+        decoration: BoxDecoration(
+          color: const Color(0xfff5f5f5),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio:
+                  4 / 3, // نسبة العرض إلى الارتفاع عشان الصورة تفضل متناسقة
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
                           image!,
                           fit: BoxFit.cover,
-                        )
-                      : const SizedBox.shrink(),
-                ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.image_not_supported, size: 50),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ),
-              const SizedBox(height: 10),
-              FittedBox(
-                child: Text(
-                  'اسم المنتج: $productName',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: fontSizeTitle,
-                    fontWeight: FontWeight.bold,
-                  ),
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+              child: Text(
+                'اسم المنتج: $productName',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: fontSizeTitle,
+                  fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 5),
-              FittedBox(
-                child: Text(
-                  'السعر: $price جنيه',
-                  style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-                ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              'السعر: $price جنيه',
+              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'التخفيض: $discount%',
+              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'بعد الخصم: ${calculatedPriceAfterDiscount.toStringAsFixed(2)} جنيه',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: fontSizeText,
+                fontWeight: FontWeight.bold,
               ),
-              FittedBox(
-                child: Text(
-                  'التخفيض: $discount%',
-                  style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-                ),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'الكمية: $quantity',
+              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 5),
+            Flexible(
+              child: Text(
+                'بلد المنشأ: $countryOfRigion',
+                style: TextStyle(color: Colors.black, fontSize: fontSizeText),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              FittedBox(
-                child: Text(
-                  'بعد الخصم: ${calculatedPriceAfterDiscount.toStringAsFixed(2)} جنيه',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: fontSizeText,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              FittedBox(
-                child: Text(
-                  'بلد المنشأ: $countryOfRigion',
-                  style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
