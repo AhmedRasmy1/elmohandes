@@ -149,6 +149,46 @@ class _ApiService implements ApiService {
     return _value;
   }
 
+  @override
+  Future<AddBillModel> addBill(
+    int id,
+    String token,
+    String customerName,
+    String customerPhone,
+    String payType,
+    num amount,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = {
+      'customerName': customerName,
+      'customerPhone': customerPhone,
+      'payType': payType,
+      'amount': amount,
+    };
+    final _options = _setStreamType<AddBillModel>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/Bills/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AddBillModel _value;
+    try {
+      _value = AddBillModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

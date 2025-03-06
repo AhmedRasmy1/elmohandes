@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/home/data/models/add_bill_model.dart';
 import 'package:elmohandes/features/home/data/models/update_product_model.dart';
 import '../../../features/home/data/models/add_product_model.dart';
 import '../../../features/home/data/models/products_model.dart';
@@ -38,5 +39,15 @@ abstract class ApiService {
     @Field('price') num price,
     @Field('quantity') num quantity,
     @Field('discount') num discount,
+  );
+
+  @POST('${ApiConstants.addBill}/{id}')
+  Future<AddBillModel> addBill(
+    @Path('id') int id,
+    @Header('Authorization') String token,
+    @Field('customerName') String customerName,
+    @Field('customerPhone') String customerPhone,
+    @Field('payType') String payType,
+    @Field('amount') num amount,
   );
 }

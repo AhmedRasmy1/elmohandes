@@ -1,3 +1,4 @@
+import 'package:elmohandes/features/home/presentation/views/add_bill_view.dart';
 import 'package:elmohandes/features/home/presentation/views/update_product_view.dart';
 import 'package:flutter/material.dart';
 
@@ -102,7 +103,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 );
               }),
               const SizedBox(width: 10),
-              _customButton('إضافة فاتورة', Colors.green, () {}),
+              _customButton('إضافة فاتورة', Colors.green, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddBillPage()));
+              }),
             ],
           ),
         ),

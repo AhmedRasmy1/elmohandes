@@ -221,7 +221,6 @@ class _AddProductState extends State<AddProduct> {
                                     "إضافة المنتج",
                                     style: TextStyle(
                                       fontSize: 17,
-                                      fontFamily: "Cairo",
                                       color: Colors.white,
                                     ),
                                   ),
