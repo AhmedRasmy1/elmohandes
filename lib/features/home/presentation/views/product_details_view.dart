@@ -168,8 +168,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         );
                       }, isDesktop: true),
                       const SizedBox(width: 20),
-                      _customButton('إضافة فاتورة', Colors.green, () {},
-                          isDesktop: true),
+                      _customButton('إضافة فاتورة', Colors.green, () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddBillPage()));
+                      }, isDesktop: true),
                     ],
                   ),
                 ],

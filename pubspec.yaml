@@ -50,6 +50,7 @@ dependencies:
   meta: ^1.15.0
   path: ^1.9.1
   pretty_dio_logger: ^1.4.0
+  printing: ^5.14.2
   retrofit: ^4.4.2
   shared_preferences: ^2.5.2
 

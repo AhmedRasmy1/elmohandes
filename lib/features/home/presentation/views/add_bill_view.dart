@@ -2,6 +2,7 @@ import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/core/resources/font_manager.dart';
 import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
 import 'package:elmohandes/features/home/presentation/viewmodels/add_bills/add_bill_cubit.dart';
+import 'package:elmohandes/features/home/presentation/views/bill_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -92,7 +93,15 @@ class _AddBillPageState extends State<AddBillPage> {
                                     actions: [
                                       TextButton(
                                           onPressed: () {
-                                            Navigator.pop(context);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BillDetailsView(
+                                                  billData: state.addBillEntity,
+                                                ),
+                                              ),
+                                            );
                                           },
                                           child: const Text("حسنا"))
                                     ],
