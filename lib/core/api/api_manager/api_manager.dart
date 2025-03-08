@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/core/common/api_result.dart';
 import 'package:elmohandes/features/home/data/models/add_bill_model.dart';
 import 'package:elmohandes/features/home/data/models/bills_model.dart';
 import 'package:elmohandes/features/home/data/models/update_product_model.dart';
@@ -54,6 +55,17 @@ abstract class ApiService {
 
   @GET(ApiConstants.allBills)
   Future<List<BillsModel>> getAllBills(
+    @Header('Authorization') String token,
+  );
+
+  @DELETE(ApiConstants.deleteBills)
+  Future deleteAllBills(
+    @Header('Authorization') String token,
+  );
+
+  @DELETE('${ApiConstants.deleteOneBill}/{id}')
+  Future deleteOneBill(
+    @Path('id') String id,
     @Header('Authorization') String token,
   );
 }

@@ -25,6 +25,10 @@ import '../../features/home/data/data_sources/add_bill_data_sources.dart'
 import '../../features/home/data/data_sources/add_product_data_sources.dart'
     as _i578;
 import '../../features/home/data/data_sources/bills_data_sources.dart' as _i996;
+import '../../features/home/data/data_sources/delete_all_bills_data_sources.dart'
+    as _i309;
+import '../../features/home/data/data_sources/delete_one_bill_data_sources.dart'
+    as _i610;
 import '../../features/home/data/data_sources/products_data_sources.dart'
     as _i920;
 import '../../features/home/data/data_sources/update_product_data_sources.dart'
@@ -35,6 +39,10 @@ import '../../features/home/data/data_sources_impl/add_product_data_sources_impl
     as _i28;
 import '../../features/home/data/data_sources_impl/bills_data_sources_impl.dart'
     as _i414;
+import '../../features/home/data/data_sources_impl/delete_all_bills_data_sources_impl.dart'
+    as _i61;
+import '../../features/home/data/data_sources_impl/delete_one_bill_data_sources_imp.dart'
+    as _i170;
 import '../../features/home/data/data_sources_impl/products_data_sources_impl.dart'
     as _i132;
 import '../../features/home/data/data_sources_impl/update_product_data_sources_impl.dart'
@@ -43,18 +51,28 @@ import '../../features/home/data/reposatory/add_bill_repo_impl.dart' as _i907;
 import '../../features/home/data/reposatory/add_product_repo_impl.dart'
     as _i135;
 import '../../features/home/data/reposatory/bills_repo_impl.dart' as _i585;
+import '../../features/home/data/reposatory/delete_bills_repo_impl.dart'
+    as _i533;
+import '../../features/home/data/reposatory/delete_one_bill_repo_impl.dart'
+    as _i833;
 import '../../features/home/data/reposatory/products_repo_impl.dart' as _i59;
 import '../../features/home/data/reposatory/update_product_repo_impl.dart'
     as _i594;
 import '../../features/home/domain/reposatory/add_bill_repo.dart' as _i545;
 import '../../features/home/domain/reposatory/add_product_repo.dart' as _i686;
 import '../../features/home/domain/reposatory/bills_repo.dart' as _i496;
+import '../../features/home/domain/reposatory/delete_all_bills.dart' as _i657;
+import '../../features/home/domain/reposatory/delete_one_bill.dart' as _i988;
 import '../../features/home/domain/reposatory/products_repo.dart' as _i322;
 import '../../features/home/domain/reposatory/update_product_repo.dart'
     as _i712;
 import '../../features/home/domain/use_case/add_bill_use_case.dart' as _i594;
 import '../../features/home/domain/use_case/add_product_use_case.dart' as _i170;
 import '../../features/home/domain/use_case/bills_use_case.dart' as _i51;
+import '../../features/home/domain/use_case/delete_all_bills_use_case.dart'
+    as _i176;
+import '../../features/home/domain/use_case/delete_one_bill_use_case.dart'
+    as _i768;
 import '../../features/home/domain/use_case/products_use_case.dart' as _i256;
 import '../../features/home/domain/use_case/update_product_use_case.dart'
     as _i185;
@@ -62,6 +80,10 @@ import '../../features/home/presentation/viewmodels/add_bills/add_bill_cubit.dar
     as _i755;
 import '../../features/home/presentation/viewmodels/add_productss/addproduct_cubit.dart'
     as _i384;
+import '../../features/home/presentation/viewmodels/delete_bills/delete_all_bills_cubit.dart'
+    as _i682;
+import '../../features/home/presentation/viewmodels/delete_one_bill/delete_one_bill_cubit.dart'
+    as _i835;
 import '../../features/home/presentation/viewmodels/display_bills/bills_cubit.dart'
     as _i667;
 import '../../features/home/presentation/viewmodels/productss/products_cubit.dart'
@@ -87,12 +109,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i680.ApiService>(() => _i680.ApiService(gh<_i361.Dio>()));
     gh.factory<_i920.ProductsDataSources>(
         () => _i132.ProductsDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i309.DeleteAllBillsDataSources>(
+        () => _i61.DeleteAllBillsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i578.AddProductDataSources>(
         () => _i28.AddProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i996.BillsDataSources>(
         () => _i414.BillsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
+    gh.factory<_i657.DeleteAllBillsRepo>(
+        () => _i533.DeleteBillsRepoImpl(gh<_i309.DeleteAllBillsDataSources>()));
+    gh.factory<_i610.DeleteOneBillDataSources>(
+        () => _i170.DeleteOneBillDataSourcesImp(gh<_i680.ApiService>()));
     gh.factory<_i496.BillsRepo>(
         () => _i585.BillsRepoImpl(gh<_i996.BillsDataSources>()));
     gh.factory<_i319.UpdateProductDataSources>(
@@ -105,10 +133,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i135.AddProductRepoImpl(gh<_i578.AddProductDataSources>()));
     gh.factory<_i170.AddProductUseCase>(
         () => _i170.AddProductUseCase(gh<_i686.AddProductRepo>()));
+    gh.factory<_i988.DeleteOneBillRepo>(() =>
+        _i833.DeleteOneBillRepoImpl(gh<_i610.DeleteOneBillDataSources>()));
     gh.factory<_i545.AddBillRepo>(
         () => _i907.AddBillRepoImpl(gh<_i55.AddBillDataSources>()));
     gh.factory<_i256.ProductsUseCase>(
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
+    gh.factory<_i768.DeleteOneBillUseCase>(() => _i768.DeleteOneBillUseCase(
+        deleteOneBillRepo: gh<_i988.DeleteOneBillRepo>()));
     gh.factory<_i51.BillsUseCase>(
         () => _i51.BillsUseCase(gh<_i496.BillsRepo>()));
     gh.factory<_i346.ProductsCubit>(
@@ -117,10 +149,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i667.BillsCubit(gh<_i51.BillsUseCase>()));
     gh.factory<_i712.UpdateProductRepo>(() =>
         _i594.UpdateProductRepoImpl(gh<_i319.UpdateProductDataSources>()));
+    gh.factory<_i176.DeleteAllBillsUseCase>(
+        () => _i176.DeleteAllBillsUseCase(gh<_i657.DeleteAllBillsRepo>()));
     gh.factory<_i723.LoginRepo>(
         () => _i198.LoginRepoImpl(gh<_i1072.LoginDataSourceImpl>()));
+    gh.factory<_i682.DeleteAllBillsCubit>(
+        () => _i682.DeleteAllBillsCubit(gh<_i176.DeleteAllBillsUseCase>()));
     gh.factory<_i384.AddproductCubit>(
         () => _i384.AddproductCubit(gh<_i170.AddProductUseCase>()));
+    gh.factory<_i835.DeleteOneBillCubit>(
+        () => _i835.DeleteOneBillCubit(gh<_i768.DeleteOneBillUseCase>()));
     gh.factory<_i185.UpdateProductUseCase>(
         () => _i185.UpdateProductUseCase(gh<_i712.UpdateProductRepo>()));
     gh.factory<_i594.AddBillUseCase>(

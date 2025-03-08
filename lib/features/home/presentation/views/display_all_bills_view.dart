@@ -1,3 +1,5 @@
+import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
+import 'package:elmohandes/features/home/presentation/viewmodels/delete_bills/delete_all_bills_cubit.dart';
 import 'package:elmohandes/features/home/presentation/viewmodels/display_bills/bills_cubit.dart';
 import 'package:elmohandes/features/home/presentation/views/bill_history_details_view.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +17,24 @@ class _InvoicesPageState extends State<InvoicesPage> {
   late BillsCubit viewModel;
   final TextEditingController searchController = TextEditingController();
   String? searchQuery;
+  late DeleteAllBillsCubit deleteAllBillsCubit;
 
   @override
   void initState() {
     super.initState();
     viewModel = getIt.get<BillsCubit>();
+    deleteAllBillsCubit = getIt.get<DeleteAllBillsCubit>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => viewModel..getAllBills(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => viewModel..getAllBills(),
+        ),
+        BlocProvider(create: (context) => deleteAllBillsCubit),
+      ],
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -99,6 +108,9 @@ class _InvoicesPageState extends State<InvoicesPage> {
                               final bill = filteredInvoices[index];
                               return GestureDetector(
                                 onTap: () {
+                                  CacheService.setData(
+                                      key: CacheConstants.billId,
+                                      value: bill.id);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -151,7 +163,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       ),
                     ),
                     onPressed: () {
-                      // viewModel.deleteAllInvoices();
+                      deleteAllBillsCubit.deleteAllBills();
                     },
                     child: const Text(
                       'حذف كل الفواتير',
