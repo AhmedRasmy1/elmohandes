@@ -1,10 +1,10 @@
 import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-
+import 'package:elmohandes/features/home/presentation/views/display_all_bills_view.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../../core/di/di.dart';
 import '../viewmodels/productss/products_cubit.dart';
 import 'add_product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'product_details_view.dart';
 import 'package:flutter/material.dart';
 
@@ -16,94 +16,73 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  bool isSearching = false;
-  final TextEditingController searchController = TextEditingController();
   late ProductsCubit viewModel;
+  late bool isAdmin;
 
   @override
   void initState() {
     viewModel = getIt.get<ProductsCubit>();
+
+    String? token = CacheService.getData(key: CacheConstants.userToken);
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      isAdmin = decodedToken['roles'] != null &&
+          decodedToken['roles'].contains("Admin");
+    } else {
+      isAdmin = false;
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth > 600;
-
     return BlocProvider(
       create: (context) => viewModel..getAllProducts(),
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.receipt_long, color: Colors.black),
-            onPressed: () {},
-          ),
+          automaticallyImplyLeading: false,
           centerTitle: true,
-          title: isSearching
-              ? TextField(
-                  controller: searchController,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: const InputDecoration(
-                    hintText: 'ابحث عن منتج...',
-                    hintStyle: TextStyle(color: Colors.black),
-                    border: InputBorder.none,
-                  ),
-                )
-              : const Text(
-                  'المهندس',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
+          title: const Text(
+            'المهندس',
+            style: TextStyle(
+                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+          ),
           backgroundColor: Colors.white,
-          actions: [
-            IconButton(
-              icon: Icon(isSearching ? Icons.close : Icons.search,
-                  color: Colors.black),
-              onPressed: () {
-                setState(() {
-                  isSearching = !isSearching;
-                  if (!isSearching) {
-                    searchController.clear();
-                  }
-                });
-              },
-            ),
-          ],
         ),
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              int crossAxisCount = isDesktop ? 4 : 2;
-              return Column(
-                children: [
-                  Expanded(
-                    child: BlocConsumer<ProductsCubit, ProductsState>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        if (state is ProductsLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is ProductsSuccess) {
-                          final products = state.productsEntity;
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              viewModel.getAllProducts();
-                            },
-                            child: GridView.builder(
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocConsumer<ProductsCubit, ProductsState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is ProductsLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (state is ProductsSuccess) {
+                      final products = state.productsEntity;
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          viewModel.getAllProducts();
+                        },
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            int crossAxisCount =
+                                constraints.maxWidth > 600 ? 4 : 2;
+
+                            return GridView.builder(
                               shrinkWrap: true,
                               physics: const AlwaysScrollableScrollPhysics(),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: crossAxisCount,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                childAspectRatio: isDesktop ? 1 : 0.8,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                childAspectRatio: 0.75,
                               ),
                               itemCount: products.length,
                               itemBuilder: (context, index) {
@@ -126,33 +105,30 @@ class _ProductsPageState extends State<ProductsPage> {
                                       );
                                     }));
                                   },
-                                  child: Center(
-                                      child: ProductCard(
-                                          productName:
-                                              products[index].productName,
-                                          image: products[index].imageUrl,
-                                          price: products[index].price,
-                                          discount: products[index].discount,
-                                          countryOfRigion:
-                                              products[index].countryOfOrigin,
-                                          quantity: products[index].quantity,
-                                          isDesktop: isDesktop)),
+                                  child: ProductCard(
+                                    productName: products[index].productName,
+                                    image: products[index].imageUrl,
+                                  ),
                                 );
                               },
-                            ),
-                          );
-                        } else {
-                          return const Center(
-                            child: Text('لا يوجد منتجات'),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: SizedBox(
-                      width: isDesktop ? 250 : double.infinity,
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('لا يوجد منتجات'),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -162,10 +138,15 @@ class _ProductsPageState extends State<ProductsPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return const AddProduct();
-                          }));
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) {
+                              return const AddProduct();
+                            },
+                          )).then((value) {
+                            if (value != null && value) {
+                              viewModel.getAllProducts();
+                            }
+                          });
                         },
                         child: const Text(
                           'إضافة منتج',
@@ -177,10 +158,38 @@ class _ProductsPageState extends State<ProductsPage> {
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
+                    const SizedBox(width: 10),
+                    if (isAdmin)
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (_) {
+                                return const InvoicesPage();
+                              },
+                            ));
+                          },
+                          child: const Text(
+                            'عرض الفواتير',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -189,122 +198,55 @@ class _ProductsPageState extends State<ProductsPage> {
 }
 
 class ProductCard extends StatelessWidget {
-  final bool isDesktop;
   final String? productName;
   final String? image;
-  final num? price;
-  final num? discount;
-  final String? countryOfRigion;
-  final num? quantity;
-
-  num get calculatedPriceAfterDiscount {
-    if (price != null && discount != null) {
-      return price! - (price! * discount! / 100);
-    }
-    return 0;
-  }
 
   const ProductCard({
     super.key,
-    required this.isDesktop,
     this.productName,
     this.image,
-    this.price,
-    this.discount,
-    this.countryOfRigion,
-    this.quantity,
   });
 
   @override
   Widget build(BuildContext context) {
-    double fontSizeTitle = isDesktop ? 18 : 16;
-    double fontSizeText = isDesktop ? 14 : 12;
-
-    return IntrinsicHeight(
-      child: Container(
-        width: 200,
-        decoration: BoxDecoration(
-          color: const Color(0xfff5f5f5),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            AspectRatio(
-              aspectRatio:
-                  4 / 3, // نسبة العرض إلى الارتفاع عشان الصورة تفضل متناسقة
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xfff5f5f5),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
                 child: image != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          image!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.image_not_supported, size: 50),
-                        ),
+                    ? Image.network(
+                        image!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported, size: 50),
                       )
-                    : const SizedBox.shrink(),
+                    : const Icon(Icons.image_not_supported, size: 50),
               ),
             ),
-            const SizedBox(height: 10),
-            Flexible(
-              child: Text(
-                'اسم المنتج: $productName',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: fontSizeTitle,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            productName ?? 'منتج بدون اسم',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 5),
-            Text(
-              'السعر: $price جنيه',
-              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'التخفيض: $discount%',
-              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'بعد الخصم: ${calculatedPriceAfterDiscount.toStringAsFixed(2)} جنيه',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: fontSizeText,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'الكمية: $quantity',
-              style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 5),
-            Flexible(
-              child: Text(
-                'بلد المنشأ: $countryOfRigion',
-                style: TextStyle(color: Colors.black, fontSize: fontSizeText),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

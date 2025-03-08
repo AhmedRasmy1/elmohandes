@@ -5,4 +5,5 @@ class ApiConstants {
   static const String addProduct = "api/Products";
   static const String updateProduct = "api/Products";
   static const String addBill = "api/Bills";
+  static const String allBills = "/api/Bills/";
 }

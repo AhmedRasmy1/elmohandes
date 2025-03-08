@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:elmohandes/features/home/data/models/add_bill_model.dart';
+import 'package:elmohandes/features/home/data/models/bills_model.dart';
 import 'package:elmohandes/features/home/data/models/update_product_model.dart';
 import '../../../features/home/data/models/add_product_model.dart';
 import '../../../features/home/data/models/products_model.dart';
@@ -49,5 +50,10 @@ abstract class ApiService {
     @Field('customerPhone') String customerPhone,
     @Field('payType') String payType,
     @Field('amount') num amount,
+  );
+
+  @GET(ApiConstants.allBills)
+  Future<List<BillsModel>> getAllBills(
+    @Header('Authorization') String token,
   );
 }

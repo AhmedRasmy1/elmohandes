@@ -78,6 +78,14 @@ class _UpdateProductState extends State<UpdateProduct> {
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "تعديل المنتج",
+            style: TextStyle(
+              fontFamily: widget.fontFamily,
+            ),
+          ),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -87,16 +95,6 @@ class _UpdateProductState extends State<UpdateProduct> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      "تعديل المنتج",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontFamily: FontFamily.cairoSemiBold,
-                      ),
-                    ),
                     const SizedBox(height: 20),
                     _buildTextField(
                         controller: _productName, label: "إسم المنتج"),

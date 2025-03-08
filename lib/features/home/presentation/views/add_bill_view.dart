@@ -31,9 +31,6 @@ class _AddBillPageState extends State<AddBillPage> {
   void initState() {
     super.initState();
     viewModel = getIt.get<AddBillCubit>();
-    // _customerName = TextEditingController(text: widget.customerName);
-    // _customerPhone = TextEditingController(text: widget.customerPhone);
-    // _quantity = TextEditingController(text: widget.quantity);
   }
 
   @override
@@ -49,117 +46,112 @@ class _AddBillPageState extends State<AddBillPage> {
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text("إضافة فاتورة جديدة"),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      "إضافة فاتورة جديدة",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontFamily: FontFamily.cairoSemiBold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        controller: _customerName, label: "اسم العميل"),
-                    _buildTextField(
-                      controller: _customerPhone,
-                      label: "رقم العميل",
-                      keyboardType: TextInputType.phone,
-                    ),
-                    _buildDropdownField(),
-                    _buildTextField(
-                        controller: _quantity,
-                        label: "الكمية",
-                        keyboardType: TextInputType.number),
-                    const SizedBox(height: 20),
-                    BlocConsumer<AddBillCubit, AddBillState>(
-                      listener: (context, state) {
-                        if (state is AddBillSuccess) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: const Text("تمت الاضافة"),
-                                    content: const Text("تمت الاضافة بنجاح"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BillDetailsView(
-                                                  billData: state.addBillEntity,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: const Text("حسنا"))
-                                    ],
-                                  ));
-                        } else if (state is AddBillFailure) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: const Text("خطأ"),
-                                    content:
-                                        const Text("حدث خطأ أثناء الاضافة"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("حسنا"))
-                                    ],
-                                  ));
-                        }
-                      },
-                      builder: (context, state) {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                viewModel.addBill(
-                                  id: CacheService.getData(
-                                      key: CacheConstants.productId),
-                                  customerName: _customerName.text,
-                                  customerPhone: _customerPhone.text,
-                                  amount: num.parse(_quantity.text),
-                                  payType: _selectedPaymentMethod,
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Text(
-                              "إضافة فاتورة",
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: widget.fontFamily,
-                                color: Colors.white,
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTextField(
+                    controller: _customerName,
+                    label: "اسم العميل",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الرجاء إدخال اسم العميل';
+                      }
+                      return null;
+                    },
+                  ),
+                  _buildTextField(
+                    controller: _customerPhone,
+                    label: "رقم العميل",
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الرجاء إدخال رقم العميل';
+                      }
+                      return null;
+                    },
+                  ),
+                  _buildDropdownField(),
+                  _buildTextField(
+                    controller: _quantity,
+                    label: "الكمية",
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الرجاء إدخال الكمية';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  BlocConsumer<AddBillCubit, AddBillState>(
+                    listener: (context, state) {
+                      if (state is AddBillSuccess) {
+                        _showDialog(
+                          context,
+                          title: "تمت الإضافة",
+                          content: "تمت الإضافة بنجاح",
+                          onConfirm: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BillDetailsView(
+                                billData: state.addBillEntity,
                               ),
                             ),
                           ),
                         );
-                      },
-                    )
-                  ],
-                ),
+                      } else if (state is AddBillFailure) {
+                        _showDialog(
+                          context,
+                          title: "خطأ",
+                          content: "حدث خطأ أثناء الإضافة",
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              viewModel.addBill(
+                                id: CacheService.getData(
+                                    key: CacheConstants.productId),
+                                customerName: _customerName.text,
+                                customerPhone: _customerPhone.text,
+                                amount: num.parse(_quantity.text),
+                                payType: _selectedPaymentMethod,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            "إضافة فاتورة",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontFamily: widget.fontFamily,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -172,14 +164,13 @@ class _AddBillPageState extends State<AddBillPage> {
     required TextEditingController controller,
     required String label,
     TextInputType keyboardType = TextInputType.text,
-    bool readOnly = false,
+    String? Function(String?)? validator,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
-        readOnly: readOnly,
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.right,
         decoration: InputDecoration(
@@ -188,6 +179,7 @@ class _AddBillPageState extends State<AddBillPage> {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         ),
+        validator: validator,
       ),
     );
   }
@@ -214,6 +206,25 @@ class _AddBillPageState extends State<AddBillPage> {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         ),
+      ),
+    );
+  }
+
+  void _showDialog(BuildContext context,
+      {required String title,
+      required String content,
+      VoidCallback? onConfirm}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: onConfirm ?? () => Navigator.pop(context),
+            child: const Text("حسنا"),
+          ),
+        ],
       ),
     );
   }

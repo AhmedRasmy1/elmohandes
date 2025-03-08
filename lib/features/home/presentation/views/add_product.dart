@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
-import '../../../../core/di/di.dart';
-import '../../../../core/resources/font_manager.dart';
-import '../viewmodels/add_productss/addproduct_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/resources/font_manager.dart';
+import '../viewmodels/add_productss/addproduct_cubit.dart';
 
 class AddProduct extends StatefulWidget {
   final String fontFamily;
@@ -60,176 +60,132 @@ class _AddProductState extends State<AddProduct> {
   }
 
   @override
-  void dispose() {
-    _discount.removeListener(_calculateDiscountedPrice);
-    _price.removeListener(_calculateDiscountedPrice);
-    _productName.dispose();
-    _price.dispose();
-    _discount.dispose();
-    _priceAfterDiscount.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
+        appBar: AppBar(title: const Text("إضافة منتج")),
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      "إضافة منتج",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontFamily: FontFamily.cairoSemiBold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        controller: _productName, label: "إسم المنتج"),
-                    _buildTextField(
-                        controller: _price,
-                        label: "السعر",
-                        keyboardType: TextInputType.number),
-                    _buildTextField(
-                        controller: _discount,
-                        label: "الخصم (%)",
-                        keyboardType: TextInputType.number),
-                    _buildTextField(
-                        controller: _quantity,
-                        label: "الكمية",
-                        keyboardType: TextInputType.number),
-                    _buildTextField(
-                        controller: _priceAfterDiscount,
-                        label: "السعر بعد الخصم",
-                        readOnly: true),
-                    _buildTextField(controller: _country, label: "بلد الصنع"),
-                    const SizedBox(height: 10),
-                    GestureDetector(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTextField(
+                      controller: _productName, label: "إسم المنتج"),
+                  _buildTextField(
+                      controller: _price,
+                      label: "السعر",
+                      keyboardType: TextInputType.number),
+                  _buildTextField(
+                      controller: _discount,
+                      label: "الخصم (%)",
+                      keyboardType: TextInputType.number),
+                  _buildTextField(
+                      controller: _quantity,
+                      label: "الكمية",
+                      keyboardType: TextInputType.number),
+                  _buildTextField(
+                      controller: _priceAfterDiscount,
+                      label: "السعر بعد الخصم",
+                      readOnly: true),
+                  _buildTextField(controller: _country, label: "بلد الصنع"),
+                  const SizedBox(height: 15),
+                  Center(
+                    child: GestureDetector(
                       onTap: _pickImage,
                       child: Container(
-                        width: double.infinity,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         height: 150,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[200],
                         ),
                         child: _selectedImage == null
                             ? const Center(child: Text("اختر صورة للمنتج"))
-                            : Image.file(_selectedImage!, fit: BoxFit.contain),
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_selectedImage!,
+                                    fit: BoxFit.cover),
+                              ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    BlocConsumer<AddproductCubit, AddproductState>(
-                      listener: (context, state) {
-                        if (state is AddproductSuccess) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.success,
-                            animType: AnimType.bottomSlide,
-                            title: 'نجاح',
-                            desc: 'تم إضافة المنتج بنجاح',
-                            btnOkOnPress: () {
-                              Navigator.pop(context);
-                            },
-                          ).show();
-                        } else if (state is Addproductfailure) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.error,
-                            animType: AnimType.bottomSlide,
-                            title: 'خطأ',
-                            desc: 'حدث خطأ أثناء إضافة المنتج',
-                            btnOkOnPress: () {},
-                          ).show();
-                        }
-                      },
-                      builder: (context, state) {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate() &&
-                                  _selectedImage != null) {
-                                try {
-                                  File file = File(_selectedImage!.path);
-                                  String fileNameWithExtension =
-                                      basename(file.path);
-
-                                  FormData formData = FormData.fromMap({
-                                    "name": _productName.text,
-                                    "price": num.parse(_price.text),
-                                    "discount": num.parse(_discount.text),
-                                    "quantity": num.parse(_quantity.text),
-                                    "countryOfOrigin": _country.text,
-                                    "Cover": await MultipartFile.fromFile(
-                                      _selectedImage!.path,
-                                      filename: fileNameWithExtension,
-                                    ),
-                                    "CreatedAt": DateTime.now()
-                                        .toUtc()
-                                        .toIso8601String(),
-                                  });
-
-                                  print("🚀 Sending data: ${formData.fields}");
-                                  print(
-                                      "📸 Image name: $fileNameWithExtension");
-
-                                  context
-                                      .read<AddproductCubit>()
-                                      .addProduct(formData: formData);
-                                } catch (e) {
-                                  print("❌ Error sending image: $e");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text("حدث خطأ أثناء إرسال البيانات"),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                  ),
+                  const SizedBox(height: 20),
+                  BlocConsumer<AddproductCubit, AddproductState>(
+                    listener: (context, state) {
+                      if (state is AddproductSuccess) {
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.success,
+                          title: 'نجاح',
+                          desc: 'تم إضافة المنتج بنجاح',
+                          btnOkOnPress: () => Navigator.pop(context),
+                        ).show();
+                      } else if (state is Addproductfailure) {
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.error,
+                          title: 'خطأ',
+                          desc: 'حدث خطأ أثناء إضافة المنتج',
+                          btnOkOnPress: () {},
+                        ).show();
+                      }
+                    },
+                    builder: (context, state) {
+                      return Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate() &&
+                                _selectedImage != null) {
+                              File file = File(_selectedImage!.path);
+                              String fileNameWithExtension =
+                                  basename(file.path);
+                              FormData formData = FormData.fromMap({
+                                "name": _productName.text,
+                                "price": num.parse(_price.text),
+                                "discount": num.parse(_discount.text),
+                                "quantity": num.parse(_quantity.text),
+                                "countryOfOrigin": _country.text,
+                                "Cover": await MultipartFile.fromFile(
+                                  _selectedImage!.path,
+                                  filename: fileNameWithExtension,
+                                ),
+                                "CreatedAt":
+                                    DateTime.now().toUtc().toIso8601String(),
+                              });
+                              context
+                                  .read<AddproductCubit>()
+                                  .addProduct(formData: formData);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
                                     content: Text(
                                         "يرجى ملء جميع الحقول وإضافة صورة"),
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: state is AddproductLoading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : Text(
-                                    "إضافة المنتج",
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                                    backgroundColor: Colors.orange),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            minimumSize: Size(
+                                MediaQuery.of(context).size.width * 0.9, 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
-                        );
-                      },
-                    )
-                  ],
-                ),
+                          child: state is AddproductLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text("إضافة المنتج",
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white)),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -250,11 +206,9 @@ class _AddProductState extends State<AddProduct> {
         controller: controller,
         keyboardType: keyboardType,
         readOnly: readOnly,
-        textDirection: TextDirection.rtl,
-        textAlign: TextAlign.right,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
