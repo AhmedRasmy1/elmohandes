@@ -7,16 +7,26 @@ import 'core/utils/my_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+Future<String> getInitialRoute() async {
+  final token = await CacheService.getData(key: CacheConstants.userToken);
+  return (token != null && token.isNotEmpty)
+      ? RoutesManager.productsPage
+      : RoutesManager.loginView;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheService.cacheInitialization();
   configureDependencies();
   Bloc.observer = MyBlocObserver();
-  runApp(const Elmohandes());
+
+  final initialRoute = await getInitialRoute(); // التحقق من التوكن المحفوظ
+  runApp(Elmohandes(initialRoute: initialRoute));
 }
 
 class Elmohandes extends StatelessWidget {
-  const Elmohandes({super.key});
+  final String initialRoute;
+  const Elmohandes({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +43,7 @@ class Elmohandes extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        fontFamily: FontFamily.cairo, // Replace with your font family name
+        fontFamily: FontFamily.cairo, // الخط المستخدم
       ),
       builder: (context, child) {
         return Directionality(
@@ -42,7 +52,7 @@ class Elmohandes extends StatelessWidget {
         );
       },
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: RoutesManager.loginView,
+      initialRoute: initialRoute, // استخدام المسار الأولي بعد التحقق
     );
   }
 }

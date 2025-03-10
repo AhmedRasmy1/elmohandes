@@ -17,20 +17,20 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   late ProductsCubit viewModel;
-  late bool isAdmin;
+  // late bool isAdmin;
 
   @override
   void initState() {
     viewModel = getIt.get<ProductsCubit>();
 
-    String? token = CacheService.getData(key: CacheConstants.userToken);
-    if (token != null) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      isAdmin = decodedToken['roles'] != null &&
-          decodedToken['roles'].contains("Admin");
-    } else {
-      isAdmin = false;
-    }
+    // String? token = CacheService.getData(key: CacheConstants.userToken);
+    // if (token != null) {
+    //   Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    //   isAdmin = decodedToken['roles'] != null &&
+    //       decodedToken['roles'].contains("Admin");
+    // } else {
+    //   isAdmin = false;
+    // }
 
     super.initState();
   }
@@ -159,33 +159,33 @@ class _ProductsPageState extends State<ProductsPage> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    if (isAdmin)
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                    // if (isAdmin)
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (_) {
-                                return const InvoicesPage();
-                              },
-                            ));
-                          },
-                          child: const Text(
-                            'عرض الفواتير',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) {
+                              return const InvoicesPage();
+                            },
+                          ));
+                        },
+                        child: const Text(
+                          'عرض الفواتير',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),

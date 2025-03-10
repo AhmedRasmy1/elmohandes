@@ -163,7 +163,49 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       ),
                     ),
                     onPressed: () {
-                      deleteAllBillsCubit.deleteAllBills();
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text(
+                              'تحذير 🚨',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                            content: const Text(
+                              'هل أنت متأكد أنك تريد حذف جميع الفواتير؟\nلن تتمكن من استعادتها بعد الحذف!',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text(
+                                  'إلغاء ❌',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.blue),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // إغلاق الـ Dialog
+                                  deleteAllBillsCubit
+                                      .deleteAllBills()
+                                      .then((_) {
+                                    viewModel
+                                        .getAllBills(); // تحديث الصفحة بعد الحذف
+                                  });
+                                },
+                                child: const Text(
+                                  'حذف 🗑️',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: const Text(
                       'حذف كل الفواتير',

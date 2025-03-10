@@ -30,6 +30,7 @@ class BillDetailsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildRow(Icons.person, 'رقم الفاتورة:', billData.billId!),
                 _buildRow(Icons.person, 'اسم العميل:', billData.customerName!),
                 _buildRow(Icons.phone, 'رقم الهاتف:', billData.customerPhone!),
                 _buildRow(Icons.payment, 'نوع الدفع:', billData.payType!),
@@ -152,6 +153,7 @@ class BillDetailsView extends StatelessWidget {
                     ),
                   ),
                   pw.SizedBox(height: 20),
+                  _buildPdfRow(billData.billId!, 'رقم الفاتورة:', font),
                   _buildPdfRow(billData.customerName!, 'اسم العميل:', font),
                   _buildPdfRow(billData.customerPhone!, 'رقم الهاتف:', font),
                   _buildPdfRow(billData.payType!, 'نوع الدفع:', font),

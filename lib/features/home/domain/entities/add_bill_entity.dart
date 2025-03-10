@@ -1,4 +1,5 @@
 class AddBillEntity {
+  final String? billId;
   final String? customerName;
   final String? customerPhone;
   final String? payType;
@@ -20,5 +21,6 @@ class AddBillEntity {
       required this.amount,
       required this.totalPrice,
       required this.createdByName,
-      required this.createdOn});
+      required this.createdOn,
+      required this.billId});
 }

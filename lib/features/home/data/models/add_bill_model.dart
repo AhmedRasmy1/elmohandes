@@ -46,6 +46,7 @@ class AddBillModel {
         amount: amount,
         totalPrice: totalPrice,
         createdByName: createdByName,
-        createdOn: createdOn);
+        createdOn: createdOn,
+        billId: id);
   }
 }
