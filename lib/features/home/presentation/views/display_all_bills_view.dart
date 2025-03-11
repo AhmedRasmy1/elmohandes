@@ -257,14 +257,45 @@ class InvoiceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListTile(
-        title: Text('رقم الفاتورة: $invoiceId'),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'رقم الفاتورة: $invoiceId',
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('العميل: $customerName'),
-            Text('المنتج: $productName'),
-            Text('التاريخ: $date'),
-            Text('الإجمالي: $totalPrice ج.م'),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'العميل: $customerName',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'المنتج: $productName',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'التاريخ: $date',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'الإجمالي: $totalPrice ج.م',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),

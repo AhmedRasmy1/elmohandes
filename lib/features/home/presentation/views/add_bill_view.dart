@@ -1,4 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/core/common/custom_exception.dart';
+import 'package:elmohandes/features/home/domain/entities/products_entity.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/resources/font_manager.dart';
 import '../../../../core/utils/cashed_data_shared_preferences.dart';
@@ -25,6 +27,7 @@ class _AddBillPageState extends State<AddBillPage> {
   final TextEditingController _customerPhone = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
   late AddBillCubit viewModel;
+  ProductsEntity? productsEntity;
   String _selectedPaymentMethod = "كاش";
   final List<String> _paymentMethods = ["كاش", "فودافون كاش", "إنستاباي"];
 
@@ -92,7 +95,7 @@ class _AddBillPageState extends State<AddBillPage> {
                     label: "الكمية",
                     keyboardType: TextInputType.number,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null || value.isEmpty || value == '0') {
                         return 'الرجاء إدخال الكمية';
                       }
                       return null;
@@ -111,12 +114,20 @@ class _AddBillPageState extends State<AddBillPage> {
                           ),
                         );
                       } else if (state is AddBillFailure) {
+                        String message;
+                        if (state.exception is ServerError) {
+                          message = (state.exception as ServerError)
+                                  .serverMessage ??
+                              'راجع بيانات الفاتورة تاني وحاول انك تضيفها تاني';
+                        } else {
+                          message =
+                              'راجع بيانات الفاتورة تاني وحاول انك تضيفها تاني';
+                        }
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.warning,
                           animType: AnimType.scale,
-                          desc:
-                              'راجع بيانات الفاتورة تاني وحاول انك تضيفها تاني',
+                          desc: message,
                           btnOkOnPress: () {
                             setState(() {});
                           },
@@ -161,7 +172,7 @@ class _AddBillPageState extends State<AddBillPage> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              fontFamily: widget.fontFamily,
+                              fontFamily: 'Cairo',
                               color: Colors.white,
                             ),
                           ),

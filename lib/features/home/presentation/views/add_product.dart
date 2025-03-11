@@ -277,7 +277,10 @@ class _AddProductState extends State<AddProduct> {
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text("إضافة المنتج",
                                   style: TextStyle(
-                                      fontSize: 17, color: Colors.white)),
+                                    fontSize: 17,
+                                    color: Colors.white,
+                                    fontFamily: 'Cairo',
+                                  )),
                         ),
                       );
                     },

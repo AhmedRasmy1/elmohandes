@@ -90,132 +90,145 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
           iconTheme: const IconThemeData(color: Colors.black),
         ),
         backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InvoiceDetailRow(title: 'رقم الفاتورة:', value: widget.invoiceId),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'اسم العميل:', value: widget.customerName),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'رقم هاتف العميل:', value: widget.customerPhone),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(title: 'طريقة الدفع:', value: widget.payType),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(title: 'اسم المنتج:', value: widget.productName),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'سعر الوحدة:', value: '${widget.price} ج.م'),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'الخصم:', value: '${widget.discount} ج.م'),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'الكمية:', value: widget.amount.toString()),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                title: 'الإجمالي:',
-                value: '${widget.totalPrice} ج.م',
-                valueColor: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'تاريخ الفاتورة:', value: widget.createdOn),
-              const SizedBox(height: 10),
-              InvoiceDetailRow(
-                  title: 'تم الإنشاء بواسطة:',
-                  value: widget.createdByName.toString()),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () async {
-                    final pdfFile = await generatePdf();
-                    await Printing.layoutPdf(
-                      onLayout: (PdfPageFormat format) async => pdfFile,
-                    );
-                  },
-                  child: const Text(
-                    'طباعة الفاتورة',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InvoiceDetailRow(
+                        title: 'رقم الفاتورة:', value: widget.invoiceId),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'اسم العميل:', value: widget.customerName),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'رقم هاتف العميل:', value: widget.customerPhone),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'طريقة الدفع:', value: widget.payType),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'اسم المنتج:', value: widget.productName),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'سعر الوحدة:', value: '${widget.price} ج.م'),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'الخصم:', value: '${widget.discount} ج.م'),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'الكمية:', value: widget.amount.toString()),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                      title: 'الإجمالي:',
+                      value: '${widget.totalPrice} ج.م',
+                      valueColor: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'تاريخ الفاتورة:', value: widget.createdOn),
+                    const SizedBox(height: 10),
+                    InvoiceDetailRow(
+                        title: 'تم الإنشاء بواسطة:',
+                        value: widget.createdByName.toString()),
+                  ],
                 ),
               ),
-              const SizedBox(height: 10),
-              // زر حذف الفاتورة
-              if (isAdmin)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.warning,
-                        animType: AnimType.scale,
-                        title: 'تحذير ',
-                        desc:
-                            'هل أنت متأكد أنك تريد حذف الفاتورة دي؟\nلن تتمكن من استعادتها بعد الحذف!',
-                        btnCancelText: 'إلغاء ',
-                        btnCancelOnPress: () {},
-                        btnCancelColor: Colors.blue,
-                        btnOkText: 'حذف ',
-                        btnOkOnPress: () async {
-                          await viewModel.deleteOneBill(widget.invoiceId);
-                          if (mounted) {
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(
-                              builder: (_) {
-                                return const InvoicesPage();
-                              },
-                            ));
-                          }
+            ),
+            // أزرار الطباعة والحذف مثبتة أسفل الشاشة
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final pdfFile = await generatePdf();
+                          await Printing.layoutPdf(
+                            onLayout: (PdfPageFormat format) async => pdfFile,
+                          );
                         },
-                        btnOkColor: Colors.red,
-                        dismissOnTouchOutside: false,
-                        padding: const EdgeInsets.all(20),
-                        buttonsBorderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        width: MediaQuery.of(context).size.width *
-                            (MediaQuery.of(context).size.width < 600
-                                ? 0.9
-                                : 0.8),
-                      ).show();
-                    },
-                    child: const Text(
-                      'حذف الفاتورة',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        child: const Text(
+                          'طباعة الفاتورة',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    if (isAdmin)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.scale,
+                              title: 'تحذير',
+                              desc:
+                                  'هل أنت متأكد أنك تريد حذف الفاتورة دي؟\nلن تتمكن من استعادتها بعد الحذف!',
+                              btnCancelText: 'إلغاء',
+                              btnCancelOnPress: () {},
+                              btnCancelColor: Colors.blue,
+                              btnOkText: 'حذف',
+                              btnOkOnPress: () async {
+                                await viewModel.deleteOneBill(widget.invoiceId);
+                                if (mounted) {
+                                  Navigator.pushReplacement(context,
+                                      MaterialPageRoute(
+                                    builder: (_) {
+                                      return const InvoicesPage();
+                                    },
+                                  ));
+                                }
+                              },
+                              btnOkColor: Colors.red,
+                              dismissOnTouchOutside: false,
+                              padding: const EdgeInsets.all(20),
+                              buttonsBorderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                            ).show();
+                          },
+                          child: const Text(
+                            'حذف الفاتورة',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -270,9 +283,10 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                     child: pw.Text(
                       'شكراً لتعاملك معنا!',
                       style: pw.TextStyle(
-                          font: font,
-                          fontSize: 16,
-                          fontWeight: pw.FontWeight.bold),
+                        font: font,
+                        fontSize: 16,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

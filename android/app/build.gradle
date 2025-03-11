@@ -38,8 +38,8 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled false
-            shrinkResources false  // تعطيل إزالة الموارد غير المستخدمة
+            minifyEnabled true
+            shrinkResources true  // تعطيل إزالة الموارد غير المستخدمة
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

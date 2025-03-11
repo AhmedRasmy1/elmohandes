@@ -76,7 +76,11 @@ class BillDetailsView extends StatelessWidget {
                     icon: const Icon(Icons.print, color: Colors.white),
                     label: const Text(
                       "طباعة الفاتورة",
-                      style: TextStyle(fontSize: 17, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontFamily: 'Cairo',
+                      ),
                     ),
                   ),
                 )

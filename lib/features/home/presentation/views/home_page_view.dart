@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+
 import '../../../../core/utils/cashed_data_shared_preferences.dart';
 import 'display_all_bills_view.dart';
 import '../../../../core/di/di.dart';
@@ -224,10 +226,10 @@ class ProductCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: image != null
-                    ? Image.network(
-                        image!,
+                    ? CachedNetworkImage(
+                        imageUrl: image!,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
+                        errorWidget: (context, url, error) =>
                             const Icon(Icons.image_not_supported, size: 50),
                       )
                     : const Icon(Icons.image_not_supported, size: 50),

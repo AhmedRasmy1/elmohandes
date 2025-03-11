@@ -1,7 +1,5 @@
 import '../../../home/presentation/views/home_page_view.dart';
-
 import '../../../../core/di/di.dart';
-import '../../../../core/resources/font_manager.dart';
 import '../viewmodel/cubit/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +9,7 @@ class LoginPage extends StatefulWidget {
 
   const LoginPage({
     super.key,
-    this.fontFamily = FontFamily.cairo,
+    this.fontFamily = 'Cairo',
   });
 
   @override
@@ -23,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? errorMessage; // متغير لتخزين رسالة الخطأ
+  String? errorMessage; //
 
   @override
   void initState() {
@@ -91,95 +89,93 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              'assets/images/iconapplication.png',
-                              width: isMobile ? 100 : 180, // تكبير الصورة
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "تسجيل الدخول",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                                fontFamily: FontFamily.cairoSemiBold,
+                      child: DefaultTextStyle(
+                        style: TextStyle(fontFamily: 'Cairo'),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                'assets/images/iconapplication.png',
+                                width: isMobile ? 100 : 180, // تكبير الصورة
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: emailController,
-                              decoration: InputDecoration(
-                                labelText: "البريد الإلكتروني",
-                                labelStyle:
-                                    TextStyle(fontFamily: widget.fontFamily),
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.email),
-                              ),
-                              style: TextStyle(fontFamily: widget.fontFamily),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "يرجى إدخال البريد الإلكتروني";
-                                }
-                                if (!value.contains("@")) {
-                                  return "البريد الإلكتروني غير صحيح";
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 15),
-                            PasswordField(
-                              fontFamily: widget.fontFamily,
-                              controller: passwordController,
-                            ),
-                            const SizedBox(height: 20),
-                            if (errorMessage != null) // عرض رسالة الخطأ
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  errorMessage!,
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 14,
-                                    fontFamily: FontFamily.cairo,
-                                  ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "تسجيل الدخول",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black87,
                                 ),
                               ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    viewModel.login(
-                                      emailController.text,
-                                      passwordController.text,
-                                    );
+                              const SizedBox(height: 20),
+                              TextFormField(
+                                controller: emailController,
+                                decoration: InputDecoration(
+                                  labelText: "البريد الإلكتروني",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.email),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "يرجى إدخال البريد الإلكتروني";
                                   }
+                                  if (!value.contains("@")) {
+                                    return "البريد الإلكتروني غير صحيح";
+                                  }
+                                  return null;
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
+                              ),
+                              const SizedBox(height: 15),
+                              PasswordField(
+                                fontFamily: widget.fontFamily,
+                                controller: passwordController,
+                              ),
+                              const SizedBox(height: 20),
+                              if (errorMessage != null) // عرض رسالة الخطأ
+                                Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                    errorMessage!,
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
-                                child: Text(
-                                  "تسجيل الدخول",
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontFamily: FontFamily.cairo,
-                                    color: Colors.white,
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      viewModel.login(
+                                        emailController.text,
+                                        passwordController.text,
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "تسجيل الدخول",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -218,7 +214,6 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: "كلمة المرور",
-        labelStyle: TextStyle(fontFamily: widget.fontFamily),
         border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.lock),
         suffixIcon: IconButton(
@@ -232,7 +227,6 @@ class _PasswordFieldState extends State<PasswordField> {
           },
         ),
       ),
-      style: TextStyle(fontFamily: widget.fontFamily),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "يرجى إدخال كلمة المرور";

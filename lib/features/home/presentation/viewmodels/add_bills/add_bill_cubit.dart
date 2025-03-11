@@ -39,7 +39,7 @@ class AddBillCubit extends Cubit<AddBillState> {
         log('result.data = ${result.data}');
         break;
       case Fail<AddBillEntity>():
-        emit(AddBillFailure('Error'));
+        emit(AddBillFailure(result.exception));
         log('Error');
         break;
     }

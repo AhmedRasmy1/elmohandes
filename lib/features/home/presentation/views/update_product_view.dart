@@ -196,7 +196,6 @@ class _UpdateProductState extends State<UpdateProduct> {
                               "تحديث المنتج",
                               style: TextStyle(
                                 fontSize: 17,
-                                fontFamily: widget.fontFamily,
                                 color: Colors.white,
                               ),
                             ),

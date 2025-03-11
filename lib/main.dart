@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/di/di.dart';
-import 'core/resources/font_manager.dart';
 import 'core/resources/routes_manager.dart';
 import 'core/utils/cashed_data_shared_preferences.dart';
 import 'core/utils/my_bloc_observer.dart';
@@ -44,7 +43,7 @@ class Elmohandes extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        fontFamily: FontFamily.cairo,
+        fontFamily: 'Cairo',
       ),
       builder: (context, child) {
         return Directionality(

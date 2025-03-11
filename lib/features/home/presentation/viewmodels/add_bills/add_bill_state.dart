@@ -14,7 +14,7 @@ final class AddBillSuccess extends AddBillState {
 }
 
 final class AddBillFailure extends AddBillState {
-  final String message;
+  final Exception exception;
 
-  AddBillFailure(this.message);
+  AddBillFailure(this.exception);
 }

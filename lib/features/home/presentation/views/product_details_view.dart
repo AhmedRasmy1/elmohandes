@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/di/di.dart';
 import '../viewmodels/delete_products/delete_one_product_cubit.dart';
 import 'add_bill_view.dart';
@@ -115,17 +116,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           height: screenHeight * 0.4,
           width: screenWidth,
           decoration: BoxDecoration(
-            image: widget.image != null
-                ? DecorationImage(
-                    image: NetworkImage(widget.image!),
-                    fit: BoxFit.cover,
-                  )
-                : null,
             color: widget.image == null ? Colors.grey.shade300 : null,
           ),
-          child: widget.image == null
-              ? const Icon(Icons.image, size: 100, color: Colors.blue)
-              : null,
+          child: widget.image != null
+              ? CachedNetworkImage(
+                  imageUrl: widget.image!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                )
+              : const Icon(Icons.image, size: 100, color: Colors.blue),
         ),
         Expanded(
           child: Padding(
@@ -176,17 +181,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child: Container(
               height: screenHeight * 0.7,
               decoration: BoxDecoration(
-                image: widget.image != null
-                    ? DecorationImage(
-                        image: NetworkImage(widget.image!),
-                        fit: BoxFit.contain,
-                      )
-                    : null,
                 color: widget.image == null ? Colors.grey.shade300 : null,
               ),
-              child: widget.image == null
-                  ? const Icon(Icons.image, size: 150, color: Colors.blue)
-                  : null,
+              child: widget.image != null
+                  ? CachedNetworkImage(
+                      imageUrl: widget.image!,
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                    )
+                  : const Icon(Icons.image, size: 150, color: Colors.blue),
             ),
           ),
 
