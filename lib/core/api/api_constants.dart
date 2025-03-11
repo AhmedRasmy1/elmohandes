@@ -8,4 +8,5 @@ class ApiConstants {
   static const String allBills = "api/Bills/";
   static const String deleteBills = "api/Bills/";
   static const String deleteOneBill = "api/Bills/";
+  static const String deleteOneProduct = "api/Products/";
 }

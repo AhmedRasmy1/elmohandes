@@ -67,4 +67,9 @@ abstract class ApiService {
     @Path('id') String id,
     @Header('Authorization') String token,
   );
+
+  @DELETE('${ApiConstants.deleteOneProduct}/{id}')
+  Future deleteProduct(
+    @Path('id') int id,
+  );
 }

@@ -20,7 +20,7 @@ Future<void> main() async {
   configureDependencies();
   Bloc.observer = MyBlocObserver();
 
-  final initialRoute = await getInitialRoute(); // التحقق من التوكن المحفوظ
+  final initialRoute = await getInitialRoute();
   runApp(Elmohandes(initialRoute: initialRoute));
 }
 
@@ -43,7 +43,7 @@ class Elmohandes extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        fontFamily: FontFamily.cairo, // الخط المستخدم
+        fontFamily: FontFamily.cairo,
       ),
       builder: (context, child) {
         return Directionality(
@@ -52,7 +52,7 @@ class Elmohandes extends StatelessWidget {
         );
       },
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: initialRoute, // استخدام المسار الأولي بعد التحقق
+      initialRoute: initialRoute,
     );
   }
 }

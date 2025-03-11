@@ -1,7 +1,15 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
+import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
 import 'package:elmohandes/features/home/presentation/viewmodels/delete_one_bill/delete_one_bill_cubit.dart';
+import 'package:elmohandes/features/home/presentation/views/display_all_bills_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class InvoiceDetailsPage extends StatefulWidget {
   final String invoiceId;
@@ -37,8 +45,18 @@ class InvoiceDetailsPage extends StatefulWidget {
 
 class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
   late DeleteOneBillCubit viewModel;
+
+  late bool isAdmin;
   @override
   void initState() {
+    String? token = CacheService.getData(key: CacheConstants.userToken);
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      isAdmin = decodedToken['roles'] != null &&
+          decodedToken['roles'].contains("Admin");
+    } else {
+      isAdmin = false;
+    }
     viewModel = getIt.get<DeleteOneBillCubit>();
     super.initState();
   }
@@ -49,6 +67,16 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
       create: (context) => viewModel,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (_) {
+                  return const InvoicesPage();
+                },
+              ));
+            },
+          ),
           centerTitle: true,
           title: const Text(
             'تفاصيل الفاتورة',
@@ -102,22 +130,24 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                   title: 'تم الإنشاء بواسطة:',
                   value: widget.createdByName.toString()),
               const Spacer(),
-              // زر حذف الفاتورة
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    _confirmDelete(context);
+                  onPressed: () async {
+                    final pdfFile = await generatePdf();
+                    await Printing.layoutPdf(
+                      onLayout: (PdfPageFormat format) async => pdfFile,
+                    );
                   },
                   child: const Text(
-                    'حذف الفاتورة',
+                    'طباعة الفاتورة',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -126,6 +156,63 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+              // زر حذف الفاتورة
+              if (isAdmin)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.warning,
+                        animType: AnimType.scale,
+                        title: 'تحذير ',
+                        desc:
+                            'هل أنت متأكد أنك تريد حذف الفاتورة دي؟\nلن تتمكن من استعادتها بعد الحذف!',
+                        btnCancelText: 'إلغاء ',
+                        btnCancelOnPress: () {},
+                        btnCancelColor: Colors.blue,
+                        btnOkText: 'حذف ',
+                        btnOkOnPress: () async {
+                          await viewModel.deleteOneBill(widget.invoiceId);
+                          if (mounted) {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(
+                              builder: (_) {
+                                return const InvoicesPage();
+                              },
+                            ));
+                          }
+                        },
+                        btnOkColor: Colors.red,
+                        dismissOnTouchOutside: false,
+                        padding: const EdgeInsets.all(20),
+                        buttonsBorderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        width: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width < 600
+                                ? 0.9
+                                : 0.8),
+                      ).show();
+                    },
+                    child: const Text(
+                      'حذف الفاتورة',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -133,7 +220,6 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
     );
   }
 
-  // دالة تأكيد الحذف
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
@@ -159,9 +245,92 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
       ),
     );
   }
+
+  Future<Uint8List> generatePdf() async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.cairoRegular();
+    final logoImage = await _loadLogo();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Directionality(
+            textDirection: pw.TextDirection.rtl,
+            child: pw.Container(
+              padding: const pw.EdgeInsets.all(16),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Center(
+                      child: pw.Image(logoImage, width: 100, height: 100)),
+                  pw.SizedBox(height: 20),
+                  pw.Center(
+                    child: pw.Text(
+                      'فاتورة شراء',
+                      style: pw.TextStyle(
+                        font: font,
+                        fontSize: 24,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor(0, 0, 1),
+                      ),
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  _buildPdfRow(widget.invoiceId, 'رقم الفاتورة:', font),
+                  _buildPdfRow(widget.customerName, 'اسم العميل:', font),
+                  _buildPdfRow(widget.customerPhone, 'رقم الهاتف:', font),
+                  _buildPdfRow(widget.payType, 'نوع الدفع:', font),
+                  _buildPdfRow(widget.productName, 'اسم المنتج:', font),
+                  _buildPdfRow('${widget.price} جنيه', 'السعر:', font),
+                  _buildPdfRow('${widget.discount}%', 'الخصم:', font),
+                  _buildPdfRow('${widget.amount}', 'الكمية:', font),
+                  _buildPdfRow('${widget.totalPrice} جنيه', 'الإجمالي:', font),
+                  _buildPdfRow(
+                      widget.createdByName, 'تم الإنشاء بواسطة:', font),
+                  _buildPdfRow(widget.createdOn, 'تاريخ الإنشاء:', font),
+                  pw.SizedBox(height: 20),
+                  pw.Divider(),
+                  pw.Center(
+                    child: pw.Text(
+                      'شكراً لتعاملك معنا!',
+                      style: pw.TextStyle(
+                          font: font,
+                          fontSize: 16,
+                          fontWeight: pw.FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    return pdf.save();
+  }
+
+  Future<pw.ImageProvider> _loadLogo() async {
+    final ByteData data =
+        await rootBundle.load('assets/images/iconapplication.png');
+    return pw.MemoryImage(data.buffer.asUint8List());
+  }
+
+  pw.Widget _buildPdfRow(String value, String title, pw.Font font) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 5),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(title,
+              style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
+          pw.Text(value, style: pw.TextStyle(font: font)),
+        ],
+      ),
+    );
+  }
 }
 
-// ======== تصميم عنصر بيانات الفاتورة ========
 class InvoiceDetailRow extends StatelessWidget {
   final String title;
   final String value;

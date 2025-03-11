@@ -1,6 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/core/di/di.dart';
+import 'package:elmohandes/features/home/presentation/viewmodels/delete_products/delete_one_product_cubit.dart';
 import 'package:elmohandes/features/home/presentation/views/add_bill_view.dart';
+import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
 import 'package:elmohandes/features/home/presentation/views/update_product_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({
@@ -11,8 +16,9 @@ class ProductDetailsPage extends StatefulWidget {
     this.image,
     this.country,
     this.quantity,
+    this.id,
   });
-
+  final int? id;
   final String? productName;
   final num? price;
   final num? discount;
@@ -32,29 +38,73 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
+  late DeleteOneProductCubit viewModel;
+  @override
+  void initState() {
+    viewModel = getIt.get<DeleteOneProductCubit>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 600;
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'تفاصيل المنتج',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: isDesktop ? 24 : 20,
-            fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (context) => viewModel,
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.warning,
+                  animType: AnimType.scale,
+                  title: 'تحذير',
+                  desc: 'أنت دلوقتي هتحذف المنتج ده نهائياً\n هل أنت متأكد؟',
+                  btnCancelText: 'إلغاء',
+                  btnCancelOnPress: () {},
+                  btnCancelColor: Colors.blue,
+                  btnOkText: 'حذف',
+                  btnOkOnPress: () {
+                    setState(() {
+                      viewModel.deleteProduct(widget.id!);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProductsPage()));
+                    });
+                  },
+                  btnOkColor: Colors.red,
+                  dismissOnTouchOutside: false,
+                  padding: const EdgeInsets.all(20),
+                  buttonsBorderRadius:
+                      const BorderRadius.all(Radius.circular(10)),
+                  width: MediaQuery.of(context).size.width *
+                      (MediaQuery.of(context).size.width < 600 ? 0.9 : 0.8),
+                ).show();
+              },
+            ),
+          ],
+          centerTitle: true,
+          title: Text(
+            'تفاصيل المنتج',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: isDesktop ? 24 : 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
+        body: isDesktop
+            ? _buildDesktopLayout(screenHeight, screenWidth)
+            : _buildMobileLayout(screenHeight, screenWidth),
       ),
-      backgroundColor: Colors.white,
-      body: isDesktop
-          ? _buildDesktopLayout(screenHeight, screenWidth)
-          : _buildMobileLayout(screenHeight, screenWidth),
     );
   }
 

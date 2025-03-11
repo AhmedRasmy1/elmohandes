@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/core/resources/font_manager.dart';
 import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
@@ -47,7 +48,11 @@ class _AddBillPageState extends State<AddBillPage> {
       create: (context) => viewModel,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("إضافة فاتورة جديدة"),
+          title: const Text(
+            "إضافة فاتورة جديدة",
+            style: TextStyle(
+                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+          ),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -75,6 +80,8 @@ class _AddBillPageState extends State<AddBillPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'الرجاء إدخال رقم العميل';
+                      } else if (value.length < 11) {
+                        return 'رقم الهاتف يجب أن يكون 11 رقمًا على الأقل';
                       }
                       return null;
                     },
@@ -91,29 +98,39 @@ class _AddBillPageState extends State<AddBillPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   BlocConsumer<AddBillCubit, AddBillState>(
                     listener: (context, state) {
                       if (state is AddBillSuccess) {
-                        _showDialog(
+                        Navigator.push(
                           context,
-                          title: "تمت الإضافة",
-                          content: "تمت الإضافة بنجاح",
-                          onConfirm: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BillDetailsView(
-                                billData: state.addBillEntity,
-                              ),
+                          MaterialPageRoute(
+                            builder: (context) => BillDetailsView(
+                              billData: state.addBillEntity,
                             ),
                           ),
                         );
                       } else if (state is AddBillFailure) {
-                        _showDialog(
-                          context,
-                          title: "خطأ",
-                          content: "حدث خطأ أثناء الإضافة",
-                        );
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.warning,
+                          animType: AnimType.scale,
+                          desc:
+                              'راجع بيانات الفاتورة تاني وحاول انك تضيفها تاني',
+                          btnOkOnPress: () {
+                            setState(() {});
+                          },
+                          btnOkText: 'تمام',
+                          btnOkColor: Colors.red,
+                          dismissOnTouchOutside: false,
+                          padding: const EdgeInsets.all(20),
+                          buttonsBorderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          width: MediaQuery.of(context).size.width *
+                              (MediaQuery.of(context).size.width < 600
+                                  ? 0.9
+                                  : 0.8),
+                        ).show();
                       }
                     },
                     builder: (context, state) {
@@ -134,7 +151,7 @@ class _AddBillPageState extends State<AddBillPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -142,7 +159,8 @@ class _AddBillPageState extends State<AddBillPage> {
                           child: Text(
                             "إضافة فاتورة",
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                               fontFamily: widget.fontFamily,
                               color: Colors.white,
                             ),
@@ -167,7 +185,7 @@ class _AddBillPageState extends State<AddBillPage> {
     String? Function(String?)? validator,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
@@ -177,7 +195,9 @@ class _AddBillPageState extends State<AddBillPage> {
           labelText: label,
           border: OutlineInputBorder(),
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+          labelStyle:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         validator: validator,
       ),
@@ -186,7 +206,7 @@ class _AddBillPageState extends State<AddBillPage> {
 
   Widget _buildDropdownField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: DropdownButtonFormField<String>(
         value: _selectedPaymentMethod,
         items: _paymentMethods.map((String method) {
@@ -204,27 +224,10 @@ class _AddBillPageState extends State<AddBillPage> {
           labelText: "طريقة الدفع",
           border: OutlineInputBorder(),
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+          labelStyle:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-      ),
-    );
-  }
-
-  void _showDialog(BuildContext context,
-      {required String title,
-      required String content,
-      VoidCallback? onConfirm}) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          TextButton(
-            onPressed: onConfirm ?? () => Navigator.pop(context),
-            child: const Text("حسنا"),
-          ),
-        ],
       ),
     );
   }

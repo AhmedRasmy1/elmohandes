@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -64,7 +65,15 @@ class _AddProductState extends State<AddProduct> {
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
-        appBar: AppBar(title: const Text("إضافة منتج")),
+        appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              "إضافة منتج",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            )),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -74,24 +83,66 @@ class _AddProductState extends State<AddProduct> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTextField(
-                      controller: _productName, label: "إسم المنتج"),
+                      controller: _productName,
+                      label: "إسم المنتج",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال اسم المنتج';
+                        }
+                        return null;
+                      }),
                   _buildTextField(
                       controller: _price,
                       label: "السعر",
-                      keyboardType: TextInputType.number),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال السعر';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'يرجى إدخال سعر صالح';
+                        }
+                        return null;
+                      }),
                   _buildTextField(
                       controller: _discount,
                       label: "الخصم (%)",
-                      keyboardType: TextInputType.number),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال الخصم';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'يرجى إدخال خصم صالح';
+                        }
+                        return null;
+                      }),
                   _buildTextField(
                       controller: _quantity,
                       label: "الكمية",
-                      keyboardType: TextInputType.number),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال الكمية';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'يرجى إدخال كمية صالحة';
+                        }
+                        return null;
+                      }),
                   _buildTextField(
                       controller: _priceAfterDiscount,
                       label: "السعر بعد الخصم",
                       readOnly: true),
-                  _buildTextField(controller: _country, label: "بلد الصنع"),
+                  _buildTextField(
+                      controller: _country,
+                      label: "بلد الصنع",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال بلد الصنع';
+                        }
+                        return null;
+                      }),
                   const SizedBox(height: 15),
                   Center(
                     child: GestureDetector(
@@ -109,7 +160,7 @@ class _AddProductState extends State<AddProduct> {
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.file(_selectedImage!,
-                                    fit: BoxFit.cover),
+                                    fit: BoxFit.contain),
                               ),
                       ),
                     ),
@@ -121,17 +172,46 @@ class _AddProductState extends State<AddProduct> {
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.success,
-                          title: 'نجاح',
-                          desc: 'تم إضافة المنتج بنجاح',
-                          btnOkOnPress: () => Navigator.pop(context),
+                          animType: AnimType.scale,
+                          title: 'تمام المنتج اتضاف بنجاح',
+                          desc:
+                              'من فضلك في حال عدم ظهور المنتج الجديد في صفحة المنتجات \n اعمل ريفريش للصفحة عشان المنتج يتضاف',
+                          btnOkText: 'تمام',
+                          btnOkOnPress: () {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) {
+                              return const ProductsPage();
+                            }));
+                          },
+                          btnOkColor: Colors.green,
+                          dismissOnTouchOutside: false,
+                          padding: const EdgeInsets.all(20),
+                          buttonsBorderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          width: MediaQuery.of(context).size.width *
+                              (MediaQuery.of(context).size.width < 600
+                                  ? 0.8
+                                  : 0.8),
                         ).show();
                       } else if (state is Addproductfailure) {
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.error,
-                          title: 'خطأ',
-                          desc: 'حدث خطأ أثناء إضافة المنتج',
+                          animType: AnimType.scale,
+                          title: 'للاسف المنتج متضافش',
+                          desc:
+                              'راجع لو ناسي اي حاجة مش ضايفها او في  غلط في الاضافة ',
+                          btnOkText: 'تمام',
                           btnOkOnPress: () {},
+                          btnOkColor: Colors.red,
+                          dismissOnTouchOutside: false,
+                          padding: const EdgeInsets.all(20),
+                          buttonsBorderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          width: MediaQuery.of(context).size.width *
+                              (MediaQuery.of(context).size.width < 600
+                                  ? 0.9
+                                  : 0.8),
                         ).show();
                       }
                     },
@@ -161,12 +241,26 @@ class _AddProductState extends State<AddProduct> {
                                   .read<AddproductCubit>()
                                   .addProduct(formData: formData);
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        "يرجى ملء جميع الحقول وإضافة صورة"),
-                                    backgroundColor: Colors.orange),
-                              );
+                              // AwesomeDialog(
+                              //   context: context,
+                              //   dialogType: DialogType.warning,
+                              //   animType: AnimType.scale,
+                              //   title: 'خطأ',
+                              //   desc: 'يرجى ملء جميع الحقول وإضافة صورة',
+                              //   btnOkText: 'تمام ✅',
+                              //   btnOkOnPress: () {},
+                              //   btnOkColor: Colors.orange,
+                              //   dismissOnTouchOutside: false,
+                              //   padding: const EdgeInsets.all(20),
+                              //   borderSide: const BorderSide(
+                              //       color: Colors.red, width: 2),
+                              //   buttonsBorderRadius:
+                              //       const BorderRadius.all(Radius.circular(10)),
+                              //   width: MediaQuery.of(context).size.width *
+                              //       (MediaQuery.of(context).size.width < 600
+                              //           ? 0.8
+                              //           : 0.8),
+                              // ).show();
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -199,6 +293,7 @@ class _AddProductState extends State<AddProduct> {
     required String label,
     TextInputType keyboardType = TextInputType.text,
     bool readOnly = false,
+    String? Function(String?)? validator,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -206,10 +301,16 @@ class _AddProductState extends State<AddProduct> {
         controller: controller,
         keyboardType: keyboardType,
         readOnly: readOnly,
+        textAlign: TextAlign.right, // يخلي النص لليمين
+        style: const TextStyle(fontSize: 16), // زيادة حجم الخط
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 12, horizontal: 16), // تنسيق الحواف الداخلية
+          alignLabelWithHint: true, // يضبط الليبل مع النص
         ),
+        validator: validator,
       ),
     );
   }

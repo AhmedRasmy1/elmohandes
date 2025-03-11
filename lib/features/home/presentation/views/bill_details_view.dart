@@ -17,12 +17,17 @@ class BillDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تفاصيل الفاتورة'),
+        centerTitle: true,
+        title: const Text(
+          'تفاصيل الفاتورة',
+          style: TextStyle(
+              color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          elevation: 6,
+          elevation: 8,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
@@ -30,7 +35,7 @@ class BillDetailsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildRow(Icons.person, 'رقم الفاتورة:', billData.billId!),
+                _buildRow(Icons.receipt, 'رقم الفاتورة:', billData.billId!),
                 _buildRow(Icons.person, 'اسم العميل:', billData.customerName!),
                 _buildRow(Icons.phone, 'رقم الهاتف:', billData.customerPhone!),
                 _buildRow(Icons.payment, 'نوع الدفع:', billData.payType!),
@@ -188,7 +193,8 @@ class BillDetailsView extends StatelessWidget {
   }
 
   Future<pw.ImageProvider> _loadLogo() async {
-    final ByteData data = await rootBundle.load('assets/images/logo.png');
+    final ByteData data =
+        await rootBundle.load('assets/images/iconapplication.png');
     return pw.MemoryImage(data.buffer.asUint8List());
   }
 

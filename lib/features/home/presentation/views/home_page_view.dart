@@ -1,6 +1,5 @@
 import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
 import 'package:elmohandes/features/home/presentation/views/display_all_bills_view.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../../core/di/di.dart';
 import '../viewmodels/productss/products_cubit.dart';
 import 'add_product.dart';
@@ -94,6 +93,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (_) {
                                       return ProductDetailsPage(
+                                        id: products[index].id,
                                         productName:
                                             products[index].productName,
                                         price: products[index].price,

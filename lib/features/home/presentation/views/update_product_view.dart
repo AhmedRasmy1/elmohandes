@@ -1,6 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
 import 'package:elmohandes/features/home/presentation/viewmodels/update_productss/update_products_cubit.dart';
+import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/resources/font_manager.dart';
@@ -79,11 +81,11 @@ class _UpdateProductState extends State<UpdateProduct> {
       create: (context) => viewModel,
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text(
             "تعديل المنتج",
             style: TextStyle(
-              fontFamily: widget.fontFamily,
-            ),
+                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
         body: SafeArea(
@@ -119,16 +121,53 @@ class _UpdateProductState extends State<UpdateProduct> {
                     BlocConsumer<UpdateProductsCubit, UpdateProductsState>(
                       listener: (context, state) {
                         if (state is UpdateProductsSuccess) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("تم تحديث المنتج بنجاح"),
-                          ));
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.success,
+                            animType: AnimType.scale,
+                            title: ' المنتج اتحدث بنجاح',
+                            desc:
+                                'المنتج اتحدث بنجاح وممكن تشوفه في الصفحة المنتجات',
+                            btnOkText: 'تمام',
+                            btnOkOnPress: () {
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(
+                                builder: (context) {
+                                  return ProductsPage();
+                                },
+                              ));
+                            },
+                            btnOkColor: Colors.green,
+                            dismissOnTouchOutside: false,
+                            padding: const EdgeInsets.all(20),
+                            buttonsBorderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            width: MediaQuery.of(context).size.width *
+                                (MediaQuery.of(context).size.width < 600
+                                    ? 0.9
+                                    : 0.8),
+                          ).show();
                         }
                         if (state is UpdateProductsFailure) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("حدث خطأ أثناء تحديث المنتج"),
-                          ));
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.error,
+                            animType: AnimType.scale,
+                            title: 'للاسف المنتج متحدثش',
+                            desc:
+                                'راجع لو ناسي اي حاجة مش ضايفها او في  غلط في التحديث ',
+                            btnOkText: 'تمام',
+                            btnOkOnPress: () {},
+                            btnOkColor: Colors.red,
+                            dismissOnTouchOutside: false,
+                            padding: const EdgeInsets.all(20),
+                            buttonsBorderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            width: MediaQuery.of(context).size.width *
+                                (MediaQuery.of(context).size.width < 600
+                                    ? 0.9
+                                    : 0.8),
+                          ).show();
                         }
                       },
                       builder: (context, state) {

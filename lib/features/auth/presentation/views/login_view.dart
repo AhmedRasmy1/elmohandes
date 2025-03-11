@@ -1,9 +1,7 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
 
 import '../../../../core/di/di.dart';
-import '../../../../core/resources/assets_manager.dart';
 import '../../../../core/resources/font_manager.dart';
-import '../../../../core/resources/routes_manager.dart';
 import '../viewmodel/cubit/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? errorMessage; // متغير لتخزين رسالة الخطأ
 
   @override
   void initState() {
@@ -45,25 +44,19 @@ class _LoginPageState extends State<LoginPage> {
               );
             }
             if (state is LoginSuccess) {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.success,
-                animType: AnimType.bottomSlide,
-                title: 'نجاح',
-                desc: 'تم تسجيل الدخول بنجاح',
-                btnOkOnPress: () {
-                  Navigator.pushNamed(context, RoutesManager.productsPage);
-                },
-              ).show();
+              setState(() {
+                errorMessage = null; // مسح رسالة الخطأ عند النجاح
+              });
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (context) {
+                return const ProductsPage();
+              }), (route) => false);
             }
             if (state is LoginFailure) {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.error,
-                animType: AnimType.bottomSlide,
-                title: 'راجع الايميل والباسور وحاول تاني',
-                btnOkOnPress: () {},
-              ).show();
+              setState(() {
+                errorMessage =
+                    "راجع الايميل والباسورد وحاول تاني"; // تحديث رسالة الخطأ
+              });
             }
           },
           child: Stack(
@@ -104,8 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Image.asset(
-                              AssetsManager.logoImage,
-                              width: isMobile ? 70 : 150,
+                              'assets/images/iconapplication.png',
+                              width: isMobile ? 100 : 180, // تكبير الصورة
                             ),
                             const SizedBox(height: 20),
                             Text(
@@ -132,9 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                                 if (value == null || value.isEmpty) {
                                   return "يرجى إدخال البريد الإلكتروني";
                                 }
-                                // if (!value.contains("@")) {
-                                //   return "البريد الإلكتروني غير صحيح";
-                                // }
+                                if (!value.contains("@")) {
+                                  return "البريد الإلكتروني غير صحيح";
+                                }
                                 return null;
                               },
                             ),
@@ -144,6 +137,19 @@ class _LoginPageState extends State<LoginPage> {
                               controller: passwordController,
                             ),
                             const SizedBox(height: 20),
+                            if (errorMessage != null) // عرض رسالة الخطأ
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  errorMessage!,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontFamily: FontFamily.cairo,
+                                  ),
+                                ),
+                              ),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(

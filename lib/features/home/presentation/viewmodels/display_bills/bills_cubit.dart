@@ -12,6 +12,9 @@ part 'bills_state.dart';
 class BillsCubit extends Cubit<BillsState> {
   final BillsUseCase _billsUseCase;
   BillsCubit(this._billsUseCase) : super(BillsInitial());
+
+  List<BillsEntity> allBills = []; // تخزين جميع الفواتير للأدمن
+
   Future<void> getAllBills() async {
     emit(BillsLoading());
     final token =
@@ -19,11 +22,20 @@ class BillsCubit extends Cubit<BillsState> {
     final result = await _billsUseCase.getAllBills(token);
     switch (result) {
       case Success<List<BillsEntity>>():
-        emit(BillsSuccess(result.data));
+        allBills = result.data;
+        emit(BillsSuccess(allBills));
         break;
       case Fail<List<BillsEntity>>():
         emit(BillsError("Error"));
         break;
     }
+  }
+
+  // === دالة البحث عن فاتورة برقمها ===
+  void searchBillById(String billId) {
+    final filteredBills =
+        allBills.where((bill) => bill.id.toString() == billId.trim()).toList();
+
+    emit(BillsSuccess(filteredBills));
   }
 }
