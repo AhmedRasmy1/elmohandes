@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withAlpha((0.5 * 255).toInt()),
               ),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: isMobile ? constraints.maxWidth * 0.9 : 400,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withAlpha((0.8 * 255).toInt()),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(

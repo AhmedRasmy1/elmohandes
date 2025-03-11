@@ -15,7 +15,7 @@ class DeleteOneBillCubit extends Cubit<DeleteOneBillState> {
 
   Future<void> deleteOneBill(String id) async {
     final token =
-        'Bearer ' + (await CacheService.getData(key: CacheConstants.userToken));
+        'Bearer ${await CacheService.getData(key: CacheConstants.userToken)}';
     emit(DeleteOneBillLoading());
     var result = await _deleteOneBillUseCase.deleteOneBill(id, token);
 

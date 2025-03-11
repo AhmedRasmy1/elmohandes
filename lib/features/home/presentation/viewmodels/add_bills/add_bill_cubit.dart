@@ -24,7 +24,7 @@ class AddBillCubit extends Cubit<AddBillState> {
   }) async {
     emit(AddBillLoading());
     final token =
-        'Bearer ' + (await CacheService.getData(key: CacheConstants.userToken));
+        'Bearer ${await CacheService.getData(key: CacheConstants.userToken)}';
     final result = await _addBillUseCase.addBill(
       id: id,
       token: token,

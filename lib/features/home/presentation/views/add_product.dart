@@ -237,9 +237,12 @@ class _AddProductState extends State<AddProduct> {
                                 "CreatedAt":
                                     DateTime.now().toUtc().toIso8601String(),
                               });
-                              context
-                                  .read<AddproductCubit>()
-                                  .addProduct(formData: formData);
+                              if (mounted) {
+                                // ignore: use_build_context_synchronously
+                                context
+                                    .read<AddproductCubit>()
+                                    .addProduct(formData: formData);
+                              }
                             } else {
                               // AwesomeDialog(
                               //   context: context,

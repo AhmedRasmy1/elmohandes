@@ -18,7 +18,7 @@ class BillsCubit extends Cubit<BillsState> {
   Future<void> getAllBills() async {
     emit(BillsLoading());
     final token =
-        'Bearer ' + (await CacheService.getData(key: CacheConstants.userToken));
+        'Bearer ${await CacheService.getData(key: CacheConstants.userToken)}';
     final result = await _billsUseCase.getAllBills(token);
     switch (result) {
       case Success<List<BillsEntity>>():

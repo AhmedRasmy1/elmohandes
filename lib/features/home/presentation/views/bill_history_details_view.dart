@@ -184,6 +184,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                         btnOkOnPress: () async {
                           await viewModel.deleteOneBill(widget.invoiceId);
                           if (mounted) {
+                            // ignore: use_build_context_synchronously
                             Navigator.pushReplacement(context,
                                 MaterialPageRoute(
                               builder: (_) {
@@ -216,32 +217,6 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _confirmDelete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('تأكيد الحذف'),
-        content: const Text('هل أنت متأكد أنك تريد حذف هذه الفاتورة؟'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
-          ),
-          TextButton(
-            onPressed: () {
-              viewModel.deleteOneBill(widget.invoiceId);
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'حذف',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
       ),
     );
   }
