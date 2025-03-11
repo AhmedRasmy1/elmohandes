@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:meta/meta.dart';
+
 import '../../../../../core/common/api_result.dart';
 import '../../../domain/entities/add_product_entity.dart';
 import '../../../domain/use_case/add_product_use_case.dart';
-import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
-import 'package:dio/dio.dart';
 
 part 'addproduct_state.dart';
 

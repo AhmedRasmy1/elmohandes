@@ -1,7 +1,7 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/data/data_sources/bills_data_sources.dart';
-import 'package:elmohandes/features/home/domain/entities/bills_entity.dart';
-import 'package:elmohandes/features/home/domain/reposatory/bills_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../data_sources/bills_data_sources.dart';
+import '../../domain/entities/bills_entity.dart';
+import '../../domain/reposatory/bills_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: BillsRepo)

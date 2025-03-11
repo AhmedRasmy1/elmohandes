@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/domain/reposatory/delete_all_bills.dart';
+import '../reposatory/delete_all_bills.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

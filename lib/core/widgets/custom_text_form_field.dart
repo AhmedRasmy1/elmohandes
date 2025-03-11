@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
-
 import '../resources/style_manager.dart';
 import '../resources/theme_manager.dart';
 import '../resources/values_manager.dart';
@@ -19,7 +19,8 @@ class CustomTextFormField extends StatelessWidget {
     this.enabled,
     this.prefixIcon,
     this.initialValue,
-    this.onChanged, this.inputAction,
+    this.onChanged,
+    this.inputAction,
   });
 
   final TextEditingController controller;
@@ -40,7 +41,7 @@ class CustomTextFormField extends StatelessWidget {
     return SizedBox(
       height: AppSize.s45,
       child: TextFormField(
-        textInputAction:inputAction ,
+        textInputAction: inputAction,
         cursorColor: ColorManager.placeHolderColor,
         style: const TextStyle(color: ColorManager.placeHolderColor),
         initialValue: initialValue,
@@ -72,7 +73,8 @@ class CustomTextFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.always,
           contentPadding: const EdgeInsets.all(AppPadding.p18),
           enabledBorder: outLintInputBorderMethod(
-            const BorderSide(color: ColorManager.placeHolderColor, width: AppSize.w1_5),
+            const BorderSide(
+                color: ColorManager.placeHolderColor, width: AppSize.w1_5),
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
           focusedBorder: outLintInputBorderMethod(
@@ -88,7 +90,8 @@ class CustomTextFormField extends StatelessWidget {
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
           disabledBorder: outLintInputBorderMethod(
-            const BorderSide(color: ColorManager.placeHolderColor, width: AppSize.w1_5),
+            const BorderSide(
+                color: ColorManager.placeHolderColor, width: AppSize.w1_5),
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
         ),
@@ -100,6 +103,7 @@ class CustomTextFormField extends StatelessWidget {
     );
   }
 }
+
 class CustomTextFormFieldRegister extends StatelessWidget {
   const CustomTextFormFieldRegister({
     super.key,
@@ -113,7 +117,8 @@ class CustomTextFormFieldRegister extends StatelessWidget {
     this.enabled,
     this.prefixIcon,
     this.initialValue,
-    this.onChanged, this.onTap,
+    this.onChanged,
+    this.onTap,
   });
 
   final TextEditingController controller;
@@ -148,11 +153,11 @@ class CustomTextFormFieldRegister extends StatelessWidget {
           prefixIconColor: ColorManager.white,
           suffixIcon: suffix != null
               ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              suffix!,
-            ],
-          )
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    suffix!,
+                  ],
+                )
               : null,
           suffixIconColor: ColorManager.placeHolderColor,
           labelText: labelText,
@@ -168,11 +173,13 @@ class CustomTextFormFieldRegister extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.always,
           contentPadding: const EdgeInsets.all(AppPadding.p18),
           enabledBorder: outLintInputBorderMethod(
-            const BorderSide(color: ColorManager.placeHolderColor, width: AppSize.w1_5),
+            const BorderSide(
+                color: ColorManager.placeHolderColor, width: AppSize.w1_5),
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
           focusedBorder: outLintInputBorderMethod(
-            const BorderSide(color: ColorManager.placeHolderColor, width: AppSize.w1_5),
+            const BorderSide(
+                color: ColorManager.placeHolderColor, width: AppSize.w1_5),
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
           errorBorder: outLintInputBorderMethod(
@@ -184,7 +191,8 @@ class CustomTextFormFieldRegister extends StatelessWidget {
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
           disabledBorder: outLintInputBorderMethod(
-            const BorderSide(color: ColorManager.placeHolderColor, width: AppSize.w1_5),
+            const BorderSide(
+                color: ColorManager.placeHolderColor, width: AppSize.w1_5),
             const BorderRadius.all(Radius.circular(AppSize.s20)),
           ),
         ),

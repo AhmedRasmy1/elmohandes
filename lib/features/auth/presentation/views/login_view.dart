@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
+import '../../../home/presentation/views/home_page_view.dart';
 
 import '../../../../core/di/di.dart';
 import '../../../../core/resources/font_manager.dart';

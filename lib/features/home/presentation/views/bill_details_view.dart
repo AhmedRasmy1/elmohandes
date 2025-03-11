@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/domain/entities/add_bill_entity.dart';
+import '../../domain/entities/add_bill_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';

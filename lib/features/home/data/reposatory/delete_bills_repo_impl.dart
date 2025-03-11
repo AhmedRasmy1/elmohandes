@@ -1,5 +1,5 @@
-import 'package:elmohandes/features/home/data/data_sources/delete_all_bills_data_sources.dart';
-import 'package:elmohandes/features/home/domain/reposatory/delete_all_bills.dart';
+import '../data_sources/delete_all_bills_data_sources.dart';
+import '../../domain/reposatory/delete_all_bills.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: DeleteAllBillsRepo)

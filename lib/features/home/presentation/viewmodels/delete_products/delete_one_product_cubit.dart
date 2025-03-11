@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/domain/use_case/delete_product_use_case.dart';
+import '../../../../../core/common/api_result.dart';
+import '../../../domain/use_case/delete_product_use_case.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 

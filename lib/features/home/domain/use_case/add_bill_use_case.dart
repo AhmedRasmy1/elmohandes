@@ -1,6 +1,6 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/domain/entities/add_bill_entity.dart';
-import 'package:elmohandes/features/home/domain/reposatory/add_bill_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/add_bill_entity.dart';
+import '../reposatory/add_bill_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

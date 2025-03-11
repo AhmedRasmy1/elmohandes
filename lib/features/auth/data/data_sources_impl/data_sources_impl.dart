@@ -1,9 +1,10 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../../core/api/api_extentions.dart';
 import '../../../../core/api/api_manager/api_manager.dart';
 import '../../../../core/common/api_result.dart';
-import '../data_sources/login_data_sources.dart';
 import '../../domain/entities/auth_entities.dart';
-import 'package:injectable/injectable.dart';
+import '../data_sources/login_data_sources.dart';
 
 @injectable
 class LoginDataSourceImpl implements LoginDataSources {

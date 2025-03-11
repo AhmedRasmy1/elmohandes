@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+
 import '../../features/auth/presentation/views/login_view.dart';
 import '../../features/home/presentation/views/home_page_view.dart';
 import '../../features/home/presentation/views/product_details_view.dart';
-import 'package:flutter/material.dart';
 
 class RoutesManager {
   static const String onBoarding = '/';

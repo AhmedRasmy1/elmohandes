@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'core/di/di.dart';
 import 'core/resources/font_manager.dart';
 import 'core/resources/routes_manager.dart';
 import 'core/utils/cashed_data_shared_preferences.dart';
 import 'core/utils/my_bloc_observer.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<String> getInitialRoute() async {
   final token = await CacheService.getData(key: CacheConstants.userToken);

@@ -1,5 +1,5 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/domain/entities/add_bill_entity.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/add_bill_entity.dart';
 
 abstract class AddBillRepo {
   Future<Result<AddBillEntity>> addBill({

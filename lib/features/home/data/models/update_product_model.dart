@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/domain/entities/update_product_entity.dart';
+import '../../domain/entities/update_product_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'update_product_model.g.dart';
 

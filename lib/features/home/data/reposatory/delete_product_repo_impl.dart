@@ -1,5 +1,5 @@
-import 'package:elmohandes/features/home/data/data_sources/delete_product_data_sources.dart';
-import 'package:elmohandes/features/home/domain/reposatory/delete_product.dart';
+import '../data_sources/delete_product_data_sources.dart';
+import '../../domain/reposatory/delete_product.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: DeleteProduct)

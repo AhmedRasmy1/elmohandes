@@ -1,5 +1,5 @@
-import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-import 'package:elmohandes/features/home/presentation/views/display_all_bills_view.dart';
+import '../../../../core/utils/cashed_data_shared_preferences.dart';
+import 'display_all_bills_view.dart';
 import '../../../../core/di/di.dart';
 import '../viewmodels/productss/products_cubit.dart';
 import 'add_product.dart';

@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/domain/entities/bills_entity.dart';
+import '../../domain/entities/bills_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'bills_model.g.dart';
 

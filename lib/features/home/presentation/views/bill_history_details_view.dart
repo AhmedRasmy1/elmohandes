@@ -1,8 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/delete_one_bill/delete_one_bill_cubit.dart';
-import 'package:elmohandes/features/home/presentation/views/display_all_bills_view.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/utils/cashed_data_shared_preferences.dart';
+import '../viewmodels/delete_one_bill/delete_one_bill_cubit.dart';
+import 'display_all_bills_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

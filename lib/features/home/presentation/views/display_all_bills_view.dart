@@ -1,10 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
+import 'home_page_view.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/delete_bills/delete_all_bills_cubit.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/display_bills/bills_cubit.dart';
-import 'package:elmohandes/features/home/presentation/views/bill_history_details_view.dart';
+import '../../../../core/utils/cashed_data_shared_preferences.dart';
+import '../viewmodels/delete_bills/delete_all_bills_cubit.dart';
+import '../viewmodels/display_bills/bills_cubit.dart';
+import 'bill_history_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/di.dart';

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:elmohandes/features/home/data/models/add_bill_model.dart';
-import 'package:elmohandes/features/home/data/models/bills_model.dart';
-import 'package:elmohandes/features/home/data/models/update_product_model.dart';
+import '../../../features/home/data/models/add_bill_model.dart';
+import '../../../features/home/data/models/bills_model.dart';
+import '../../../features/home/data/models/update_product_model.dart';
 import '../../../features/home/data/models/add_product_model.dart';
 import '../../../features/home/data/models/products_model.dart';
 import 'package:injectable/injectable.dart';

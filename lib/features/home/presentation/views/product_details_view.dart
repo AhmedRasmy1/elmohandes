@@ -1,9 +1,9 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/features/home/presentation/viewmodels/delete_products/delete_one_product_cubit.dart';
-import 'package:elmohandes/features/home/presentation/views/add_bill_view.dart';
-import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
-import 'package:elmohandes/features/home/presentation/views/update_product_view.dart';
+import '../../../../core/di/di.dart';
+import '../viewmodels/delete_products/delete_one_product_cubit.dart';
+import 'add_bill_view.dart';
+import 'home_page_view.dart';
+import 'update_product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

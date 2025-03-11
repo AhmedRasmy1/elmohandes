@@ -1,5 +1,5 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/home/domain/entities/update_product_entity.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/update_product_entity.dart';
 
 abstract class UpdateProductRepo {
   Future<Result<UpdateProductEntity>> updateProduct({
