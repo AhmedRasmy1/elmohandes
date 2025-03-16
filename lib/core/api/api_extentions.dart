@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-
 import '../common/api_result.dart';
 import '../common/custom_exception.dart';
 

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/cart/data/models/cart_details/cart_details.dart';
 import '../../../features/home/data/models/add_bill_model.dart';
 import '../../../features/home/data/models/bills_model.dart';
 import '../../../features/home/data/models/update_product_model.dart';
@@ -78,5 +79,16 @@ abstract class ApiService {
     @Path('id') int id,
     @Header('Authorization') String token,
     @Field('quantity') int quantity,
+  );
+
+  @GET(ApiConstants.cartDetails)
+  Future<List<CartDetails>> getCartDetails(
+    @Header('Authorization') String token,
+  );
+
+  @DELETE('${ApiConstants.deleteProductFromCart}/{id}')
+  Future deleteProductFromCart(
+    @Path('id') int id,
+    @Header('Authorization') String token,
   );
 }

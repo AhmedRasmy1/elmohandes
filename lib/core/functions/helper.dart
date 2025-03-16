@@ -11,7 +11,7 @@ String? validateNotEmpty(String? value, String messageEmpty,
   } else if (value.length < 6) {
     return length;
   } else if (!RegExp(
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
+          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
       .hasMatch(value)) {
     return format;
   }
@@ -68,7 +68,6 @@ Widget passwordHidden({
   );
 }
 
-
 Widget buildIcon(String assetPath, int index, int currentIndex) {
   bool isSelected = index == currentIndex;
 
@@ -97,7 +96,7 @@ String? validatePassword({
   required String messageInvalid,
 }) {
   final RegExp passwordRegExp =
-  RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$');
+      RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$');
   if (password.trim().isEmpty) {
     return message;
   } else if (password.length < 8) {

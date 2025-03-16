@@ -22,15 +22,38 @@ import '../../features/auth/presentation/viewmodel/cubit/login_cubit.dart'
     as _i641;
 import '../../features/cart/data/data_sources/add_product_to_cart_data_sources.dart'
     as _i550;
+import '../../features/cart/data/data_sources/cart_details_data_sources.dart'
+    as _i580;
+import '../../features/cart/data/data_sources/delete_product_from_cart_data_sources.dart'
+    as _i239;
 import '../../features/cart/data/data_sources_impl/add_product_to_cart_data_sources_impl.dart'
     as _i525;
+import '../../features/cart/data/data_sources_impl/cart_details_data_sources_impl.dart'
+    as _i293;
+import '../../features/cart/data/data_sources_impl/delete_product_from_cart_data_sources_impl.dart'
+    as _i559;
 import '../../features/cart/data/repo_impl/add_product_to_cart_repo_impl.dart'
     as _i454;
+import '../../features/cart/data/repo_impl/cart_details_repo_impl.dart'
+    as _i800;
+import '../../features/cart/data/repo_impl/delete_product_from_cart_repo_impl.dart'
+    as _i460;
 import '../../features/cart/domain/repo/add_product_to_cart_repo.dart' as _i522;
+import '../../features/cart/domain/repo/cart_details_repo.dart' as _i655;
+import '../../features/cart/domain/repo/delete_product_from_cart_repo.dart'
+    as _i465;
 import '../../features/cart/domain/use_cases/add_product_to_cart_use_case.dart'
     as _i473;
+import '../../features/cart/domain/use_cases/cart_details_use_case.dart'
+    as _i1058;
+import '../../features/cart/domain/use_cases/delete_product_from_cart_use_case.dart'
+    as _i182;
 import '../../features/cart/presentation/view_models/cart_cubit/add_product_to_cart_cubit.dart'
     as _i486;
+import '../../features/cart/presentation/view_models/cart_display/cart_details_cubit.dart'
+    as _i719;
+import '../../features/cart/presentation/view_models/delete_from_cart/delete_cart_product_cubit.dart'
+    as _i491;
 import '../../features/home/data/data_sources/add_bill_data_sources.dart'
     as _i55;
 import '../../features/home/data/data_sources/add_product_data_sources.dart'
@@ -129,6 +152,8 @@ extension GetItInjectableX on _i174.GetIt {
     final dioModule = _$DioModule();
     gh.lazySingleton<_i361.Dio>(() => dioModule.providerDio());
     gh.factory<_i680.ApiService>(() => _i680.ApiService(gh<_i361.Dio>()));
+    gh.factory<_i239.DeleteProductFromCartDataSources>(() =>
+        _i559.DeleteProductFromCartDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i920.ProductsDataSources>(
         () => _i132.ProductsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i309.DeleteAllBillsDataSources>(
@@ -139,6 +164,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i414.BillsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
+    gh.factory<_i465.DeleteProductFromCartRepo>(() =>
+        _i460.DeleteProductFromCartRepoImpl(
+            gh<_i239.DeleteProductFromCartDataSources>()));
+    gh.factory<_i580.CartDetailsDataSources>(
+        () => _i293.CartDetailsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i657.DeleteAllBillsRepo>(
         () => _i533.DeleteBillsRepoImpl(gh<_i309.DeleteAllBillsDataSources>()));
     gh.factory<_i157.DeleteProductDataSources>(
@@ -161,6 +191,9 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i170.AddProductUseCase(gh<_i686.AddProductRepo>()));
     gh.factory<_i988.DeleteOneBillRepo>(() =>
         _i833.DeleteOneBillRepoImpl(gh<_i610.DeleteOneBillDataSources>()));
+    gh.factory<_i182.DeleteProductFromCartUseCase>(() =>
+        _i182.DeleteProductFromCartUseCase(
+            gh<_i465.DeleteProductFromCartRepo>()));
     gh.factory<_i545.AddBillRepo>(
         () => _i907.AddBillRepoImpl(gh<_i55.AddBillDataSources>()));
     gh.factory<_i522.AddProductToCartRepo>(() => _i454.AddProductToCartRepoImpl(
@@ -177,6 +210,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i346.ProductsCubit(gh<_i256.ProductsUseCase>()));
     gh.factory<_i667.BillsCubit>(
         () => _i667.BillsCubit(gh<_i51.BillsUseCase>()));
+    gh.factory<_i655.CartDetailRepo>(
+        () => _i800.CartDetailsRepoImpl(gh<_i580.CartDetailsDataSources>()));
+    gh.factory<_i491.DeleteCartProductCubit>(() =>
+        _i491.DeleteCartProductCubit(gh<_i182.DeleteProductFromCartUseCase>()));
     gh.factory<_i712.UpdateProductRepo>(() =>
         _i594.UpdateProductRepoImpl(gh<_i319.UpdateProductDataSources>()));
     gh.factory<_i176.DeleteAllBillsUseCase>(
@@ -203,12 +240,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i221.DeleteProductUseCase(gh<_i758.DeleteProduct>()));
     gh.factory<_i1038.LoginUseCase>(
         () => _i1038.LoginUseCase(gh<_i723.LoginRepo>()));
+    gh.factory<_i1058.CartDetailsUseCase>(
+        () => _i1058.CartDetailsUseCase(gh<_i655.CartDetailRepo>()));
     gh.factory<_i641.LoginCubit>(
         () => _i641.LoginCubit(gh<_i1038.LoginUseCase>()));
     gh.factory<_i320.DeleteOneProductCubit>(
         () => _i320.DeleteOneProductCubit(gh<_i221.DeleteProductUseCase>()));
     gh.factory<_i486.AddProductToCartCubit>(
         () => _i486.AddProductToCartCubit(gh<_i473.AddProductToCartUseCase>()));
+    gh.factory<_i719.CartDetailsCubit>(
+        () => _i719.CartDetailsCubit(gh<_i1058.CartDetailsUseCase>()));
     return this;
   }
 }
