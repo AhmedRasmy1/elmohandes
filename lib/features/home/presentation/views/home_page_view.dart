@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elmohandes/features/cart/presentation/views/cart_view.dart';
 
 import '../../../../core/utils/cashed_data_shared_preferences.dart';
 import 'display_all_bills_view.dart';
@@ -42,6 +43,17 @@ class _ProductsPageState extends State<ProductsPage> {
       create: (context) => viewModel..getAllProducts(),
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const CartPage();
+                }));
+              },
+            ),
+          ],
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: const Text(

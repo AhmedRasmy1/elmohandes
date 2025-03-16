@@ -1,9 +1,11 @@
 class LoginEntity {
-  final String? email;
-  final String? token;
+  String? userName;
+  String? role;
+  String? token;
 
   LoginEntity({
-    this.email,
+    this.userName,
+    this.role,
     this.token,
   });
 }

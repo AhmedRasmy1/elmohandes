@@ -5,27 +5,23 @@ part 'auth_model.g.dart';
 
 @JsonSerializable()
 class Login {
-  String? id;
-  String? email;
-  String? firstName;
-  String? lastName;
+  String? userName;
+  String? role;
   String? token;
-  num? expiresIn;
 
   Login({
-    this.id,
-    this.email,
-    this.firstName,
-    this.lastName,
+    this.userName,
+    this.role,
     this.token,
-    this.expiresIn,
   });
+
   factory Login.fromJson(Map<String, dynamic> json) => _$LoginFromJson(json);
   Map<String, dynamic> toJson() => _$LoginToJson(this);
 
   LoginEntity toLoginEntity() {
     return LoginEntity(
-      email: email,
+      userName: userName,
+      role: role,
       token: token,
     );
   }

@@ -1,12 +1,13 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../../core/di/di.dart';
-import '../viewmodels/delete_products/delete_one_product_cubit.dart';
-import 'add_bill_view.dart';
-import 'home_page_view.dart';
-import 'update_product_view.dart';
+import 'package:elmohandes/features/cart/presentation/view_models/cart_cubit/add_product_to_cart_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/di/di.dart';
+import '../viewmodels/delete_products/delete_one_product_cubit.dart';
+import 'home_page_view.dart';
+import 'update_product_view.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({
@@ -40,20 +41,33 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late DeleteOneProductCubit viewModel;
+  late AddProductToCartCubit addToCartCubit;
+  final TextEditingController _quantityController = TextEditingController();
+
   @override
   void initState() {
     viewModel = getIt.get<DeleteOneProductCubit>();
+    addToCartCubit = getIt.get<AddProductToCartCubit>();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 600;
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+  void dispose() {
+    _quantityController.dispose();
+    super.dispose();
+  }
 
-    return BlocProvider(
-      create: (context) => viewModel,
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => viewModel,
+        ),
+        BlocProvider(
+          create: (context) => addToCartCubit,
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           actions: [
@@ -74,9 +88,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     setState(() {
                       viewModel.deleteProduct(widget.id!);
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProductsPage()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProductsPage(),
+                        ),
+                      );
                     });
                   },
                   btnOkColor: Colors.red,
@@ -95,16 +111,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             'تفاصيل المنتج',
             style: TextStyle(
               color: Colors.black,
-              fontSize: isDesktop ? 24 : 20,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
           backgroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: isDesktop
-            ? _buildDesktopLayout(screenHeight, screenWidth)
-            : _buildMobileLayout(screenHeight, screenWidth),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 600) {
+              return _buildDesktopLayout(
+                  constraints.maxHeight, constraints.maxWidth);
+            } else {
+              return _buildMobileLayout(
+                  constraints.maxHeight, constraints.maxWidth);
+            }
+          },
+        ),
       ),
     );
   }
@@ -122,13 +146,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ? CachedNetworkImage(
                   imageUrl: widget.image!,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, color: Colors.red),
                 )
               : const Icon(Icons.image, size: 100, color: Colors.blue),
         ),
@@ -148,19 +169,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => UpdateProduct(
-                      productName: widget.productName as String,
+                      productName: widget.productName!,
                       price: widget.price!.toString(),
                       discount: widget.discount!.toString(),
-                      country: widget.country as String,
+                      country: widget.country!,
                       quantity: widget.quantity!.toString(),
                     ),
                   ),
                 );
               }),
               const SizedBox(width: 10),
-              _customButton('إضافة فاتورة', Colors.green, () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddBillPage()));
+              _customButton('إضافة للسلة', Colors.green, () {
+                _showAddToCartDialog();
               }),
             ],
           ),
@@ -170,85 +190,145 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   Widget _buildDesktopLayout(double screenHeight, double screenWidth) {
-    return Padding(
-      padding: EdgeInsets.all(screenWidth * 0.03),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image section
-          Expanded(
-            flex: 5,
-            child: Container(
-              height: screenHeight * 0.7,
-              decoration: BoxDecoration(
-                color: widget.image == null ? Colors.grey.shade300 : null,
-              ),
-              child: widget.image != null
-                  ? CachedNetworkImage(
-                      imageUrl: widget.image!,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.error,
-                        color: Colors.red,
-                      ),
-                    )
-                  : const Icon(Icons.image, size: 150, color: Colors.blue),
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Container(
+            height: screenHeight * 0.7,
+            decoration: BoxDecoration(
+              color: widget.image == null ? Colors.grey.shade300 : null,
             ),
+            child: widget.image != null
+                ? CachedNetworkImage(
+                    imageUrl: widget.image!,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error, color: Colors.red),
+                  )
+                : const Icon(Icons.image, size: 100, color: Colors.blue),
           ),
-
-          // Details section
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: EdgeInsets.all(screenWidth * 0.03),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildProductDetails(isDesktop: true),
-                  const Spacer(),
-                  // Buttons for desktop
-                  Row(
-                    children: [
-                      _customButton('تعديل المنتج', Colors.blue, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdateProduct(
-                              productName: widget.productName as String,
-                              price: widget.price!.toString(),
-                              discount: widget.discount!.toString(),
-                              country: widget.country as String,
-                              quantity: widget.quantity!.toString(),
-                            ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProductDetails(isDesktop: true),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _customButton('تعديل المنتج', Colors.blue, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdateProduct(
+                            productName: widget.productName!,
+                            price: widget.price!.toString(),
+                            discount: widget.discount!.toString(),
+                            country: widget.country!,
+                            quantity: widget.quantity!.toString(),
                           ),
-                        );
-                      }, isDesktop: true),
-                      const SizedBox(width: 20),
-                      _customButton('إضافة فاتورة', Colors.green, () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddBillPage()));
-                      }, isDesktop: true),
-                    ],
-                  ),
-                ],
-              ),
+                        ),
+                      );
+                    }),
+                    const SizedBox(width: 20),
+                    _customButton('إضافة للسلة', Colors.green, () {
+                      _showAddToCartDialog();
+                    }),
+                  ],
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+
+  void _showAddToCartDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+            'إضافة للسلة',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          ),
+          content: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _quantityController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'أدخل الكمية',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'الكمية المتاحة: ${widget.quantity}',
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('إلغاء',
+                  style: TextStyle(color: Colors.red, fontSize: 16)),
+            ),
+            TextButton(
+              onPressed: () {
+                int quantity = int.tryParse(_quantityController.text) ?? 0;
+                if (quantity > 0 && quantity <= widget.quantity!) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('تمت إضافة $quantity للسلة'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('الكمية غير متاحة'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+                addToCartCubit.addProductToCart(widget.id!, quantity);
+              },
+              child: const Text('تمام',
+                  style: TextStyle(color: Colors.blue, fontSize: 16)),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildProductDetails({bool isDesktop = false}) {
-    final double titleSize = isDesktop ? 30 : 22;
-    final double textSize = isDesktop ? 20 : 16;
-    final double priceSize = isDesktop ? 24 : 18;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -256,35 +336,34 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           widget.productName ?? "اسم المنتج غير متوفر",
           style: TextStyle(
             color: Colors.black,
-            fontSize: titleSize,
+            fontSize: isDesktop ? 30 : 22,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: isDesktop ? 20 : 10),
+        const SizedBox(height: 10),
         Text(
           'السعر: ${widget.price} جنيه',
-          style: TextStyle(color: Colors.black, fontSize: textSize),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
         Text(
           'التخفيض: ${widget.discount}%',
-          style: TextStyle(color: Colors.black, fontSize: textSize),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
         Text(
           'بعد الخصم: ${widget.priceAfterDiscount} جنيه',
           style: TextStyle(
             color: Colors.green,
-            fontSize: priceSize,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           'الكمية: ${widget.quantity}',
-          style: TextStyle(color: Colors.black, fontSize: textSize),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
-        SizedBox(height: isDesktop ? 20 : 10),
         Text(
           'بلد المنشأ: ${widget.country}',
-          style: TextStyle(color: Colors.black, fontSize: textSize),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ],
     );

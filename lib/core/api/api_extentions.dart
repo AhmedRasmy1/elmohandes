@@ -12,16 +12,16 @@ Future<Result<T>> executeApi<T>(Future<T> Function() apiCall) async {
     return Success(result);
   } on TimeoutException catch (_) {
     return Fail(NoInternetError());
-  } on DioException catch (ex) {
-    print(ex.response?.data['message']);
-    if (ex.response != null) {
-      return Fail(ServerError(
-        ex.response?.statusCode,
-        ex.response?.data['message'] ?? "Unexpected error",
-      ));
-    } else {
-      return Fail(DioHttpException(ex));
-    }
+    // } on DioException catch (ex) {
+    //   print(ex.response?.data['message']);
+    //   if (ex.response != null) {
+    //     return Fail(ServerError(
+    //       ex.response?.statusCode,
+    //       ex.response?.data['message'] ?? "Unexpected error",
+    //     ));
+    //   } else {
+    //     return Fail(DioHttpException(ex));
+    //   }
   } on IOException catch (_) {
     return Fail(NoInternetError());
   } on Exception catch (ex) {

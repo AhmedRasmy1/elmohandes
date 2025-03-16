@@ -9,9 +9,8 @@ part of 'api_manager.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _ApiService implements ApiService {
-  // ignore: unused_element_parameter
   _ApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://elmohanes-api.runasp.net/';
+    baseUrl ??= 'http://elmohandes-api.runasp.net/';
   }
 
   final Dio _dio;
@@ -30,7 +29,7 @@ class _ApiService implements ApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'auth',
+            'api/auth/login',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -57,7 +56,7 @@ class _ApiService implements ApiService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/Products',
+            'api/Product',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -93,7 +92,7 @@ class _ApiService implements ApiService {
       )
           .compose(
             _dio.options,
-            'api/Products',
+            'api/Product',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -133,7 +132,7 @@ class _ApiService implements ApiService {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/Products/${id}',
+            'api/Product/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -276,7 +275,29 @@ class _ApiService implements ApiService {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/Products//${id}',
+            'api/Product//${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> addProductToCart(int id, String token, int quantity) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = {'quantity': quantity};
+    final _options = _setStreamType<dynamic>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/cart/add//${id}',
             queryParameters: queryParameters,
             data: _data,
           )

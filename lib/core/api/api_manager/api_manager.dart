@@ -72,4 +72,11 @@ abstract class ApiService {
   Future deleteProduct(
     @Path('id') int id,
   );
+
+  @POST('${ApiConstants.addProductToCart}/{id}')
+  Future addProductToCart(
+    @Path('id') int id,
+    @Header('Authorization') String token,
+    @Field('quantity') int quantity,
+  );
 }

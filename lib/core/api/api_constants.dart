@@ -1,12 +1,13 @@
 class ApiConstants {
-  static const String baseUrl = "http://elmohanes-api.runasp.net/";
-  static const String login = "auth";
-  static const String allProducts = "api/Products";
-  static const String addProduct = "api/Products";
-  static const String updateProduct = "api/Products";
+  static const String baseUrl = "http://elmohandes-api.runasp.net/";
+  static const String login = "api/auth/login";
+  static const String allProducts = "api/Product";
+  static const String addProduct = "api/Product";
+  static const String updateProduct = "api/Product";
   static const String addBill = "api/Bills";
   static const String allBills = "api/Bills/";
   static const String deleteBills = "api/Bills/";
   static const String deleteOneBill = "api/Bills/";
-  static const String deleteOneProduct = "api/Products/";
+  static const String deleteOneProduct = "api/Product/";
+  static const String addProductToCart = "api/cart/add/";
 }
