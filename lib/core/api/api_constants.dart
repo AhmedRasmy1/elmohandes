@@ -12,4 +12,5 @@ class ApiConstants {
   static const String addProductToCart = "api/cart/add/";
   static const String cartDetails = "api/cart";
   static const String deleteProductFromCart = "api/cart/remove";
+  static const String addInvoice = "api/Invoice/create";
 }

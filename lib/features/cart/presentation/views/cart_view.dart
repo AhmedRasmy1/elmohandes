@@ -6,6 +6,7 @@ import 'package:elmohandes/features/cart/domain/entities/cart_details_entity.dar
 import 'package:elmohandes/features/cart/presentation/view_models/cart_display/cart_details_cubit.dart';
 import 'package:elmohandes/features/cart/presentation/view_models/delete_from_cart/delete_cart_product_cubit.dart';
 import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
+import 'package:elmohandes/features/orders/presentation/views/add_Invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -209,7 +210,11 @@ class _CartPageState extends State<CartPage> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const AddInvoiceView();
+          }));
+        },
         child: const Text("إنشاء فاتورة",
             style: TextStyle(
                 fontSize: 18,

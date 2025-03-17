@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:elmohandes/features/cart/data/models/cart_details/cart_details.dart';
+import 'package:elmohandes/features/orders/data/models/add_invoice/add_invoice.dart';
 import '../../../features/home/data/models/add_bill_model.dart';
 import '../../../features/home/data/models/bills_model.dart';
 import '../../../features/home/data/models/update_product_model.dart';
@@ -90,5 +91,13 @@ abstract class ApiService {
   Future deleteProductFromCart(
     @Path('id') int id,
     @Header('Authorization') String token,
+  );
+
+  @POST(ApiConstants.addInvoice)
+  Future<AddInvoice> addInvoice(
+    @Header('Authorization') String token,
+    @Field('customerName') String customerName,
+    @Field('customerPhone') String customerPhone,
+    @Field('payType') String payType,
   );
 }
