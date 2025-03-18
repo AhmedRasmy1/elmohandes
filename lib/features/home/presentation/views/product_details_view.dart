@@ -1,6 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elmohandes/features/cart/presentation/view_models/cart_cubit/add_product_to_cart_cubit.dart';
+import '../../../cart/presentation/view_models/cart_cubit/add_product_to_cart_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

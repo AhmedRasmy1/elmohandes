@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/invoice/data/models/all_inovices/invoice_item.dart';
+import '../../data/models/all_inovices/invoice_item.dart';
 
 class AllInvoiceEntity {
   final String? customerName;

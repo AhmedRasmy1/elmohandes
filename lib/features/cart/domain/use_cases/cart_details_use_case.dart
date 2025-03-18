@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/cart/domain/repo/cart_details_repo.dart';
+import '../repo/cart_details_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

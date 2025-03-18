@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/features/cart/domain/entities/cart_details_entity.dart';
-import 'package:elmohandes/features/cart/presentation/view_models/cart_display/cart_details_cubit.dart';
-import 'package:elmohandes/features/cart/presentation/view_models/delete_from_cart/delete_cart_product_cubit.dart';
-import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
-import 'package:elmohandes/features/orders/presentation/views/add_Invoice_view.dart';
+import '../../../../core/di/di.dart';
+import '../../domain/entities/cart_details_entity.dart';
+import '../view_models/cart_display/cart_details_cubit.dart';
+import '../view_models/delete_from_cart/delete_cart_product_cubit.dart';
+import '../../../home/presentation/views/home_page_view.dart';
+import '../../../orders/presentation/views/add_Invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

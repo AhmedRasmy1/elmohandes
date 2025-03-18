@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'core/di/di.dart';
 import 'core/resources/routes_manager.dart';
 import 'core/utils/cashed_data_shared_preferences.dart';

@@ -1,7 +1,7 @@
-import 'package:elmohandes/core/di/di.dart';
-import 'package:elmohandes/core/utils/cashed_data_shared_preferences.dart';
-import 'package:elmohandes/features/orders/presentation/view_models/add_invoice_viewmodel/add_invoice_cubit.dart';
-import 'package:elmohandes/features/orders/presentation/views/print_invoice_view.dart';
+import '../../../../core/di/di.dart';
+import '../../../../core/utils/cashed_data_shared_preferences.dart';
+import '../view_models/add_invoice_viewmodel/add_invoice_cubit.dart';
+import 'print_invoice_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/resources/font_manager.dart';

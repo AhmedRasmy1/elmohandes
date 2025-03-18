@@ -1,5 +1,5 @@
-import 'package:elmohandes/core/api/api_manager/api_manager.dart';
-import 'package:elmohandes/features/cart/data/data_sources/delete_product_from_cart_data_sources.dart';
+import '../../../../core/api/api_manager/api_manager.dart';
+import '../data_sources/delete_product_from_cart_data_sources.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: DeleteProductFromCartDataSources)

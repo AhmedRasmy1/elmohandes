@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
+import '../../domain/entities/add_invoice_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';

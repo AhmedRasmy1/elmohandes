@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
+import '../../../domain/entities/add_invoice_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'invoice_item.dart';

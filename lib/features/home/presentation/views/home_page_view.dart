@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elmohandes/features/cart/presentation/views/cart_view.dart';
-import 'package:elmohandes/features/invoice/presentation/views/display_all_invoices.dart';
+import '../../../cart/presentation/views/cart_view.dart';
+import '../../../invoice/presentation/views/display_all_invoices.dart';
 
 import '../../../../core/utils/cashed_data_shared_preferences.dart';
 import '../../../../core/di/di.dart';

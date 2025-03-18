@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/invoice/domain/repo/delete_one_invoice_repo.dart';
+import '../repo/delete_one_invoice_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

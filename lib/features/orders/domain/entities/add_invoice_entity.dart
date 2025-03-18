@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/orders/data/models/add_invoice/invoice_item.dart';
+import '../../data/models/add_invoice/invoice_item.dart';
 
 class AddInvoiceEntity {
   final int? id;

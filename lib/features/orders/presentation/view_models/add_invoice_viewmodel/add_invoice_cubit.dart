@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
-import 'package:elmohandes/features/orders/domain/use_cases/add_invoice_use_case.dart';
+import '../../../../../core/common/api_result.dart';
+import '../../../domain/entities/add_invoice_entity.dart';
+import '../../../domain/use_cases/add_invoice_use_case.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 

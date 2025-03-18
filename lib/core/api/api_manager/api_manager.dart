@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:elmohandes/features/cart/data/models/cart_details/cart_details.dart';
-import 'package:elmohandes/features/invoice/data/models/all_inovices/all_inovices.dart';
-import 'package:elmohandes/features/orders/data/models/add_invoice/add_invoice.dart';
+import '../../../features/cart/data/models/cart_details/cart_details.dart';
+import '../../../features/invoice/data/models/all_inovices/all_inovices.dart';
+import '../../../features/orders/data/models/add_invoice/add_invoice.dart';
 import '../../../features/home/data/models/update_product_model.dart';
 import '../../../features/home/data/models/add_product_model.dart';
 import '../../../features/home/data/models/products_model.dart';

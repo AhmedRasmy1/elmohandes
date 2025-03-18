@@ -1,6 +1,6 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
-import 'package:elmohandes/features/orders/domain/repo/add_invoice_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../entities/add_invoice_entity.dart';
+import '../repo/add_invoice_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

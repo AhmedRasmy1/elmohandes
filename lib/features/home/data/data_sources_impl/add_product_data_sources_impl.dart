@@ -1,10 +1,11 @@
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+
 import '../../../../core/api/api_extentions.dart';
 import '../../../../core/api/api_manager/api_manager.dart';
 import '../../../../core/common/api_result.dart';
-import '../data_sources/add_product_data_sources.dart';
 import '../../domain/entities/add_product_entity.dart';
-import 'package:injectable/injectable.dart';
-import 'package:dio/dio.dart';
+import '../data_sources/add_product_data_sources.dart';
 
 @Injectable(as: AddProductDataSources)
 class AddProductDataSourcesImpl implements AddProductDataSources {

@@ -1,7 +1,7 @@
-import 'package:elmohandes/core/common/api_result.dart';
-import 'package:elmohandes/features/orders/data/data_sources/add_invoice_data_sources.dart';
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
-import 'package:elmohandes/features/orders/domain/repo/add_invoice_repo.dart';
+import '../../../../core/common/api_result.dart';
+import '../data_sources/add_invoice_data_sources.dart';
+import '../../domain/entities/add_invoice_entity.dart';
+import '../../domain/repo/add_invoice_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: AddInvoiceRepo)

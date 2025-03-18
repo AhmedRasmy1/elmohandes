@@ -1,5 +1,5 @@
-import 'package:elmohandes/features/invoice/data/data_sources/delete_all_invoices_data_sources.dart';
-import 'package:elmohandes/features/invoice/domain/repo/delete_all_invoices_repo.dart';
+import '../data_sources/delete_all_invoices_data_sources.dart';
+import '../../domain/repo/delete_all_invoices_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: DeleteAllInvoicesRepo)
