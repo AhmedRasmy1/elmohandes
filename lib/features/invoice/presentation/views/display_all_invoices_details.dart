@@ -255,12 +255,33 @@ class InvoicePageDetails extends StatelessWidget {
   }
 
   Widget _buildTotalSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("💰 السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م"),
-        const SizedBox(height: 10),
-      ],
+    String totalPriceWords =
+        convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
+
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -292,6 +313,8 @@ Future<void> generateInvoicePdf(
     );
   }
 
+  String totalPriceWords =
+      convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
   DateTime createdAt;
   if (invoiceData.createdAt is String) {
     createdAt = DateTime.tryParse(invoiceData.createdAt!)
@@ -422,6 +445,11 @@ Future<void> generateInvoicePdf(
                               font: ttf,
                               fontSize: 12,
                               fontWeight: pw.FontWeight.bold)),
+                      pw.Text("($totalPriceWords)",
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontSize: 10,
+                              fontWeight: pw.FontWeight.bold)),
                       pw.SizedBox(height: 3),
                       pw.Text("مدفوع: ................................",
                           style: pw.TextStyle(font: ttf, fontSize: 10)),
@@ -452,4 +480,107 @@ Future<void> generateInvoicePdf(
   // Print the second copy
   await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save());
+}
+
+String convertNumberToArabicWords(num number) {
+  final List<String> units = [
+    "",
+    "واحد",
+    "اثنان",
+    "ثلاثة",
+    "أربعة",
+    "خمسة",
+    "ستة",
+    "سبعة",
+    "ثمانية",
+    "تسعة"
+  ];
+  final List<String> teens = [
+    "عشرة",
+    "أحد عشر",
+    "اثنا عشر",
+    "ثلاثة عشر",
+    "أربعة عشر",
+    "خمسة عشر",
+    "ستة عشر",
+    "سبعة عشر",
+    "ثمانية عشر",
+    "تسعة عشر"
+  ];
+  final List<String> tens = [
+    "",
+    "",
+    "عشرون",
+    "ثلاثون",
+    "أربعون",
+    "خمسون",
+    "ستون",
+    "سبعون",
+    "ثمانون",
+    "تسعون"
+  ];
+  final List<String> hundreds = [
+    "",
+    "مئة",
+    "مئتان",
+    "ثلاثمئة",
+    "أربعمئة",
+    "خمسمئة",
+    "ستمئة",
+    "سبعمئة",
+    "ثمانمئة",
+    "تسعمئة"
+  ];
+
+  String processSection(
+      int number, String singular, String dual, String plural) {
+    if (number == 0) return "";
+    if (number == 1) return singular;
+    if (number == 2) return dual;
+    if (number >= 3 && number <= 10) return "$number $plural";
+    return "${convertNumberToArabicWords(number)} $singular";
+  }
+
+  if (number == 0) return "صفر";
+
+  List<String> words = [];
+
+  int billionPart = number ~/ 1000000000;
+  number %= 1000000000;
+  if (billionPart > 0) {
+    words.add(processSection(billionPart, "مليار", "ملياران", "مليارات"));
+  }
+
+  int millionPart = number ~/ 1000000;
+  number %= 1000000;
+  if (millionPart > 0) {
+    words.add(processSection(millionPart, "مليون", "مليونان", "ملايين"));
+  }
+
+  int thousandPart = number ~/ 1000;
+  number %= 1000;
+  if (thousandPart > 0) {
+    words.add(processSection(thousandPart, "ألف", "ألفان", "آلاف"));
+  }
+
+  int hundredPart = number ~/ 100;
+  number %= 100;
+  if (hundredPart > 0) {
+    words.add(hundreds[hundredPart]);
+  }
+
+  if (number >= 10 && number < 20) {
+    words.add(teens[number.toInt() - 10]);
+  } else {
+    int tenPart = number.toInt() ~/ 10;
+    int unitPart = number.toInt() % 10;
+    if (tenPart > 0) {
+      words.add(tens[tenPart]);
+    }
+    if (unitPart > 0) {
+      words.add(units[unitPart]);
+    }
+  }
+
+  return words.join(" و ").trim();
 }

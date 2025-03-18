@@ -1,4 +1,6 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elmohandes/features/auth/presentation/views/login_view.dart';
 import '../../../cart/presentation/views/cart_view.dart';
 import '../../../invoice/presentation/views/display_all_invoices.dart';
 
@@ -45,15 +47,40 @@ class _ProductsPageState extends State<ProductsPage> {
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: const Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.logout),
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) {
-                  return const CartPage();
-                }));
+                final screenWidth = MediaQuery.of(context).size.width;
+                final dialogWidth = screenWidth > 600 ? 500.0 : null;
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.warning,
+                  animType: AnimType.bottomSlide,
+                  title: 'تأكيد تسجيل الخروج',
+                  desc: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                  btnCancelText: 'لا',
+                  btnOkText: 'نعم',
+                  width: dialogWidth,
+                  btnCancelOnPress: () {},
+                  btnOkOnPress: () {
+                    CacheService.clearItems();
+                    Navigator.pushAndRemoveUntil(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LoginPage();
+                    }), (route) => false);
+                  },
+                ).show();
               },
             ),
           ],
+          leading: IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) {
+                return const CartPage();
+              }));
+            },
+          ),
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: const Text(
