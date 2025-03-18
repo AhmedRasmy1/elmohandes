@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elmohandes/features/cart/presentation/views/cart_view.dart';
+import 'package:elmohandes/features/invoice/presentation/views/display_all_invoices.dart';
 
 import '../../../../core/utils/cashed_data_shared_preferences.dart';
-import 'display_all_bills_view.dart';
 import '../../../../core/di/di.dart';
 import '../viewmodels/productss/products_cubit.dart';
 import 'add_product.dart';
@@ -186,7 +186,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (_) {
-                              return const InvoicesPage();
+                              return const InvoicesView();
                             },
                           ));
                         },

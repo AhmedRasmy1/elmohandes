@@ -21,10 +21,16 @@ class LoginCubit extends Cubit<LoginState> {
     final result = await _loginUseCase.login(email, password);
     switch (result) {
       case Success<LoginEntity>():
-        await CacheService.setData(
-            key: CacheConstants.userToken, value: result.data.token);
+        await Future.wait([
+          CacheService.setData(
+              key: CacheConstants.userToken, value: result.data.token),
+          CacheService.setData(
+              key: CacheConstants.role, value: result.data.role),
+        ]);
         emit(LoginSuccess(result.data));
         log('=====================> ${result.data}');
+        log('=====================> ${result.data.token}');
+        log('=====================> ${result.data.role}');
         break;
       case Fail<LoginEntity>():
         emit(LoginFailure('Error'));

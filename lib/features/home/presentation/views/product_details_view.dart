@@ -301,23 +301,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             TextButton(
               onPressed: () {
                 int quantity = int.tryParse(_quantityController.text) ?? 0;
+                Navigator.pop(context);
                 if (quantity > 0 && quantity <= widget.quantity!) {
-                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('تمت إضافة $quantity للسلة'),
                       backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 1),
                     ),
                   );
+                  addToCartCubit.addProductToCart(widget.id!, quantity);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('الكمية غير متاحة'),
+                    const SnackBar(
+                      content: Text('الكمية غير متاحة'),
                       backgroundColor: Colors.red,
+                      duration: Duration(seconds: 1),
                     ),
                   );
                 }
-                addToCartCubit.addProductToCart(widget.id!, quantity);
               },
               child: const Text('تمام',
                   style: TextStyle(color: Colors.blue, fontSize: 16)),

@@ -135,6 +135,17 @@ import '../../features/home/presentation/viewmodels/productss/products_cubit.dar
     as _i346;
 import '../../features/home/presentation/viewmodels/update_productss/update_products_cubit.dart'
     as _i924;
+import '../../features/invoice/data/data_sources/all_invoices_data_sources.dart'
+    as _i209;
+import '../../features/invoice/data/data_sources_impl/all_invoices_data_sources_impl.dart'
+    as _i816;
+import '../../features/invoice/data/repo_impl/all_invoices_repo_impl.dart'
+    as _i451;
+import '../../features/invoice/domain/repo/all_invoices_repo.dart' as _i1044;
+import '../../features/invoice/domain/use_case/all_invoices_use_case.dart'
+    as _i1003;
+import '../../features/invoice/presentation/view_models/display_all_invoices/all_invoices_cubit.dart'
+    as _i165;
 import '../../features/orders/data/data_sources/add_invoice_data_sources.dart'
     as _i120;
 import '../../features/orders/data/data_sources_impl/add_invoice_data_sources_impl.dart'
@@ -182,6 +193,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i293.CartDetailsDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i657.DeleteAllBillsRepo>(
         () => _i533.DeleteBillsRepoImpl(gh<_i309.DeleteAllBillsDataSources>()));
+    gh.factory<_i209.AllInvoicesDataSources>(
+        () => _i816.AllInvoicesDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i157.DeleteProductDataSources>(
         () => _i728.DeleteProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i550.AddProductToCartDataSources>(
@@ -211,8 +224,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i907.AddBillRepoImpl(gh<_i55.AddBillDataSources>()));
     gh.factory<_i522.AddProductToCartRepo>(() => _i454.AddProductToCartRepoImpl(
         gh<_i550.AddProductToCartDataSources>()));
+    gh.factory<_i1044.AllInvoicesRepo>(
+        () => _i451.AllInvoicesRepoImpl(gh<_i209.AllInvoicesDataSources>()));
     gh.factory<_i256.ProductsUseCase>(
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
+    gh.factory<_i1003.AllInvoicesUseCase>(
+        () => _i1003.AllInvoicesUseCase(gh<_i1044.AllInvoicesRepo>()));
+    gh.factory<_i165.AllInvoicesCubit>(
+        () => _i165.AllInvoicesCubit(gh<_i1003.AllInvoicesUseCase>()));
     gh.factory<_i768.DeleteOneBillUseCase>(() => _i768.DeleteOneBillUseCase(
         deleteOneBillRepo: gh<_i988.DeleteOneBillRepo>()));
     gh.factory<_i758.DeleteProduct>(() => _i277.DeleteProductRepoImpl(

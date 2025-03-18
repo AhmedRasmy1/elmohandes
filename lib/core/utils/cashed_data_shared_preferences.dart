@@ -46,4 +46,5 @@ class CacheConstants {
   static const String userToken = "userToken";
   static const String productId = "productId";
   static const String billId = "billId";
+  static const String role = "role";
 }

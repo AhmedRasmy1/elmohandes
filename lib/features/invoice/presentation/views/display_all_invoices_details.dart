@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/orders/domain/entities/add_invoice_entity.dart';
+import 'package:elmohandes/features/invoice/domain/entities/all_invoices_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
@@ -6,21 +6,22 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 
-class InvoicePage extends StatelessWidget {
-  final AddInvoiceEntity invoiceData;
+class InvoicePageDetails extends StatelessWidget {
+  final AllInvoiceEntity invoiceData;
 
-  const InvoicePage({super.key, required this.invoiceData});
+  const InvoicePageDetails({super.key, required this.invoiceData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'فاتورة شراء',
-          style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold),
-        ),
-      ),
+          centerTitle: true,
+          title: const Text(
+            'تفاصيل الفاتورة',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          )),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -29,30 +30,39 @@ class InvoicePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeaderSection(),
+                  const Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'المهندس',
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   _buildCustomerInfo(),
-                  const SizedBox(height: 20),
-                  _buildResponsiveInvoiceTable(constraints.maxWidth),
+                  const SizedBox(height: 10),
+                  _buildInvoiceTable(constraints.maxWidth),
                   const SizedBox(height: 20),
                   _buildTotalSection(),
                   const SizedBox(height: 20),
                   Center(
                     child: SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton.icon(
+                      child: ElevatedButton(
                         onPressed: () {
                           generateInvoicePdf(context, invoiceData);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
+                          backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        icon: const Icon(Icons.print, color: Colors.white),
-                        label: const Text(
+                        child: Text(
                           "طباعة الفاتورة",
                           style: TextStyle(
                             fontSize: 18,
@@ -73,32 +83,6 @@ class InvoicePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderSection() {
-    return Column(
-      children: [
-        const Center(
-          child: Column(
-            children: [
-              Text(
-                'المهندس',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Divider(
-          color: Colors.grey,
-          thickness: 2,
-          height: 30,
-        ),
-      ],
-    );
-  }
-
   Widget _buildCustomerInfo() {
     DateTime createdAt;
     if (invoiceData.createdAt is String) {
@@ -111,132 +95,86 @@ class InvoicePage extends StatelessWidget {
     }
 
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildInfoRow("🆔 رقم الفاتورة:", invoiceData.invoiceNumber),
-            _buildInfoRow("👤 اسم العميل:", invoiceData.customerName),
-            _buildInfoRow("📞 رقم التليفون:", invoiceData.customerPhone),
-            _buildInfoRow("💳 طريقة الدفع:", invoiceData.payType),
-            _buildInfoRow("🧑‍💼 المحاسب:", invoiceData.casherName),
-            _buildInfoRow("📅 تاريخ الفاتورة:", formattedDate),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value ?? "غير متوفر",
-              style: const TextStyle(fontSize: 16),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildResponsiveInvoiceTable(double maxWidth) {
-    if (maxWidth > 600) {
-      return _buildDesktopInvoiceTable();
-    } else {
-      return _buildMobileInvoiceTable();
-    }
-  }
-
-  Widget _buildDesktopInvoiceTable() {
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Table(
-        border: TableBorder.all(color: Colors.grey.shade300),
-        columnWidths: const {
-          0: FlexColumnWidth(2), // اسم المنتج
-          1: FlexColumnWidth(1), // السعر
-          2: FlexColumnWidth(1), // الكمية
-          3: FlexColumnWidth(1), // الخصم
-          4: FlexColumnWidth(1), // بلد الصنع
-          5: FlexColumnWidth(1), // الإجمالي
-        },
-        children: [
-          _buildTableHeader(),
-          ...?invoiceData.invoiceItems?.map((item) => _buildTableRow(item)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMobileInvoiceTable() {
     return Column(
-      children: invoiceData.invoiceItems?.map((item) {
-            return Card(
-              elevation: 6,
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildInfoRow("اسم المنتج:", item.product?.name),
-                    _buildInfoRow("السعر:", "${item.product?.price ?? 0}"),
-                    _buildInfoRow("الكمية:", "${item.quantity ?? 0}"),
-                    _buildInfoRow("الخصم:", "${item.product?.discount ?? 0}"),
-                    _buildInfoRow("بلد الصنع:",
-                        item.product?.countryOfOrigin ?? 'غير معروف'),
-                    _buildInfoRow("الإجمالي:", "${item.totalPrice ?? 0}"),
-                  ],
-                ),
-              ),
-            );
-          }).toList() ??
-          [],
-    );
-  }
-
-  TableRow _buildTableHeader() {
-    return TableRow(
-      decoration: const BoxDecoration(color: Colors.blueAccent),
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTableCell("اسم المنتج", isHeader: true),
-        _buildTableCell("السعر", isHeader: true),
-        _buildTableCell("الكمية", isHeader: true),
-        _buildTableCell("الخصم", isHeader: true),
-        _buildTableCell("بلد الصنع", isHeader: true),
-        _buildTableCell("الإجمالي", isHeader: true),
+        Text("🆔 رقم الفاتورة: ${invoiceData.invoiceNumber}"),
+        Text("👤 اسم العميل: ${invoiceData.customerName}"),
+        Text("📞 رقم التليفون: ${invoiceData.customerPhone}"),
+        Text("💳 طريقة الدفع: ${invoiceData.payType}"),
+        Text("🧑‍💼 الكاشير: ${invoiceData.casherName}"),
+        Text("📅 تاريخ الفاتورة: $formattedDate"),
       ],
     );
   }
 
-  TableRow _buildTableRow(invoiceItem) {
-    return TableRow(
+  Widget _buildInvoiceTable(double maxWidth) {
+    bool isMobile = maxWidth < 600;
+
+    return Table(
+      border: TableBorder.all(),
+      columnWidths: isMobile
+          ? {
+              0: const FlexColumnWidth(2), // اسم المنتج
+              1: const FlexColumnWidth(1), // السعر
+              2: const FlexColumnWidth(1), // الكمية
+              3: const FlexColumnWidth(1), // الإجمالي
+            }
+          : {
+              0: const FlexColumnWidth(2), // اسم المنتج
+              1: const FlexColumnWidth(1), // السعر
+              2: const FlexColumnWidth(1), // الكمية
+              3: const FlexColumnWidth(1), // الخصم
+              4: const FlexColumnWidth(1), // بلد الصنع
+              5: const FlexColumnWidth(1), // الإجمالي
+            },
       children: [
-        _buildTableCell(invoiceItem.product?.name ?? "غير معروف"),
-        _buildTableCell("${invoiceItem.product?.price ?? 0}"),
-        _buildTableCell("${invoiceItem.quantity ?? 0}"),
-        _buildTableCell("${invoiceItem.product?.discount ?? 0}"),
-        _buildTableCell(
-            "${invoiceItem.product?.countryOfOrigin ?? 'غير معروف'}"),
-        _buildTableCell("${invoiceItem.totalPrice ?? 0}"),
+        _buildTableHeader(isMobile),
+        ...?invoiceData.invoiceItems
+            ?.map((item) => _buildTableRow(item, isMobile)),
       ],
+    );
+  }
+
+  TableRow _buildTableHeader(bool isMobile) {
+    return TableRow(
+      decoration: const BoxDecoration(color: Colors.grey),
+      children: isMobile
+          ? [
+              _buildTableCell("اسم المنتج", isHeader: true),
+              _buildTableCell("السعر", isHeader: true),
+              _buildTableCell("الكمية", isHeader: true),
+              _buildTableCell("الإجمالي", isHeader: true),
+            ]
+          : [
+              _buildTableCell("اسم المنتج", isHeader: true),
+              _buildTableCell("السعر", isHeader: true),
+              _buildTableCell("الكمية", isHeader: true),
+              _buildTableCell("الخصم", isHeader: true),
+              _buildTableCell("بلد الصنع", isHeader: true),
+              _buildTableCell("الإجمالي", isHeader: true),
+            ],
+    );
+  }
+
+  TableRow _buildTableRow(invoiceItem, bool isMobile) {
+    return TableRow(
+      children: isMobile
+          ? [
+              _buildTableCell(invoiceItem.product?.name ?? "غير معروف"),
+              _buildTableCell("${invoiceItem.product?.price ?? 0}"),
+              _buildTableCell("${invoiceItem.quantity ?? 0}"),
+              _buildTableCell("${invoiceItem.totalPrice ?? 0}"),
+            ]
+          : [
+              _buildTableCell(invoiceItem.product?.name ?? "غير معروف"),
+              _buildTableCell("${invoiceItem.product?.price ?? 0}"),
+              _buildTableCell("${invoiceItem.quantity ?? 0}"),
+              _buildTableCell("${invoiceItem.product?.discount ?? 0}"),
+              _buildTableCell(
+                  "${invoiceItem.product?.countryOfOrigin ?? 'غير معروف'}"),
+              _buildTableCell("${invoiceItem.totalPrice ?? 0}"),
+            ],
     );
   }
 
@@ -248,44 +186,24 @@ class InvoicePage extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-          color: isHeader ? Colors.white : Colors.black,
         ),
       ),
     );
   }
 
   Widget _buildTotalSection() {
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("💰 السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            const Center(
-              child: Text(
-                "شكراً لاتصالكم معنا",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.blueAccent,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("💰 السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م"),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }
 
 Future<void> generateInvoicePdf(
-    BuildContext context, AddInvoiceEntity invoiceData) async {
+    BuildContext context, AllInvoiceEntity invoiceData) async {
   final pdf = pw.Document();
 
   final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
@@ -462,9 +380,6 @@ Future<void> generateInvoicePdf(
     ),
   );
 
-  await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdf.save());
-  await Future.delayed(const Duration(milliseconds: 500));
   await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save());
 }
