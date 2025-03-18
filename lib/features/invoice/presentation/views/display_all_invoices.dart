@@ -84,10 +84,20 @@ class _InvoicesViewState extends State<InvoicesView> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  suffixIcon: searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              searchController.clear();
+                            });
+                          },
+                        )
+                      : null,
                 ),
                 textInputAction: TextInputAction.search,
                 onChanged: (value) {
-                  setState(() {}); // تحديث واجهة البحث
+                  setState(() {}); // تحديث الواجهة عند البحث
                 },
               ),
               const SizedBox(height: 15),
@@ -101,68 +111,17 @@ class _InvoicesViewState extends State<InvoicesView> {
                           child: Text('حدث خطأ أثناء تحميل الفواتير'));
                     } else if (state is AllInvoicesSuccess) {
                       allInvoices = state.allInvoices;
-
-                      // لو Admin يعرض كل الفواتير
-                      if (role == "Admin") {
-                        return allInvoices.isNotEmpty
-                            ? GridView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount:
-                                      MediaQuery.of(context).size.width > 600
-                                          ? 4
-                                          : 1,
-                                  childAspectRatio: 3 / 2,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                                itemCount: allInvoices.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              InvoicePageDetails(
-                                            invoiceData: allInvoices[index],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: InvoiceCard(
-                                        invoice: allInvoices[index],
-                                        deleteOneInvoicesCubit:
-                                            deleteOneInvoicesCubit,
-                                        deleteAllInvoicesCubit:
-                                            deleteAllInvoicesCubit,
-                                        allInvoicesCubit: allInvoicesCubit),
-                                  );
-                                },
-                              )
-                            : const Center(
-                                child: Text('لا توجد فواتير متاحة.'));
-                      }
-
-                      // لو مش Admin يظهر فقط الفاتورة اللي بيبحث عنها
                       String searchQuery = searchController.text.trim();
-                      if (searchQuery.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            'من فضلك أدخل رقم الفاتورة للبحث.',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        );
+                      List<AllInvoiceEntity> displayedInvoices = allInvoices;
+
+                      if (searchQuery.isNotEmpty) {
+                        displayedInvoices = allInvoices
+                            .where((invoice) =>
+                                invoice.invoiceNumber == searchQuery)
+                            .toList();
                       }
 
-                      final filteredInvoices = allInvoices
-                          .where(
-                              (invoice) => invoice.invoiceNumber == searchQuery)
-                          .toList();
-
-                      return filteredInvoices.isNotEmpty
+                      return displayedInvoices.isNotEmpty
                           ? GridView.builder(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
@@ -176,7 +135,7 @@ class _InvoicesViewState extends State<InvoicesView> {
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                               ),
-                              itemCount: filteredInvoices.length,
+                              itemCount: displayedInvoices.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
@@ -185,13 +144,13 @@ class _InvoicesViewState extends State<InvoicesView> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             InvoicePageDetails(
-                                          invoiceData: filteredInvoices[index],
+                                          invoiceData: displayedInvoices[index],
                                         ),
                                       ),
                                     );
                                   },
                                   child: InvoiceCard(
-                                      invoice: filteredInvoices[index],
+                                      invoice: displayedInvoices[index],
                                       deleteOneInvoicesCubit:
                                           deleteOneInvoicesCubit,
                                       deleteAllInvoicesCubit:
@@ -275,20 +234,20 @@ class _InvoicesViewState extends State<InvoicesView> {
 class InvoiceCard extends StatelessWidget {
   final AllInvoiceEntity invoice;
   final DeleteOneInvoicesCubit deleteOneInvoicesCubit;
-  final DeleteAllInvoicesCubit deleteAllInvoicesCubit;
   final AllInvoicesCubit allInvoicesCubit;
+  final DeleteAllInvoicesCubit deleteAllInvoicesCubit;
 
   const InvoiceCard({
     super.key,
     required this.invoice,
     required this.deleteOneInvoicesCubit,
-    required this.deleteAllInvoicesCubit,
     required this.allInvoicesCubit,
+    required this.deleteAllInvoicesCubit,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Format the date
+    // تنسيق التاريخ
     String formattedDate = "غير متوفر";
     if (invoice.createdAt != null && invoice.createdAt!.isNotEmpty) {
       DateTime? parsedDate = DateTime.tryParse(invoice.createdAt!);
@@ -297,87 +256,72 @@ class InvoiceCard extends StatelessWidget {
       }
     }
 
-    // Get the role from cache
+    // الحصول على الدور
     String role = CacheService.getData(key: CacheConstants.role) ?? "";
 
     return Card(
-      elevation: 10,
+      elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildRow(
-              context,
-              icon: Icons.receipt,
-              iconColor: Colors.blue,
-              label: 'رقم الفاتورة',
-              value: invoice.invoiceNumber ?? 'غير متوفر',
+            // الصف الأول: رقم الفاتورة + أيقونة الحذف للإدمن
+            Row(
+              children: [
+                const Icon(Icons.receipt, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'رقم الفاتورة: ${invoice.invoiceNumber ?? 'غير متوفر'}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (role == "Admin") // إظهار أيقونة الحذف للإدمن فقط
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _showDeleteDialog(context),
+                  ),
+              ],
             ),
             const SizedBox(height: 8),
+
             _buildRow(
-              context,
               icon: Icons.person,
               iconColor: Colors.green,
               label: 'العميل',
               value: invoice.customerName ?? 'غير متوفر',
             ),
             const SizedBox(height: 8),
+
             _buildRow(
-              context,
               icon: Icons.calendar_today,
               iconColor: Colors.orange,
               label: 'التاريخ',
               value: formattedDate,
             ),
             const SizedBox(height: 8),
+
             _buildRow(
-              context,
               icon: Icons.attach_money,
               iconColor: Colors.red,
               label: 'الإجمالي',
               value: '${invoice.invoiceTotalPrice ?? 0} ج.م',
             ),
-            if (role == "Admin") ...[
-              const Divider(
-                height: 16,
-                thickness: 1,
-                color: Colors.grey,
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    'حذف',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () => _showDeleteDialog(context),
-                ),
-              ),
-            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRow(
-    BuildContext context, {
+  Widget _buildRow({
     required IconData icon,
     required Color iconColor,
     required String label,
@@ -385,10 +329,7 @@ class InvoiceCard extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: iconColor,
-        ),
+        Icon(icon, color: iconColor),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
