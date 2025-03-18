@@ -86,24 +86,87 @@ class InvoicePageDetails extends StatelessWidget {
   Widget _buildCustomerInfo() {
     DateTime createdAt;
     if (invoiceData.createdAt is String) {
-      createdAt = DateTime.tryParse(invoiceData.createdAt!)?.toLocal() ??
-          DateTime.now();
+      createdAt = DateTime.tryParse(invoiceData.createdAt!)
+              ?.toLocal()
+              .add(const Duration(hours: 2)) ??
+          DateTime.now().add(const Duration(hours: 2));
     } else if (invoiceData.createdAt is DateTime) {
-      createdAt = (invoiceData.createdAt as DateTime).toLocal();
+      createdAt = (invoiceData.createdAt as DateTime)
+          .toLocal()
+          .add(const Duration(hours: 2));
     } else {
-      createdAt = DateTime.now();
+      createdAt = DateTime.now().add(const Duration(hours: 2));
     }
 
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("🆔 رقم الفاتورة: ${invoiceData.invoiceNumber}"),
-        Text("👤 اسم العميل: ${invoiceData.customerName}"),
-        Text("📞 رقم التليفون: ${invoiceData.customerPhone}"),
-        Text("💳 طريقة الدفع: ${invoiceData.payType}"),
-        Text("🧑‍💼 الكاشير: ${invoiceData.casherName}"),
-        Text("📅 تاريخ الفاتورة: $formattedDate"),
+        Row(
+          children: [
+            const Icon(Icons.receipt_long, color: Colors.blue),
+            const SizedBox(width: 8),
+            Text(
+              "رقم الفاتورة: ${invoiceData.invoiceNumber}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.person, color: Colors.green),
+            const SizedBox(width: 8),
+            Text(
+              "اسم العميل: ${invoiceData.customerName}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.phone, color: Colors.orange),
+            const SizedBox(width: 8),
+            Text(
+              "رقم التليفون: ${invoiceData.customerPhone}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.payment, color: Colors.purple),
+            const SizedBox(width: 8),
+            Text(
+              "طريقة الدفع: ${invoiceData.payType}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.person_outline, color: Colors.red),
+            const SizedBox(width: 8),
+            Text(
+              "الكاشير: ${invoiceData.casherName}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Icon(Icons.calendar_today, color: Colors.teal),
+            const SizedBox(width: 8),
+            Text(
+              "تاريخ الفاتورة: $formattedDate",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -122,10 +185,10 @@ class InvoicePageDetails extends StatelessWidget {
             }
           : {
               0: const FlexColumnWidth(2), // اسم المنتج
-              1: const FlexColumnWidth(1), // السعر
-              2: const FlexColumnWidth(1), // الكمية
-              3: const FlexColumnWidth(1), // الخصم
-              4: const FlexColumnWidth(1), // بلد الصنع
+              1: const FlexColumnWidth(1), // بلد الصنع
+              2: const FlexColumnWidth(1), // السعر
+              3: const FlexColumnWidth(1), // الكمية
+              4: const FlexColumnWidth(1), // الخصم
               5: const FlexColumnWidth(1), // الإجمالي
             },
       children: [
@@ -148,10 +211,10 @@ class InvoicePageDetails extends StatelessWidget {
             ]
           : [
               _buildTableCell("اسم المنتج", isHeader: true),
+              _buildTableCell("بلد الصنع", isHeader: true),
               _buildTableCell("السعر", isHeader: true),
               _buildTableCell("الكمية", isHeader: true),
               _buildTableCell("الخصم", isHeader: true),
-              _buildTableCell("بلد الصنع", isHeader: true),
               _buildTableCell("الإجمالي", isHeader: true),
             ],
     );
@@ -168,11 +231,11 @@ class InvoicePageDetails extends StatelessWidget {
             ]
           : [
               _buildTableCell(invoiceItem.product?.name ?? "غير معروف"),
-              _buildTableCell("${invoiceItem.product?.price ?? 0}"),
-              _buildTableCell("${invoiceItem.quantity ?? 0}"),
-              _buildTableCell("${invoiceItem.product?.discount ?? 0}"),
               _buildTableCell(
                   "${invoiceItem.product?.countryOfOrigin ?? 'غير معروف'}"),
+              _buildTableCell("${invoiceItem.product?.price ?? 0}"),
+              _buildTableCell("${invoiceItem.quantity ?? 0}"),
+              _buildTableCell("${invoiceItem.product?.discount ?? 0}%"),
               _buildTableCell("${invoiceItem.totalPrice ?? 0}"),
             ],
     );
@@ -231,16 +294,19 @@ Future<void> generateInvoicePdf(
 
   DateTime createdAt;
   if (invoiceData.createdAt is String) {
-    createdAt =
-        DateTime.tryParse(invoiceData.createdAt!)?.toLocal() ?? DateTime.now();
+    createdAt = DateTime.tryParse(invoiceData.createdAt!)
+            ?.toLocal()
+            .add(const Duration(hours: 2)) ??
+        DateTime.now().add(const Duration(hours: 2));
   } else if (invoiceData.createdAt is DateTime) {
-    createdAt = (invoiceData.createdAt as DateTime).toLocal();
+    createdAt = (invoiceData.createdAt as DateTime)
+        .toLocal()
+        .add(const Duration(hours: 2));
   } else {
-    createdAt = DateTime.now();
+    createdAt = DateTime.now().add(const Duration(hours: 2));
   }
 
   String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
-
   pdf.addPage(
     pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -328,7 +394,7 @@ Future<void> generateInvoicePdf(
                               "${item.totalPrice ?? 0}", ttf), // الإجمالي
                           buildPdfCell(
                               "${item.product?.discount ?? 0}", ttf), // الخصم
-                          buildPdfCell("${item.quantity ?? 0}", ttf), // الكمية
+                          buildPdfCell("${item.quantity ?? 0}%", ttf), // الكمية
                           buildPdfCell(
                               "${item.product?.price ?? 0}", ttf), // السعر
                           buildPdfCell(
@@ -379,7 +445,11 @@ Future<void> generateInvoicePdf(
       },
     ),
   );
+  // Print the first copy
+  await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save());
 
+  // Print the second copy
   await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save());
 }

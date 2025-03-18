@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/di/di.dart';
 import '../../domain/entities/cart_details_entity.dart';
@@ -95,7 +96,7 @@ class _CartPageState extends State<CartPage> {
                         }
                         if (state is CartDetailsFailure) {
                           return Center(
-                            child: Text('حدث خطأ ما'),
+                            child: Text('مفيش منتجات في السلة'),
                           );
                         }
                         return Center(
@@ -157,13 +158,30 @@ class _CartPageState extends State<CartPage> {
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
               if (cartDetails.productId != null) {
-                deleteCartProductCubit
-                    .deleteProductFromCart(cartDetails.productId!)
-                    .then((_) {
-                  setState(() {
-                    viewModel.getCartDetails();
-                  });
-                });
+                final screenWidth = MediaQuery.of(context).size.width;
+                final dialogWidth =
+                    screenWidth > 600 ? 500.0 : null; // Set width for desktop
+
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.warning,
+                  animType: AnimType.bottomSlide,
+                  title: 'تحذير',
+                  desc: 'هل أنت متأكد أنك تريد حذف هذا المنتج من السلة؟',
+                  btnCancelText: 'إلغاء',
+                  btnOkText: 'حذف',
+                  btnCancelOnPress: () {},
+                  btnOkOnPress: () {
+                    deleteCartProductCubit
+                        .deleteProductFromCart(cartDetails.productId!)
+                        .then((_) {
+                      setState(() {
+                        viewModel.getCartDetails();
+                      });
+                    });
+                  },
+                  width: dialogWidth, // Set the width dynamically
+                ).show();
               } else {
                 log("Error: Product ID is null!");
               }

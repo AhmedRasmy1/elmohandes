@@ -112,13 +112,24 @@ class _InvoicesViewState extends State<InvoicesView> {
                     } else if (state is AllInvoicesSuccess) {
                       allInvoices = state.allInvoices;
                       String searchQuery = searchController.text.trim();
-                      List<AllInvoiceEntity> displayedInvoices = allInvoices;
+                      List<AllInvoiceEntity> displayedInvoices = [];
 
-                      if (searchQuery.isNotEmpty) {
-                        displayedInvoices = allInvoices
-                            .where((invoice) =>
-                                invoice.invoiceNumber == searchQuery)
-                            .toList();
+                      if (role == "Admin") {
+                        // الادمن يشوف كل الفواتير أو اللي بيبحث عنها
+                        displayedInvoices = searchQuery.isNotEmpty
+                            ? allInvoices
+                                .where((invoice) =>
+                                    invoice.invoiceNumber == searchQuery)
+                                .toList()
+                            : allInvoices;
+                      } else {
+                        // المستخدم العادي يشوف بس اللي بيبحث عنه
+                        if (searchQuery.isNotEmpty) {
+                          displayedInvoices = allInvoices
+                              .where((invoice) =>
+                                  invoice.invoiceNumber == searchQuery)
+                              .toList();
+                        }
                       }
 
                       return displayedInvoices.isNotEmpty
@@ -248,13 +259,17 @@ class InvoiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // تنسيق التاريخ
-    String formattedDate = "غير متوفر";
-    if (invoice.createdAt != null && invoice.createdAt!.isNotEmpty) {
-      DateTime? parsedDate = DateTime.tryParse(invoice.createdAt!);
-      if (parsedDate != null) {
-        formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(parsedDate);
-      }
+    DateTime createdAt;
+    if (invoice.createdAt is String) {
+      createdAt =
+          DateTime.tryParse(invoice.createdAt!)?.toLocal() ?? DateTime.now();
+    } else if (invoice.createdAt is DateTime) {
+      createdAt = (invoice.createdAt as DateTime).toLocal();
+    } else {
+      createdAt = DateTime.now();
     }
+
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
 
     // الحصول على الدور
     String role = CacheService.getData(key: CacheConstants.role) ?? "";
