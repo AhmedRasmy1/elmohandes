@@ -2,6 +2,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
 import 'package:elmohandes/features/invoice/domain/entities/all_invoices_entity.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/delete_all_invoices_cubit.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/delete_one_invoices_cubit.dart';
 import 'package:elmohandes/features/invoice/presentation/view_models/display_all_invoices/all_invoices_cubit.dart';
 import 'package:elmohandes/features/invoice/presentation/views/display_all_invoices_details.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ class _InvoicesViewState extends State<InvoicesView> {
   final TextEditingController searchController = TextEditingController();
   late String role;
   late AllInvoicesCubit allInvoicesCubit;
+  late DeleteOneInvoicesCubit deleteOneInvoicesCubit;
+  late DeleteAllInvoicesCubit deleteAllInvoicesCubit;
   List<AllInvoiceEntity> allInvoices = [];
 
   @override
@@ -27,12 +31,24 @@ class _InvoicesViewState extends State<InvoicesView> {
     super.initState();
     role = CacheService.getData(key: CacheConstants.role) ?? "";
     allInvoicesCubit = getIt.get<AllInvoicesCubit>();
+    deleteOneInvoicesCubit = getIt.get<DeleteOneInvoicesCubit>();
+    deleteAllInvoicesCubit = getIt.get<DeleteAllInvoicesCubit>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => allInvoicesCubit..getAllInvoices(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => allInvoicesCubit..getAllInvoices(),
+        ),
+        BlocProvider(
+          create: (context) => deleteOneInvoicesCubit,
+        ),
+        BlocProvider(
+          create: (context) => deleteAllInvoicesCubit,
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -89,7 +105,19 @@ class _InvoicesViewState extends State<InvoicesView> {
                       // لو Admin يعرض كل الفواتير
                       if (role == "Admin") {
                         return allInvoices.isNotEmpty
-                            ? ListView.builder(
+                            ? GridView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount:
+                                      MediaQuery.of(context).size.width > 600
+                                          ? 4
+                                          : 1,
+                                  childAspectRatio: 3 / 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
                                 itemCount: allInvoices.length,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
@@ -105,7 +133,12 @@ class _InvoicesViewState extends State<InvoicesView> {
                                       );
                                     },
                                     child: InvoiceCard(
-                                        invoice: allInvoices[index]),
+                                        invoice: allInvoices[index],
+                                        deleteOneInvoicesCubit:
+                                            deleteOneInvoicesCubit,
+                                        deleteAllInvoicesCubit:
+                                            deleteAllInvoicesCubit,
+                                        allInvoicesCubit: allInvoicesCubit),
                                   );
                                 },
                               )
@@ -130,11 +163,41 @@ class _InvoicesViewState extends State<InvoicesView> {
                           .toList();
 
                       return filteredInvoices.isNotEmpty
-                          ? ListView.builder(
+                          ? GridView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    MediaQuery.of(context).size.width > 600
+                                        ? 4
+                                        : 1,
+                                childAspectRatio: 3 / 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
                               itemCount: filteredInvoices.length,
                               itemBuilder: (context, index) {
-                                return InvoiceCard(
-                                    invoice: filteredInvoices[index]);
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            InvoicePageDetails(
+                                          invoiceData: filteredInvoices[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: InvoiceCard(
+                                      invoice: filteredInvoices[index],
+                                      deleteOneInvoicesCubit:
+                                          deleteOneInvoicesCubit,
+                                      deleteAllInvoicesCubit:
+                                          deleteAllInvoicesCubit,
+                                      allInvoicesCubit: allInvoicesCubit),
+                                );
                               },
                             )
                           : const Center(
@@ -176,7 +239,8 @@ class _InvoicesViewState extends State<InvoicesView> {
                           btnCancelColor: Colors.blue,
                           btnOkText: 'حذف',
                           btnOkOnPress: () {
-                            // تنفيذ الحذف هنا
+                            deleteAllInvoicesCubit.deleteAllInvoices().then(
+                                (value) => allInvoicesCubit.getAllInvoices());
                           },
                           btnOkColor: Colors.red,
                           dismissOnTouchOutside: false,
@@ -210,12 +274,21 @@ class _InvoicesViewState extends State<InvoicesView> {
 
 class InvoiceCard extends StatelessWidget {
   final AllInvoiceEntity invoice;
+  final DeleteOneInvoicesCubit deleteOneInvoicesCubit;
+  final DeleteAllInvoicesCubit deleteAllInvoicesCubit;
+  final AllInvoicesCubit allInvoicesCubit;
 
-  const InvoiceCard({super.key, required this.invoice});
+  const InvoiceCard({
+    super.key,
+    required this.invoice,
+    required this.deleteOneInvoicesCubit,
+    required this.deleteAllInvoicesCubit,
+    required this.allInvoicesCubit,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // تحويل التاريخ للصيغة المطلوبة
+    // Format the date
     String formattedDate = "غير متوفر";
     if (invoice.createdAt != null && invoice.createdAt!.isNotEmpty) {
       DateTime? parsedDate = DateTime.tryParse(invoice.createdAt!);
@@ -224,86 +297,56 @@ class InvoiceCard extends StatelessWidget {
       }
     }
 
-    // الحصول على الدور من التخزين المؤقت
+    // Get the role from cache
     String role = CacheService.getData(key: CacheConstants.role) ?? "";
 
     return Card(
-      elevation: 8,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.receipt, color: Colors.blue, size: 30),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'رقم الفاتورة: ${invoice.invoiceNumber ?? 'غير متوفر'}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            _buildRow(
+              context,
+              icon: Icons.receipt,
+              iconColor: Colors.blue,
+              label: 'رقم الفاتورة',
+              value: invoice.invoiceNumber ?? 'غير متوفر',
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.person, color: Colors.green, size: 25),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'العميل: ${invoice.customerName ?? 'غير متوفر'}',
-                    style: const TextStyle(fontSize: 16),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 8),
+            _buildRow(
+              context,
+              icon: Icons.person,
+              iconColor: Colors.green,
+              label: 'العميل',
+              value: invoice.customerName ?? 'غير متوفر',
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.calendar_today,
-                    color: Colors.orange, size: 25),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'التاريخ: $formattedDate',
-                    style: const TextStyle(fontSize: 16),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 8),
+            _buildRow(
+              context,
+              icon: Icons.calendar_today,
+              iconColor: Colors.orange,
+              label: 'التاريخ',
+              value: formattedDate,
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.attach_money, color: Colors.red, size: 25),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'الإجمالي: ${invoice.invoiceTotalPrice ?? 0} ج.م',
-                    style: const TextStyle(fontSize: 16),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 8),
+            _buildRow(
+              context,
+              icon: Icons.attach_money,
+              iconColor: Colors.red,
+              label: 'الإجمالي',
+              value: '${invoice.invoiceTotalPrice ?? 0} ج.م',
             ),
-            if (role == "Admin")
+            if (role == "Admin") ...[
               const Divider(
-                height: 20,
+                height: 16,
                 thickness: 1,
                 color: Colors.grey,
               ),
-            if (role == "Admin")
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
@@ -313,41 +356,76 @@ class InvoiceCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  icon: const Icon(Icons.delete, color: Colors.white),
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
                   label: const Text(
                     'حذف',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
-                  onPressed: () {
-                    AwesomeDialog(
-                      context: context,
-                      dialogType: DialogType.warning,
-                      animType: AnimType.scale,
-                      title: 'تحذير',
-                      desc: 'هل أنت متأكد أنك تريد حذف هذه الفاتورة؟',
-                      btnCancelText: 'إلغاء',
-                      btnCancelOnPress: () {},
-                      btnCancelColor: Colors.blue,
-                      btnOkText: 'حذف',
-                      btnOkOnPress: () {
-                        // تنفيذ الحذف هنا
-                        // BlocProvider.of<AllInvoicesCubit>(context)
-                        //     .deleteInvoice(invoice.id);
-                      },
-                      btnOkColor: Colors.red,
-                      dismissOnTouchOutside: false,
-                      padding: const EdgeInsets.all(20),
-                      buttonsBorderRadius:
-                          const BorderRadius.all(Radius.circular(10)),
-                      width: MediaQuery.of(context).size.width *
-                          (MediaQuery.of(context).size.width < 600 ? 0.9 : 0.8),
-                    ).show();
-                  },
+                  onPressed: () => _showDeleteDialog(context),
                 ),
               ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildRow(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: iconColor,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '$label: $value',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.scale,
+      title: 'تحذير',
+      desc: 'هل أنت متأكد أنك تريد حذف هذه الفاتورة؟',
+      btnCancelText: 'إلغاء',
+      btnCancelOnPress: () {},
+      btnCancelColor: Colors.blue,
+      btnOkText: 'حذف',
+      btnOkOnPress: () {
+        deleteOneInvoicesCubit
+            .deleteOneInvoice(id: invoice.invoiceNumber!)
+            .then((value) => allInvoicesCubit.getAllInvoices());
+      },
+      btnOkColor: Colors.red,
+      dismissOnTouchOutside: false,
+      padding: const EdgeInsets.all(20),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(10)),
+      width: MediaQuery.of(context).size.width *
+          (MediaQuery.of(context).size.width < 600 ? 0.9 : 0.8),
+    ).show();
   }
 }

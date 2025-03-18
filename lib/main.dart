@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/di/di.dart';
 import 'core/resources/routes_manager.dart';
@@ -20,7 +21,12 @@ Future<void> main() async {
   Bloc.observer = MyBlocObserver();
 
   final initialRoute = await getInitialRoute();
-  runApp(Elmohandes(initialRoute: initialRoute));
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(Elmohandes(initialRoute: initialRoute));
+  });
 }
 
 class Elmohandes extends StatelessWidget {

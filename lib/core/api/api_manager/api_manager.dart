@@ -106,4 +106,15 @@ abstract class ApiService {
   Future<List<AllInovices>> getAllInvoices(
     @Header('Authorization') String token,
   );
+
+  @DELETE('${ApiConstants.deleteOneInvoice}/{id}')
+  Future deleteOneInvoice(
+    @Path('id') String id,
+    @Header('Authorization') String token,
+  );
+
+  @DELETE(ApiConstants.deleteAllInvoices)
+  Future deleteAllInvoices(
+    @Header('Authorization') String token,
+  );
 }
