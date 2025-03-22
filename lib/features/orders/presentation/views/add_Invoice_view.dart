@@ -188,27 +188,29 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
   Widget _buildDropdownField() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: DropdownButtonFormField<String>(
-        value: _selectedPaymentMethod,
-        items: _paymentMethods.map((String method) {
-          return DropdownMenuItem<String>(
-            value: method,
-            child: Text(method, textDirection: TextDirection.rtl),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            _selectedPaymentMethod = newValue!;
-          });
-        },
-        decoration: InputDecoration(
-          labelText: "طريقة الدفع",
-          border: OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-          labelStyle:
-              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "طريقة الدفع",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 10,
+            children: _paymentMethods.map((String method) {
+              return ChoiceChip(
+                label: Text(method, textDirection: TextDirection.rtl),
+                selected: _selectedPaymentMethod == method,
+                onSelected: (bool selected) {
+                  setState(() {
+                    _selectedPaymentMethod = method;
+                  });
+                },
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

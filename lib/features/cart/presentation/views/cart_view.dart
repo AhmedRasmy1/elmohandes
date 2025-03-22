@@ -117,101 +117,130 @@ class _CartPageState extends State<CartPage> {
 
   Widget _buildCartItem(CartDetailsEntity cartDetails, BuildContext context,
       CartDetailsCubit viewModel) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              blurRadius: 6,
-              spreadRadius: 2),
-        ],
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          _buildProductImage(
-            cartDetails.imageUrl!,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isSmallScreen = constraints.maxWidth < 300;
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  blurRadius: 6,
+                  spreadRadius: 2),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  cartDetails.productName!,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              _buildProductImage(
+                cartDetails.imageUrl!,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      cartDetails.productName!,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 14 : 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: isSmallScreen ? 1 : 2,
+                    ),
+                    Text(
+                      "السعر: ${cartDetails.price}",
+                      style: TextStyle(fontSize: isSmallScreen ? 12 : 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "الكمية: ${cartDetails.quantity}",
+                      style: TextStyle(fontSize: isSmallScreen ? 12 : 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "الخصم: ${cartDetails.discount}%",
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 12 : 16,
+                        color: Colors.red,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                Text("السعر: ${cartDetails.price}",
-                    style: TextStyle(fontSize: 16)),
-                Text("الكمية: ${cartDetails.quantity}",
-                    style: TextStyle(fontSize: 16)),
-                Text("الخصم: ${cartDetails.discount}%",
-                    style: TextStyle(fontSize: 16, color: Colors.red)),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              if (cartDetails.productId != null) {
-                final screenWidth = MediaQuery.of(context).size.width;
-                final dialogWidth =
-                    screenWidth > 600 ? 500.0 : null; // Set width for desktop
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  if (cartDetails.productId != null) {
+                    final screenWidth = MediaQuery.of(context).size.width;
+                    final dialogWidth = screenWidth > 600
+                        ? 500.0
+                        : null; // Set width for desktop
 
-                AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.warning,
-                  animType: AnimType.bottomSlide,
-                  title: 'تحذير',
-                  desc: 'هل أنت متأكد أنك تريد حذف هذا المنتج من السلة؟',
-                  btnCancelText: 'إلغاء',
-                  btnOkText: 'حذف',
-                  btnCancelOnPress: () {},
-                  btnOkOnPress: () {
-                    deleteCartProductCubit
-                        .deleteProductFromCart(cartDetails.productId!)
-                        .then((_) {
-                      setState(() {
-                        viewModel.getCartDetails();
-                      });
-                    });
-                  },
-                  width: dialogWidth, // Set the width dynamically
-                ).show();
-              } else {
-                log("Error: Product ID is null!");
-              }
-            },
-          )
-        ],
-      ),
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.warning,
+                      animType: AnimType.bottomSlide,
+                      title: 'تحذير',
+                      desc: 'هل أنت متأكد أنك تريد حذف هذا المنتج من السلة؟',
+                      btnCancelText: 'إلغاء',
+                      btnOkText: 'حذف',
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {
+                        deleteCartProductCubit
+                            .deleteProductFromCart(cartDetails.productId!)
+                            .then((_) {
+                          setState(() {
+                            viewModel.getCartDetails();
+                          });
+                        });
+                      },
+                      width: dialogWidth,
+                    ).show();
+                  } else {
+                    log("Error: Product ID is null!");
+                  }
+                },
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _buildProductImage(
     String productImage,
   ) {
-    return Container(
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: productImage, // صورة افتراضية
-          fit: BoxFit.cover,
-          placeholder: (context, url) =>
-              const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => const Icon(
-              Icons.image_not_supported,
-              color: Colors.grey,
-              size: 50),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isSmallScreen = constraints.maxWidth < 300;
+        final imageSize =
+            isSmallScreen ? 60.0 : 80.0; // Adjust size for small screens
+        return Container(
+          width: imageSize,
+          height: imageSize,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: productImage,
+              fit: BoxFit.cover,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.grey,
+                  size: 50),
+            ),
+          ),
+        );
+      },
     );
   }
 

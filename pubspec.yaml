@@ -9,48 +9,44 @@ environment:
   sdk: ^3.6.2
 
 dependencies:
+  awesome_dialog: ^3.2.1
+  cached_network_image: ^3.4.1
+  dio: ^5.8.0+1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.0.0
-  dio: ^5.8.0+1
-  retrofit: ^4.4.2
-  injectable: ^2.5.0
-  get_it: ^8.0.3
-  shared_preferences: ^2.5.2
   flutter_localization: ^0.3.1
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
-  jwt_decoder: ^2.0.1
-  json_annotation: ^4.9.0
-  path: ^1.9.1
-  meta: ^1.15.0
-  http_parser: ^4.1.2
-
-  # UI Libraries
-  flutter_svg: ^2.0.17
-  google_fonts: ^6.2.1
-  lottie: ^3.3.1
-  awesome_dialog: ^3.2.1
-  cached_network_image: ^3.4.1
-  image_picker: ^1.1.2
-
-  # Utilities
-  pdf: ^3.11.3
-  printing: ^5.14.2
   flutter_native_splash: ^2.4.5
+  flutter_svg: ^2.0.17
+  get_it: ^8.0.3
+  google_fonts: ^6.2.1
+  http_parser: ^4.1.2
+  image_picker: ^1.1.2
+  injectable: ^2.5.0
+  intl: ^0.19.0
+  json_annotation: ^4.9.0
+  jwt_decoder: ^2.0.1
+  lottie: ^3.3.1
+  meta: ^1.15.0
+  path: ^1.9.1
+  pdf: ^3.11.3
   pretty_dio_logger: ^1.4.0
+  printing: ^5.14.2
+  retrofit: ^4.4.2
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
+  build_runner: ^2.4.15
+  flutter_launcher_icons: ^0.14.3
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  lints: ^5.1.1
-  build_runner: ^2.4.15
-  json_serializable: ^6.9.4
-  retrofit_generator: ^9.1.9
   injectable_generator: ^2.7.0
-  flutter_launcher_icons: ^0.14.3
+  json_serializable: ^6.9.4
+  lints: ^5.1.1
+  retrofit_generator: ^9.1.9
 
 flutter:
   generate: true
@@ -63,18 +59,24 @@ flutter:
   fonts:
     - family: Cairo
       fonts:
-        - asset: assets/fonts/Cairo-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Cairo-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Cairo-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Cairo-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Cairo-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Cairo-ExtraLight.ttf
-          weight: 200
+      - asset: assets/fonts/Cairo-Black.ttf
+        weight: 900
+      - asset: assets/fonts/Cairo-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/Cairo-SemiBold.ttf
+        weight: 600
+      - asset: assets/fonts/Cairo-Regular.ttf
+        weight: 400
+      - asset: assets/fonts/Cairo-Light.ttf
+        weight: 300
+      - asset: assets/fonts/Cairo-ExtraLight.ttf
+        weight: 200
+    - family: ArefRuqaa
+      fonts:
+      - asset: assets/fonts/ArefRuqaa-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/ArefRuqaa-Regular.ttf
+        weight: 400
 
 flutter_native_splash:
   color: "#ffffff"

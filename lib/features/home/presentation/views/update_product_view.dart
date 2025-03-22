@@ -77,6 +77,8 @@ class _UpdateProductState extends State<UpdateProduct> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
@@ -85,13 +87,19 @@ class _UpdateProductState extends State<UpdateProduct> {
           title: Text(
             "تعديل المنتج",
             style: TextStyle(
-                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.black,
+              fontSize: isSmallScreen ? 20 : 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, right: 16.0, left: 16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -143,9 +151,7 @@ class _UpdateProductState extends State<UpdateProduct> {
                             buttonsBorderRadius:
                                 const BorderRadius.all(Radius.circular(10)),
                             width: MediaQuery.of(context).size.width *
-                                (MediaQuery.of(context).size.width < 600
-                                    ? 0.9
-                                    : 0.8),
+                                (isSmallScreen ? 0.9 : 0.8),
                           ).show();
                         }
                         if (state is UpdateProductsFailure) {
@@ -164,9 +170,7 @@ class _UpdateProductState extends State<UpdateProduct> {
                             buttonsBorderRadius:
                                 const BorderRadius.all(Radius.circular(10)),
                             width: MediaQuery.of(context).size.width *
-                                (MediaQuery.of(context).size.width < 600
-                                    ? 0.9
-                                    : 0.8),
+                                (isSmallScreen ? 0.9 : 0.8),
                           ).show();
                         }
                       },
@@ -187,17 +191,34 @@ class _UpdateProductState extends State<UpdateProduct> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              padding: EdgeInsets.symmetric(
+                                vertical: isSmallScreen ? 12 : 18,
+                                horizontal: isSmallScreen ? 10 : 20,
+                              ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              elevation: isSmallScreen ? 4 : 8,
+                              shadowColor: Colors.blueAccent,
                             ),
-                            child: Text(
-                              "تحديث المنتج",
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: Colors.white,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.update,
+                                  size: isSmallScreen ? 18 : 24,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "تحديث المنتج",
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 14 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -229,9 +250,13 @@ class _UpdateProductState extends State<UpdateProduct> {
         textAlign: TextAlign.right,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          filled: true,
+          fillColor: Colors.grey[200],
         ),
       ),
     );

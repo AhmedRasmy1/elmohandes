@@ -36,7 +36,9 @@ class InvoicePageDetails extends StatelessWidget {
                         Text(
                           'المهندس',
                           style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ArefRuqaa'),
                         ),
                       ],
                     ),
@@ -348,7 +350,10 @@ Future<void> generateInvoicePdf(
               pw.SizedBox(height: 5),
               pw.Text("المهندس",
                   style: pw.TextStyle(
-                      font: ttf, fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                    font: ttf,
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                  )),
               pw.Text("فاتورة شراء",
                   style: pw.TextStyle(
                       font: ttf, fontSize: 14, fontWeight: pw.FontWeight.bold)),
@@ -416,8 +421,8 @@ Future<void> generateInvoicePdf(
                           buildPdfCell(
                               "${item.totalPrice ?? 0}", ttf), // الإجمالي
                           buildPdfCell(
-                              "${item.product?.discount ?? 0}", ttf), // الخصم
-                          buildPdfCell("${item.quantity ?? 0}%", ttf), // الكمية
+                              "${item.product?.discount ?? 0}%", ttf), // الخصم
+                          buildPdfCell("${item.quantity ?? 0}", ttf), // الكمية
                           buildPdfCell(
                               "${item.product?.price ?? 0}", ttf), // السعر
                           buildPdfCell(

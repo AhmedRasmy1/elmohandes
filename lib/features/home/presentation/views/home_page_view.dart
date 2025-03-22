@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elmohandes/features/auth/presentation/views/login_view.dart';
+import 'package:elmohandes/features/cart/presentation/view_models/cart_display/cart_details_cubit.dart';
 import '../../../cart/presentation/views/cart_view.dart';
 import '../../../invoice/presentation/views/display_all_invoices.dart';
 
@@ -21,12 +22,13 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   late ProductsCubit viewModel;
+  late CartDetailsCubit cartDetailsCubit;
   // late bool isAdmin;
 
   @override
   void initState() {
     viewModel = getIt.get<ProductsCubit>();
-
+    cartDetailsCubit = getIt.get<CartDetailsCubit>();
     // String? token = CacheService.getData(key: CacheConstants.userToken);
     // if (token != null) {
     //   Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
@@ -41,13 +43,21 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => viewModel..getAllProducts(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => viewModel..getAllProducts(),
+        ),
+        BlocProvider(
+          create: (context) => cartDetailsCubit..getCartDetails(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.red),
+              tooltip: 'تسجيل الخروج',
               onPressed: () {
                 final screenWidth = MediaQuery.of(context).size.width;
                 final dialogWidth = screenWidth > 600 ? 500.0 : null;
@@ -72,13 +82,74 @@ class _ProductsPageState extends State<ProductsPage> {
               },
             ),
           ],
-          leading: IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return const CartPage();
-              }));
+          leading: BlocBuilder<CartDetailsCubit, CartDetailsState>(
+            builder: (context, state) {
+              var data = state;
+              if (data is CartDetailsSuccess) {
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: Colors.blue),
+                      tooltip: 'عرض السلة',
+                      onPressed: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const CartPage();
+                        }));
+                      },
+                    ),
+                    Positioned(
+                      right: 4,
+                      top: 4,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: BlocBuilder<CartDetailsCubit, CartDetailsState>(
+                          builder: (context, state) {
+                            if (state is CartDetailsSuccess) {
+                              return Text(
+                                state.cartDetails.length.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              );
+                            }
+                            return const Text(
+                              '0',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return IconButton(
+                icon: const Icon(Icons.shopping_cart, color: Colors.blue),
+                tooltip: 'عرض السلة',
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const CartPage();
+                  }));
+                },
+              );
             },
           ),
           automaticallyImplyLeading: false,
@@ -86,7 +157,10 @@ class _ProductsPageState extends State<ProductsPage> {
           title: const Text(
             'المهندس',
             style: TextStyle(
-                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'ArefRuqaa'),
           ),
           backgroundColor: Colors.white,
         ),

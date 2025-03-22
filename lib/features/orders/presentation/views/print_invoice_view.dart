@@ -91,10 +91,10 @@ class InvoicePage extends StatelessWidget {
               Text(
                 'المهندس',
                 style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                    fontFamily: 'ArefRuqaa'),
               ),
             ],
           ),
@@ -125,28 +125,74 @@ class InvoicePage extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildInfoRow(" رقم الفاتورة:", invoiceData.invoiceNumber,
-                icon: Icons.receipt),
-            const Divider(color: Colors.grey, thickness: 1),
-            _buildInfoRow(" اسم العميل:", invoiceData.customerName,
-                icon: Icons.person),
-            const Divider(color: Colors.grey, thickness: 1),
-            _buildInfoRow(" رقم التليفون:", invoiceData.customerPhone,
-                icon: Icons.phone),
-            const Divider(color: Colors.grey, thickness: 1),
-            _buildInfoRow(" طريقة الدفع:", invoiceData.payType,
-                icon: Icons.payment),
-            const Divider(color: Colors.grey, thickness: 1),
-            _buildInfoRow(" المحاسب:", invoiceData.casherName,
-                icon: Icons.account_circle),
-            const Divider(color: Colors.grey, thickness: 1),
-            _buildInfoRow(" تاريخ الفاتورة:", formattedDate,
-                icon: Icons.calendar_today),
-            const SizedBox(height: 10),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 600) {
+              // Desktop layout
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInfoRow(
+                            " رقم الفاتورة:", invoiceData.invoiceNumber,
+                            icon: Icons.receipt),
+                        const Divider(color: Colors.grey, thickness: 1),
+                        _buildInfoRow(" اسم العميل:", invoiceData.customerName,
+                            icon: Icons.person),
+                        const Divider(color: Colors.grey, thickness: 1),
+                        _buildInfoRow(
+                            " رقم التليفون:", invoiceData.customerPhone,
+                            icon: Icons.phone),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInfoRow(" طريقة الدفع:", invoiceData.payType,
+                            icon: Icons.payment),
+                        const Divider(color: Colors.grey, thickness: 1),
+                        _buildInfoRow(" المحاسب:", invoiceData.casherName,
+                            icon: Icons.account_circle),
+                        const Divider(color: Colors.grey, thickness: 1),
+                        _buildInfoRow(" تاريخ الفاتورة:", formattedDate,
+                            icon: Icons.calendar_today),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              // Mobile layout
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInfoRow(" رقم الفاتورة:", invoiceData.invoiceNumber,
+                      icon: Icons.receipt),
+                  const Divider(color: Colors.grey, thickness: 1),
+                  _buildInfoRow(" اسم العميل:", invoiceData.customerName,
+                      icon: Icons.person),
+                  const Divider(color: Colors.grey, thickness: 1),
+                  _buildInfoRow(" رقم التليفون:", invoiceData.customerPhone,
+                      icon: Icons.phone),
+                  const Divider(color: Colors.grey, thickness: 1),
+                  _buildInfoRow(" طريقة الدفع:", invoiceData.payType,
+                      icon: Icons.payment),
+                  const Divider(color: Colors.grey, thickness: 1),
+                  _buildInfoRow(" المحاسب:", invoiceData.casherName,
+                      icon: Icons.account_circle),
+                  const Divider(color: Colors.grey, thickness: 1),
+                  _buildInfoRow(" تاريخ الفاتورة:", formattedDate,
+                      icon: Icons.calendar_today),
+                ],
+              );
+            }
+          },
         ),
       ),
     );

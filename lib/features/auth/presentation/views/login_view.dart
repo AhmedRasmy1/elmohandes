@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     return BlocProvider(
       create: (context) => viewModel,
       child: Scaffold(
-        body: BlocListener<LoginCubit, LoginState>(
+        body: BlocConsumer<LoginCubit, LoginState>(
           listener: (context, state) {
             if (state is LoginLoding) {
               Center(
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
             }
             if (state is LoginSuccess) {
               setState(() {
-                errorMessage = null; // مسح رسالة الخطأ عند النجاح
+                errorMessage = null;
               });
               Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder: (context) {
@@ -52,138 +52,144 @@ class _LoginPageState extends State<LoginPage> {
             }
             if (state is LoginFailure) {
               setState(() {
-                errorMessage =
-                    "راجع الايميل والباسورد وحاول تاني"; // تحديث رسالة الخطأ
+                errorMessage = "راجع الايميل والباسورد وحاول تاني";
               });
             }
           },
-          child: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue, Colors.white, Colors.black],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+          builder: (context, state) {
+            if (state is LoginLoding) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Stack(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.blue, Colors.white, Colors.black],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                color: Colors.black.withAlpha((0.5 * 255).toInt()),
-              ),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  bool isMobile = constraints.maxWidth < 600;
-                  return Center(
-                    child: Container(
-                      width: isMobile ? constraints.maxWidth * 0.9 : 400,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha((0.8 * 255).toInt()),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: DefaultTextStyle(
-                        style: TextStyle(fontFamily: 'Cairo'),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                'assets/images/iconapplication.png',
-                                width: isMobile ? 100 : 180, // تكبير الصورة
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                "تسجيل الدخول",
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black87,
+                Container(
+                  color: Colors.black.withAlpha((0.5 * 255).toInt()),
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    bool isMobile = constraints.maxWidth < 600;
+                    return Center(
+                      child: Container(
+                        width: isMobile ? constraints.maxWidth * 0.9 : 400,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha((0.8 * 255).toInt()),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: DefaultTextStyle(
+                          style: TextStyle(fontFamily: 'Cairo'),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/iconapplication.png',
+                                  width: isMobile ? 100 : 180, // تكبير الصورة
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: emailController,
-                                decoration: InputDecoration(
-                                  labelText: "البريد الإلكتروني",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.email),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "يرجى إدخال البريد الإلكتروني";
-                                  }
-                                  if (!value.contains("@")) {
-                                    return "البريد الإلكتروني غير صحيح";
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 15),
-                              PasswordField(
-                                fontFamily: widget.fontFamily,
-                                controller: passwordController,
-                              ),
-                              const SizedBox(height: 20),
-                              if (errorMessage != null) // عرض رسالة الخطأ
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text(
-                                    errorMessage!,
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14,
-                                    ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  "تسجيل الدخول",
+                                  style: TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black87,
                                   ),
                                 ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      viewModel.login(
-                                        emailController.text,
-                                        passwordController.text,
-                                      );
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                    labelText: "البريد الإلكتروني",
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.email),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "يرجى إدخال البريد الإلكتروني";
                                     }
+                                    if (!value.contains("@")) {
+                                      return "البريد الإلكتروني غير صحيح";
+                                    }
+                                    return null;
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue,
+                                ),
+                                const SizedBox(height: 15),
+                                PasswordField(
+                                  fontFamily: widget.fontFamily,
+                                  controller: passwordController,
+                                ),
+                                const SizedBox(height: 20),
+                                if (errorMessage != null) // عرض رسالة الخطأ
+                                  Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                        vertical: 8.0),
+                                    child: Text(
+                                      errorMessage!,
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                      ),
                                     ),
                                   ),
-                                  child: Text(
-                                    "تسجيل الدخول",
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        viewModel.login(
+                                          emailController.text,
+                                          passwordController.text,
+                                        );
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "تسجيل الدخول",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

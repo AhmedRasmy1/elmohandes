@@ -310,7 +310,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       duration: const Duration(seconds: 1),
                     ),
                   );
-                  addToCartCubit.addProductToCart(widget.id!, quantity);
+                  addToCartCubit
+                      .addProductToCart(widget.id!, quantity)
+                      .then((_) {});
+                  _quantityController.clear();
+                  setState(() {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProductsPage(),
+                      ),
+                      (route) => false,
+                    );
+                  });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
