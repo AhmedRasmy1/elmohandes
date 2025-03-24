@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/invoice/data/models/total_sales/total_sales_model.dart';
 import '../../../features/cart/data/models/cart_details/cart_details.dart';
 import '../../../features/invoice/data/models/all_inovices/all_inovices.dart';
 import '../../../features/orders/data/models/add_invoice/add_invoice.dart';
@@ -87,6 +88,11 @@ abstract class ApiService {
 
   @DELETE(ApiConstants.deleteAllInvoices)
   Future deleteAllInvoices(
+    @Header('Authorization') String token,
+  );
+
+  @GET(ApiConstants.totalSales)
+  Future<TotalSalesModel> getTotalSales(
     @Header('Authorization') String token,
   );
 }

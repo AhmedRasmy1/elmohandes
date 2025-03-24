@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/total_sales_cubit.dart';
 import '../../../../core/di/di.dart';
 import '../../../home/presentation/views/home_page_view.dart';
 import '../../domain/entities/all_invoices_entity.dart';
@@ -24,6 +27,7 @@ class _InvoicesViewState extends State<InvoicesView> {
   late AllInvoicesCubit allInvoicesCubit;
   late DeleteOneInvoicesCubit deleteOneInvoicesCubit;
   late DeleteAllInvoicesCubit deleteAllInvoicesCubit;
+  late TotalSalesCubit totalSalesCubit;
   List<AllInvoiceEntity> allInvoices = [];
 
   @override
@@ -33,6 +37,7 @@ class _InvoicesViewState extends State<InvoicesView> {
     allInvoicesCubit = getIt.get<AllInvoicesCubit>();
     deleteOneInvoicesCubit = getIt.get<DeleteOneInvoicesCubit>();
     deleteAllInvoicesCubit = getIt.get<DeleteAllInvoicesCubit>();
+    totalSalesCubit = getIt.get<TotalSalesCubit>();
   }
 
   @override
@@ -47,6 +52,9 @@ class _InvoicesViewState extends State<InvoicesView> {
         ),
         BlocProvider(
           create: (context) => deleteAllInvoicesCubit,
+        ),
+        BlocProvider(
+          create: (context) => totalSalesCubit..getTotalSales(),
         ),
       ],
       child: Scaffold(
@@ -101,6 +109,41 @@ class _InvoicesViewState extends State<InvoicesView> {
                 },
               ),
               const SizedBox(height: 15),
+              BlocBuilder<TotalSalesCubit, TotalSalesState>(
+                builder: (context, state) {
+                  if (state is TotalSalesSuccess) {
+                    if (role == "Admin") {
+                      var data = state.totalSalesEntity;
+                      log('Total Sales: ${data.totalSales}');
+                      return Text(
+                        'إجمالي المبيعات: ${data.totalSales} ج.م',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              BlocBuilder<AllInvoicesCubit, AllInvoicesState>(
+                builder: (context, state) {
+                  if (state is AllInvoicesSuccess) {
+                    if (role == "Admin") {
+                      return Text(
+                        'عدد الفواتير: ${state.allInvoices.length}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              const SizedBox(height: 15),
               Expanded(
                 child: BlocBuilder<AllInvoicesCubit, AllInvoicesState>(
                   builder: (context, state) {
@@ -115,7 +158,6 @@ class _InvoicesViewState extends State<InvoicesView> {
                       List<AllInvoiceEntity> displayedInvoices = [];
 
                       if (role == "Admin") {
-                        // الادمن يشوف كل الفواتير أو اللي بيبحث عنها
                         displayedInvoices = searchQuery.isNotEmpty
                             ? allInvoices
                                 .where((invoice) =>
@@ -123,7 +165,6 @@ class _InvoicesViewState extends State<InvoicesView> {
                                 .toList()
                             : allInvoices;
                       } else {
-                        // المستخدم العادي يشوف بس اللي بيبحث عنه
                         if (searchQuery.isNotEmpty) {
                           displayedInvoices = allInvoices
                               .where((invoice) =>
@@ -166,13 +207,14 @@ class _InvoicesViewState extends State<InvoicesView> {
                                           deleteOneInvoicesCubit,
                                       deleteAllInvoicesCubit:
                                           deleteAllInvoicesCubit,
-                                      allInvoicesCubit: allInvoicesCubit),
+                                      allInvoicesCubit: allInvoicesCubit,
+                                      totalSalesCubit: totalSalesCubit),
                                 );
                               },
                             )
                           : const Center(
                               child: Text(
-                                'لم يتم العثور على فاتورة بهذا الرقم.',
+                                'لا توجد فواتير',
                                 style: TextStyle(fontSize: 16),
                               ),
                             );
@@ -209,8 +251,33 @@ class _InvoicesViewState extends State<InvoicesView> {
                           btnCancelColor: Colors.blue,
                           btnOkText: 'حذف',
                           btnOkOnPress: () {
-                            deleteAllInvoicesCubit.deleteAllInvoices().then(
-                                (value) => allInvoicesCubit.getAllInvoices());
+                            if (allInvoices.isNotEmpty) {
+                              deleteAllInvoicesCubit
+                                  .deleteAllInvoices()
+                                  .then((value) {
+                                allInvoicesCubit.getAllInvoices();
+                                totalSalesCubit.getTotalSales();
+                              });
+                            } else {
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.info,
+                                animType: AnimType.scale,
+                                title: 'تنبيه',
+                                desc: 'لا توجد فواتير لحذفها.',
+                                btnOkText: 'حسناً',
+                                btnOkOnPress: () {},
+                                btnOkColor: Colors.blue,
+                                dismissOnTouchOutside: true,
+                                padding: const EdgeInsets.all(20),
+                                buttonsBorderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                width: MediaQuery.of(context).size.width *
+                                    (MediaQuery.of(context).size.width < 600
+                                        ? 0.9
+                                        : 0.8),
+                              ).show();
+                            }
                           },
                           btnOkColor: Colors.red,
                           dismissOnTouchOutside: false,
@@ -246,6 +313,7 @@ class InvoiceCard extends StatelessWidget {
   final AllInvoiceEntity invoice;
   final DeleteOneInvoicesCubit deleteOneInvoicesCubit;
   final AllInvoicesCubit allInvoicesCubit;
+  final TotalSalesCubit totalSalesCubit;
   final DeleteAllInvoicesCubit deleteAllInvoicesCubit;
 
   const InvoiceCard({
@@ -254,6 +322,7 @@ class InvoiceCard extends StatelessWidget {
     required this.deleteOneInvoicesCubit,
     required this.allInvoicesCubit,
     required this.deleteAllInvoicesCubit,
+    required this.totalSalesCubit,
   });
 
   @override
@@ -374,7 +443,10 @@ class InvoiceCard extends StatelessWidget {
       btnOkOnPress: () {
         deleteOneInvoicesCubit
             .deleteOneInvoice(id: invoice.invoiceNumber!)
-            .then((value) => allInvoicesCubit.getAllInvoices());
+            .then((value) {
+          allInvoicesCubit.getAllInvoices();
+          totalSalesCubit.getTotalSales();
+        });
       },
       btnOkColor: Colors.red,
       dismissOnTouchOutside: false,

@@ -21,12 +21,24 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? errorMessage; //
+  bool isLoading = false;
 
   @override
   void initState() {
     viewModel = getIt.get<LoginCubit>();
     super.initState();
+  }
+
+  void _showSnackBar(String message, {Color color = Colors.red}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(fontFamily: widget.fontFamily),
+        ),
+        backgroundColor: color,
+      ),
+    );
   }
 
   @override
@@ -37,31 +49,27 @@ class _LoginPageState extends State<LoginPage> {
         body: BlocConsumer<LoginCubit, LoginState>(
           listener: (context, state) {
             if (state is LoginLoding) {
-              Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is LoginSuccess) {
               setState(() {
-                errorMessage = null;
+                isLoading = true;
               });
+            } else {
+              setState(() {
+                isLoading = false;
+              });
+            }
+
+            if (state is LoginSuccess) {
               Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder: (context) {
                 return const ProductsPage();
               }), (route) => false);
             }
+
             if (state is LoginFailure) {
-              setState(() {
-                errorMessage = "راجع الايميل والباسورد وحاول تاني";
-              });
+              _showSnackBar("راجع الايميل والباسورد وحاول تاني");
             }
           },
           builder: (context, state) {
-            if (state is LoginLoding) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
             return Stack(
               children: [
                 Container(
@@ -80,11 +88,12 @@ class _LoginPageState extends State<LoginPage> {
                   builder: (context, constraints) {
                     bool isMobile = constraints.maxWidth < 600;
                     return Center(
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
                         width: isMobile ? constraints.maxWidth * 0.9 : 400,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha((0.8 * 255).toInt()),
+                          color: Colors.white.withAlpha((0.9 * 255).toInt()),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
@@ -103,15 +112,16 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Image.asset(
                                   'assets/images/iconapplication.png',
-                                  width: isMobile ? 100 : 180, // تكبير الصورة
+                                  width: isMobile ? 100 : 180,
                                 ),
                                 const SizedBox(height: 20),
                                 Text(
-                                  "تسجيل الدخول",
+                                  "المهندس",
                                   style: TextStyle(
-                                    fontSize: 26,
+                                    fontSize: 40,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.black87,
+                                    fontFamily: 'ArefRuqaa',
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -138,29 +148,20 @@ class _LoginPageState extends State<LoginPage> {
                                   controller: passwordController,
                                 ),
                                 const SizedBox(height: 20),
-                                if (errorMessage != null) // عرض رسالة الخطأ
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Text(
-                                      errorMessage!,
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        viewModel.login(
-                                          emailController.text,
-                                          passwordController.text,
-                                        );
-                                      }
-                                    },
+                                    onPressed: isLoading
+                                        ? null
+                                        : () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              viewModel.login(
+                                                emailController.text,
+                                                passwordController.text,
+                                              );
+                                            }
+                                          },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blue,
                                       padding: const EdgeInsets.symmetric(
@@ -169,14 +170,18 @@ class _LoginPageState extends State<LoginPage> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    child: Text(
-                                      "تسجيل الدخول",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    child: isLoading
+                                        ? CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : Text(
+                                            "تسجيل الدخول",
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ],

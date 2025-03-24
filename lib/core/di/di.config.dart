@@ -102,33 +102,44 @@ import '../../features/invoice/data/data_sources/delete_all_invoices_data_source
     as _i365;
 import '../../features/invoice/data/data_sources/delete_one_invoice_data_sources.dart'
     as _i470;
+import '../../features/invoice/data/data_sources/total_sales_data_sources.dart'
+    as _i503;
 import '../../features/invoice/data/data_sources_impl/all_invoices_data_sources_impl.dart'
     as _i816;
 import '../../features/invoice/data/data_sources_impl/delete_all_invoices_data_sources_impl.dart'
     as _i183;
 import '../../features/invoice/data/data_sources_impl/delete_one_invoice_data_sources_impl.dart'
     as _i1065;
+import '../../features/invoice/data/data_sources_impl/total_sales_data_sources_impl.dart'
+    as _i875;
 import '../../features/invoice/data/repo_impl/all_invoices_repo_impl.dart'
     as _i451;
 import '../../features/invoice/data/repo_impl/delete_all_invoices_repo_impl.dart'
     as _i962;
 import '../../features/invoice/data/repo_impl/delete_one_invoice_repo_impl.dart'
     as _i624;
+import '../../features/invoice/data/repo_impl/total_sales_repo_impl.dart'
+    as _i16;
 import '../../features/invoice/domain/repo/all_invoices_repo.dart' as _i1044;
 import '../../features/invoice/domain/repo/delete_all_invoices_repo.dart'
     as _i219;
 import '../../features/invoice/domain/repo/delete_one_invoice_repo.dart'
     as _i106;
+import '../../features/invoice/domain/repo/total_sales_repo.dart' as _i703;
 import '../../features/invoice/domain/use_case/all_invoices_use_case.dart'
     as _i1003;
 import '../../features/invoice/domain/use_case/delete_all_invoices_use_case.dart'
     as _i127;
 import '../../features/invoice/domain/use_case/delete_one_invoices_use_case.dart'
     as _i525;
+import '../../features/invoice/domain/use_case/total_sales_use_case.dart'
+    as _i790;
 import '../../features/invoice/presentation/view_models/cubit/delete_all_invoices_cubit.dart'
     as _i64;
 import '../../features/invoice/presentation/view_models/cubit/delete_one_invoices_cubit.dart'
     as _i630;
+import '../../features/invoice/presentation/view_models/cubit/total_sales_cubit.dart'
+    as _i887;
 import '../../features/invoice/presentation/view_models/display_all_invoices/all_invoices_cubit.dart'
     as _i165;
 import '../../features/orders/data/data_sources/add_invoice_data_sources.dart'
@@ -163,13 +174,19 @@ extension GetItInjectableX on _i174.GetIt {
         _i559.DeleteProductFromCartDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i920.ProductsDataSources>(
         () => _i132.ProductsDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i503.TotalSalesDataSources>(
+        () => _i875.TotalSalesDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i578.AddProductDataSources>(
         () => _i28.AddProductDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i703.TotalSalesRepo>(
+        () => _i16.TotalSalesRepoImpl(gh<_i503.TotalSalesDataSources>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
     gh.factory<_i465.DeleteProductFromCartRepo>(() =>
         _i460.DeleteProductFromCartRepoImpl(
             gh<_i239.DeleteProductFromCartDataSources>()));
+    gh.factory<_i790.TotalSalesUseCase>(
+        () => _i790.TotalSalesUseCase(gh<_i703.TotalSalesRepo>()));
     gh.factory<_i470.DeleteOneInvoiceDataSources>(() =>
         _i1065.DeleteOneInvoiceDataSourcesImpl(
             apiService: gh<_i680.ApiService>()));
@@ -205,6 +222,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i550.AddProductToCartDataSources>()));
     gh.factory<_i1044.AllInvoicesRepo>(
         () => _i451.AllInvoicesRepoImpl(gh<_i209.AllInvoicesDataSources>()));
+    gh.factory<_i887.TotalSalesCubit>(
+        () => _i887.TotalSalesCubit(gh<_i790.TotalSalesUseCase>()));
     gh.factory<_i256.ProductsUseCase>(
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
     gh.factory<_i219.DeleteAllInvoicesRepo>(() =>
