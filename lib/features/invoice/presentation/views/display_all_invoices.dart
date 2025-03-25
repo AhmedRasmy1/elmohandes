@@ -330,7 +330,8 @@ class _InvoicesViewState extends State<InvoicesView> {
                                       deleteAllInvoicesCubit:
                                           deleteAllInvoicesCubit,
                                       allInvoicesCubit: allInvoicesCubit,
-                                      totalSalesCubit: totalSalesCubit),
+                                      totalSalesCubit: totalSalesCubit,
+                                      todaSalesInfoCubit: todaSalesInfoCubit),
                                 );
                               },
                             )
@@ -379,6 +380,7 @@ class _InvoicesViewState extends State<InvoicesView> {
                                   .then((value) {
                                 allInvoicesCubit.getAllInvoices();
                                 totalSalesCubit.getTotalSales();
+                                todaSalesInfoCubit.getTotalSalesByDate();
                               });
                             } else {
                               AwesomeDialog(
@@ -437,6 +439,7 @@ class InvoiceCard extends StatelessWidget {
   final AllInvoicesCubit allInvoicesCubit;
   final TotalSalesCubit totalSalesCubit;
   final DeleteAllInvoicesCubit deleteAllInvoicesCubit;
+  final TodaSalesInfoCubit todaSalesInfoCubit;
 
   const InvoiceCard({
     super.key,
@@ -445,6 +448,7 @@ class InvoiceCard extends StatelessWidget {
     required this.allInvoicesCubit,
     required this.deleteAllInvoicesCubit,
     required this.totalSalesCubit,
+    required this.todaSalesInfoCubit,
   });
 
   @override
@@ -568,6 +572,7 @@ class InvoiceCard extends StatelessWidget {
             .then((value) {
           allInvoicesCubit.getAllInvoices();
           totalSalesCubit.getTotalSales();
+          todaSalesInfoCubit.getTotalSalesByDate();
         });
       },
       btnOkColor: Colors.red,
