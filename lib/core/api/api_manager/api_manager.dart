@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/invoice/data/models/today_info/today_sales_info_model.dart';
 import 'package:elmohandes/features/invoice/data/models/total_sales/total_sales_model.dart';
 import '../../../features/cart/data/models/cart_details/cart_details.dart';
 import '../../../features/invoice/data/models/all_inovices/all_inovices.dart';
@@ -17,7 +18,9 @@ part 'api_manager.g.dart';
 @RestApi(baseUrl: ApiConstants.baseUrl)
 abstract class ApiService {
   @FactoryMethod()
-  factory ApiService(Dio dio) = _ApiService;
+  factory ApiService(
+    Dio dio,
+  ) = _ApiService;
 
   @POST(ApiConstants.login)
   Future<Login> login(
@@ -93,6 +96,11 @@ abstract class ApiService {
 
   @GET(ApiConstants.totalSales)
   Future<TotalSalesModel> getTotalSales(
+    @Header('Authorization') String token,
+  );
+
+  @GET(ApiConstants.totalSalesByDate)
+  Future<TodaySalesInfoModel> getTotalSalesByDate(
     @Header('Authorization') String token,
   );
 }

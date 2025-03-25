@@ -48,8 +48,7 @@ class InvoicePage extends StatelessWidget {
                           // ignore: use_build_context_synchronously
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductsPage(), // Replace with your target page
+                              builder: (context) => ProductsPage(),
                             ),
                           );
                         },

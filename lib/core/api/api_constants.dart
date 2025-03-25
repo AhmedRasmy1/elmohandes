@@ -13,4 +13,5 @@ class ApiConstants {
   static const String deleteOneInvoice = "api/Invoice/";
   static const String deleteAllInvoices = "api/Invoice";
   static const String totalSales = "api/invoice/total-sales";
+  static const String totalSalesByDate = "api/invoice/today-sales";
 }

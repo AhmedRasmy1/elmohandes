@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/toda_sales_info_cubit.dart';
 import 'package:elmohandes/features/invoice/presentation/view_models/cubit/total_sales_cubit.dart';
 import '../../../../core/di/di.dart';
 import '../../../home/presentation/views/home_page_view.dart';
@@ -28,6 +29,7 @@ class _InvoicesViewState extends State<InvoicesView> {
   late DeleteOneInvoicesCubit deleteOneInvoicesCubit;
   late DeleteAllInvoicesCubit deleteAllInvoicesCubit;
   late TotalSalesCubit totalSalesCubit;
+  late TodaSalesInfoCubit todaSalesInfoCubit;
   List<AllInvoiceEntity> allInvoices = [];
 
   @override
@@ -38,6 +40,7 @@ class _InvoicesViewState extends State<InvoicesView> {
     deleteOneInvoicesCubit = getIt.get<DeleteOneInvoicesCubit>();
     deleteAllInvoicesCubit = getIt.get<DeleteAllInvoicesCubit>();
     totalSalesCubit = getIt.get<TotalSalesCubit>();
+    todaSalesInfoCubit = getIt.get<TodaSalesInfoCubit>();
   }
 
   @override
@@ -55,6 +58,9 @@ class _InvoicesViewState extends State<InvoicesView> {
         ),
         BlocProvider(
           create: (context) => totalSalesCubit..getTotalSales(),
+        ),
+        BlocProvider(
+          create: (context) => todaSalesInfoCubit..getTotalSalesByDate(),
         ),
       ],
       child: Scaffold(
@@ -109,38 +115,154 @@ class _InvoicesViewState extends State<InvoicesView> {
                 },
               ),
               const SizedBox(height: 15),
-              BlocBuilder<TotalSalesCubit, TotalSalesState>(
-                builder: (context, state) {
-                  if (state is TotalSalesSuccess) {
-                    if (role == "Admin") {
-                      var data = state.totalSalesEntity;
-                      log('Total Sales: ${data.totalSales}');
-                      return Text(
-                        'إجمالي المبيعات: ${data.totalSales} ج.م',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              BlocBuilder<AllInvoicesCubit, AllInvoicesState>(
-                builder: (context, state) {
-                  if (state is AllInvoicesSuccess) {
-                    if (role == "Admin") {
-                      return Text(
-                        'عدد الفواتير: ${state.allInvoices.length}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
-                  }
-                  return const SizedBox.shrink();
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  bool isMobile = constraints.maxWidth < 600;
+                  return isMobile
+                      ? Column(
+                          children: [
+                            BlocBuilder<TotalSalesCubit, TotalSalesState>(
+                              builder: (context, state) {
+                                if (state is TotalSalesSuccess) {
+                                  if (role == "Admin") {
+                                    var data = state.totalSalesEntity;
+                                    log('Total Sales: ${data.totalSales}');
+                                    return Text(
+                                      'إجمالي المبيعات: ${data.totalSales} ج.م',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                            BlocBuilder<AllInvoicesCubit, AllInvoicesState>(
+                              builder: (context, state) {
+                                if (state is AllInvoicesSuccess) {
+                                  if (role == "Admin") {
+                                    return Text(
+                                      'عدد الفواتير: ${state.allInvoices.length}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                            const Divider(),
+                            BlocBuilder<TodaSalesInfoCubit, TodaSalesInfoState>(
+                                builder: (context, state) {
+                              if (state is TodaSalesInfoSuccess) {
+                                var data = state.todaySalesInfoEntity;
+                                if (role == "Admin") {
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        'مبيعات اليوم: ${data.totalSales} ج.م',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        'عدد الفواتير: ${data.invoiceCount}',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                }
+                              }
+                              return const SizedBox.shrink();
+                            }),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                BlocBuilder<TotalSalesCubit, TotalSalesState>(
+                                  builder: (context, state) {
+                                    if (state is TotalSalesSuccess) {
+                                      if (role == "Admin") {
+                                        var data = state.totalSalesEntity;
+                                        log('Total Sales: ${data.totalSales}');
+                                        return Text(
+                                          'إجمالي المبيعات: ${data.totalSales} ج.م',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                                BlocBuilder<AllInvoicesCubit, AllInvoicesState>(
+                                  builder: (context, state) {
+                                    if (state is AllInvoicesSuccess) {
+                                      if (role == "Admin") {
+                                        return Text(
+                                          'عدد الفواتير الاجمالي: ${state.allInvoices.length}',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                BlocBuilder<TodaSalesInfoCubit,
+                                    TodaSalesInfoState>(
+                                  builder: (context, state) {
+                                    if (state is TodaSalesInfoSuccess) {
+                                      var data = state.todaySalesInfoEntity;
+                                      if (role == "Admin") {
+                                        return Column(
+                                          children: [
+                                            Text(
+                                              'مبيعات اليوم: ${data.totalSales} ج.م',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'عدد فواتير اليوم: ${data.invoiceCount}',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      }
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
                 },
               ),
               const SizedBox(height: 15),
