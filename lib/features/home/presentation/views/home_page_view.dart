@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elmohandes/features/auth/presentation/views/login_view.dart';
-import 'package:elmohandes/features/cart/presentation/view_models/cart_display/cart_details_cubit.dart';
+import '../../../auth/presentation/views/login_view.dart';
+import '../../../cart/presentation/view_models/cart_display/cart_details_cubit.dart';
 import '../../../cart/presentation/views/cart_view.dart';
 import '../../../invoice/presentation/views/display_all_invoices.dart';
 

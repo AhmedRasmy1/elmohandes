@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elmohandes/features/invoice/domain/entities/preview_invoice_entity.dart';
-import 'package:elmohandes/features/invoice/presentation/view_models/cubit/preview_invoice_cubit.dart';
+import '../../../invoice/domain/entities/preview_invoice_entity.dart';
+import '../../../invoice/presentation/view_models/cubit/preview_invoice_cubit.dart';
 import '../../../../core/di/di.dart';
 import '../../domain/entities/cart_details_entity.dart';
 import '../view_models/cart_display/cart_details_cubit.dart';
@@ -300,7 +300,7 @@ class _CartPageState extends State<CartPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
-                      duration: Duration(milliseconds: 200), // Reduced duration
+                      duration: Duration(milliseconds: 500), // Reduced duration
                     ),
                   );
                 }
@@ -352,7 +352,7 @@ class _CartPageState extends State<CartPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           duration: const Duration(
-                              milliseconds: 200), // Reduced duration
+                              milliseconds: 500), // Reduced duration
                           action: SnackBarAction(
                             label: 'إعادة المحاولة',
                             textColor: Colors.yellow,
@@ -367,7 +367,7 @@ class _CartPageState extends State<CartPage> {
                         const SnackBar(
                           content: Text("فشل تحميل بيانات الفاتورة"),
                           duration:
-                              Duration(milliseconds: 200), // Reduced duration
+                              Duration(milliseconds: 500), // Reduced duration
                         ),
                       );
                     }
@@ -395,7 +395,6 @@ class _CartPageState extends State<CartPage> {
     //     convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
     final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
     final ttf = pw.Font.ttf(fontData);
-
     final ByteData imageData =
         await rootBundle.load("assets/images/iconapplication.png");
     final Uint8List imageBytes = imageData.buffer.asUint8List();
@@ -565,13 +564,23 @@ class _CartPageState extends State<CartPage> {
                   ],
                 ),
                 pw.SizedBox(height: 5),
+                pw.Spacer(),
                 pw.Center(
                   child: pw.Text(
-                    "العنوان هيكون هنا / وارقام التليفون",
+                    "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
                     style: pw.TextStyle(
                         font: ttf,
                         fontWeight: pw.FontWeight.bold,
-                        fontSize: 14),
+                        fontSize: 13),
+                  ),
+                ),
+                pw.Center(
+                  child: pw.Text(
+                    "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
+                    style: pw.TextStyle(
+                        font: ttf,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 10),
                   ),
                 ),
               ],

@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/invoice/domain/entities/today_sales_info_entity.dart';
+import '../../../domain/entities/today_sales_info_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'today_sales_info_model.g.dart';
 

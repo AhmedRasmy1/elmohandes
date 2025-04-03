@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:elmohandes/features/invoice/presentation/view_models/cubit/toda_sales_info_cubit.dart';
-import 'package:elmohandes/features/invoice/presentation/view_models/cubit/total_sales_cubit.dart';
+import '../view_models/cubit/toda_sales_info_cubit.dart';
+import '../view_models/cubit/total_sales_cubit.dart';
 import '../../../../core/di/di.dart';
 import '../../../home/presentation/views/home_page_view.dart';
 import '../../domain/entities/all_invoices_entity.dart';

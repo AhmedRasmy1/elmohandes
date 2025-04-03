@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/home/presentation/views/home_page_view.dart';
+import '../../../home/presentation/views/home_page_view.dart';
 
 import '../../domain/entities/add_invoice_entity.dart';
 import 'package:flutter/material.dart';
@@ -340,38 +340,31 @@ class InvoicePage extends StatelessWidget {
     String totalPriceWords =
         convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
 
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
-            const Center(
-              child: Text(
-                "شكراً لاتصالكم معنا",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.blueAccent,
-                ),
+    return Center(
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -527,12 +520,16 @@ Future<void> generateInvoicePdf(
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text(
+                      pw.Align(
+                        alignment: pw.Alignment.centerLeft,
+                        child: pw.Text(
                           "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
                           style: pw.TextStyle(
                               font: ttf,
                               fontSize: 12,
-                              fontWeight: pw.FontWeight.bold)),
+                              fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
                       pw.Text("($totalPriceWords)",
                           style: pw.TextStyle(
                               font: ttf,
@@ -548,11 +545,19 @@ Future<void> generateInvoicePdf(
                 ],
               ),
               pw.SizedBox(height: 5),
+              pw.Spacer(),
               pw.Center(
                 child: pw.Text(
-                  "العنوان هيكون هنا / وارقام التليفون",
+                  "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
                   style: pw.TextStyle(
-                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 14),
+                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              pw.Center(
+                child: pw.Text(
+                  "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
+                  style: pw.TextStyle(
+                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 10),
                 ),
               ),
             ],

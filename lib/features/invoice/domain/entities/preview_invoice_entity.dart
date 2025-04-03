@@ -1,4 +1,4 @@
-import 'package:elmohandes/features/invoice/data/models/preview_invoice/invoice_item_preview.dart';
+import '../../data/models/preview_invoice/invoice_item_preview.dart';
 
 class PreviewInvoiceEntity {
   final String? invoiceNumber;

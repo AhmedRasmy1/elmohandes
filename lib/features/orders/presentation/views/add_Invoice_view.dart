@@ -24,7 +24,7 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
   final TextEditingController _customerName = TextEditingController();
   final TextEditingController _customerPhone = TextEditingController();
   String _selectedPaymentMethod = "كاش";
-  final List<String> _paymentMethods = ["كاش", "فودافون كاش", "إنستاباي"];
+  final List<String> _paymentMethods = ["كاش", "فودافون كاش", "إنستاباى"];
   late AddInvoiceCubit viewModel;
 
   @override

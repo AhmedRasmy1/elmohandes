@@ -101,75 +101,179 @@ class InvoicePageDetails extends StatelessWidget {
     }
 
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(Icons.receipt_long, color: Colors.blue),
-            const SizedBox(width: 8),
-            Text(
-              "رقم الفاتورة: ${invoiceData.invoiceNumber}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.person, color: Colors.green),
-            const SizedBox(width: 8),
-            Text(
-              "اسم العميل: ${invoiceData.customerName}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.phone, color: Colors.orange),
-            const SizedBox(width: 8),
-            Text(
-              "رقم التليفون: ${invoiceData.customerPhone}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.payment, color: Colors.purple),
-            const SizedBox(width: 8),
-            Text(
-              "طريقة الدفع: ${invoiceData.payType}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.person_outline, color: Colors.red),
-            const SizedBox(width: 8),
-            Text(
-              "الكاشير: ${invoiceData.casherName}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.calendar_today, color: Colors.teal),
-            const SizedBox(width: 8),
-            Text(
-              "تاريخ الفاتورة: $formattedDate",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isMobile = constraints.maxWidth < 600;
+        if (isMobile) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.receipt_long, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Text(
+                    "رقم الفاتورة: ${invoiceData.invoiceNumber}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.person, color: Colors.green),
+                  const SizedBox(width: 8),
+                  Text(
+                    "اسم العميل: ${invoiceData.customerName}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.phone, color: Colors.orange),
+                  const SizedBox(width: 8),
+                  Text(
+                    "رقم التليفون: ${invoiceData.customerPhone}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.payment, color: Colors.purple),
+                  const SizedBox(width: 8),
+                  Text(
+                    "طريقة الدفع: ${invoiceData.payType}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.person_outline, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Text(
+                    "الكاشير: ${invoiceData.casherName}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today, color: Colors.teal),
+                  const SizedBox(width: 8),
+                  Text(
+                    "تاريخ الفاتورة: $formattedDate",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.receipt_long, color: Colors.blue),
+                        const SizedBox(width: 8),
+                        Text(
+                          "رقم الفاتورة: ${invoiceData.invoiceNumber}",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.person, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Text(
+                          "اسم العميل: ${invoiceData.customerName}",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.phone, color: Colors.orange),
+                        const SizedBox(width: 8),
+                        Text(
+                          "رقم التليفون: ${invoiceData.customerPhone}",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.payment, color: Colors.purple),
+                        const SizedBox(width: 8),
+                        Text(
+                          "طريقة الدفع: ${invoiceData.payType}",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.person_outline, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(
+                          "المحاسب: ${invoiceData.casherName}",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.teal),
+                        const SizedBox(width: 8),
+                        Text(
+                          "تاريخ الفاتورة: $formattedDate",
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 
@@ -260,28 +364,31 @@ class InvoicePageDetails extends StatelessWidget {
     String totalPriceWords =
         convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
 
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
-          ],
+    return Center(
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -438,38 +545,79 @@ Future<void> generateInvoicePdf(
                 ],
               ),
               pw.SizedBox(height: 5),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.end,
-                children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
+              pw.Align(
+                alignment: pw.Alignment
+                    .bottomLeft, // محاذاة العناصر في أسفل الصفحة من الشمال
+                child: pw.Column(
+                  crossAxisAlignment:
+                      pw.CrossAxisAlignment.start, // محاذاة العناصر على الشمال
+                  children: [
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
                           "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
                           style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 12,
-                              fontWeight: pw.FontWeight.bold)),
-                      pw.Text("($totalPriceWords)",
+                            font: ttf,
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.SizedBox(height: 5), // مسافة بين العنصر الأول والثاني
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "($totalPriceWords)",
                           style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 10,
-                              fontWeight: pw.FontWeight.bold)),
-                      pw.SizedBox(height: 3),
-                      pw.Text("مدفوع: ................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10)),
-                      pw.Text("الباقي: ..................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10)),
-                    ],
-                  ),
-                ],
+                            font: ttf,
+                            fontSize: 10,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.SizedBox(height: 5), // مسافة بين العنصر الثاني والثالث
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "مدفوع: ................................",
+                          style: pw.TextStyle(font: ttf, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                    pw.SizedBox(height: 5), // مسافة بين العنصر الثالث والرابع
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "الباقي: ..................................",
+                          style: pw.TextStyle(font: ttf, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              pw.SizedBox(height: 5),
+              pw.Spacer(), // Pushes the following content to the bottom
               pw.Center(
                 child: pw.Text(
-                  "العنوان هيكون هنا / وارقام التليفون",
+                  "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
                   style: pw.TextStyle(
-                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 14),
+                      font: ttf,
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 13,
+                      wordSpacing: 1.5), // Added wordSpacing for better spacing
+                ),
+              ),
+              pw.Center(
+                child: pw.Text(
+                  "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
+                  style: pw.TextStyle(
+                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 10),
                 ),
               ),
             ],
@@ -478,6 +626,7 @@ Future<void> generateInvoicePdf(
       },
     ),
   );
+
   // Print the first copy
   await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save());
