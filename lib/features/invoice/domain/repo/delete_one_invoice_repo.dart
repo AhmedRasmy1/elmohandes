@@ -4,3 +4,11 @@ abstract class DeleteOneInvoiceRepo {
     required String token,
   });
 }
+
+//--------------------------------------------------------------
+abstract class PayFullRepo {
+  Future payFull({
+    required String id,
+    required String token,
+  });
+}

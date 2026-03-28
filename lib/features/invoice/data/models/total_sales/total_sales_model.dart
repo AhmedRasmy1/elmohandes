@@ -5,8 +5,12 @@ part 'total_sales_model.g.dart';
 @JsonSerializable()
 class TotalSalesModel {
   double? totalSales;
+  double? totalPaid;
+  double? totalRemaining;
   TotalSalesModel({
     this.totalSales,
+    this.totalPaid,
+    this.totalRemaining,
   });
 
   factory TotalSalesModel.fromJson(Map<String, dynamic> json) =>
@@ -16,6 +20,8 @@ class TotalSalesModel {
   TotalSalesEntity toTotalSalesEntity() {
     return TotalSalesEntity(
       totalSales: totalSales,
+      totalPaid: totalPaid,
+      totalRemaining: totalRemaining,
     );
   }
 }

@@ -127,12 +127,30 @@ class _InvoicesViewState extends State<InvoicesView> {
                                   if (role == "Admin") {
                                     var data = state.totalSalesEntity;
                                     log('Total Sales: ${data.totalSales}');
-                                    return Text(
-                                      'إجمالي المبيعات: ${data.totalSales} ج.م',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    return Column(
+                                      children: [
+                                        Text(
+                                          'إجمالي المبيعات: ${data.totalSales} ج.م',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          'إجمالي المدفوع: ${data.totalPaid} ج.م',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          'إجمالي المتبقي: ${data.totalRemaining} ج.م',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     );
                                   }
                                 }
@@ -197,12 +215,32 @@ class _InvoicesViewState extends State<InvoicesView> {
                                       if (role == "Admin") {
                                         var data = state.totalSalesEntity;
                                         log('Total Sales: ${data.totalSales}');
-                                        return Text(
-                                          'إجمالي المبيعات: ${data.totalSales} ج.م',
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'إجمالي المبيعات: ${data.totalSales} ج.م',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'إجمالي المدفوع: ${data.totalPaid} ج.م',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'إجمالي المتبقي: ${data.totalRemaining} ج.م',
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         );
                                       }
                                     }
@@ -524,6 +562,18 @@ class InvoiceCard extends StatelessWidget {
               iconColor: Colors.red,
               label: 'الإجمالي',
               value: '${invoice.invoiceTotalPrice ?? 0} ج.م',
+            ),
+            _buildRow(
+              icon: Icons.attach_money,
+              iconColor: Colors.red,
+              label: 'المدفوع',
+              value: '${invoice.paidAmount ?? 0} ج.م',
+            ),
+            _buildRow(
+              icon: Icons.attach_money,
+              iconColor: Colors.red,
+              label: 'المتبقي',
+              value: '${invoice.remainingAmount ?? 0} ج.م',
             ),
           ],
         ),

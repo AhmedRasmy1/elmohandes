@@ -1,3 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/core/di/di.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/pay_full_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/all_invoices_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,94 +11,211 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 
-class InvoicePageDetails extends StatelessWidget {
+class InvoicePageDetails extends StatefulWidget {
   final AllInvoiceEntity invoiceData;
 
   const InvoicePageDetails({super.key, required this.invoiceData});
 
   @override
+  State<InvoicePageDetails> createState() => _InvoicePageDetailsState();
+}
+
+class _InvoicePageDetailsState extends State<InvoicePageDetails> {
+  late PayFullCubit payFullCubit;
+  @override
+  void initState() {
+    payFullCubit = getIt.get<PayFullCubit>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'تفاصيل الفاتورة',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          )),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          'المهندس',
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'ArefRuqaa'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildCustomerInfo(),
-                  const SizedBox(height: 10),
-                  _buildInvoiceTable(constraints.maxWidth),
-                  const SizedBox(height: 20),
-                  _buildTotalSection(),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          generateInvoicePdf(context, invoiceData);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+    return BlocProvider(
+      create: (context) => payFullCubit,
+      child: Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'تفاصيل الفاتورة',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCustomerInfo(),
+                    const SizedBox(height: 10),
+                    _buildInvoiceTable(constraints.maxWidth),
+                    const SizedBox(height: 20),
+                    _buildTotalSection(),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            generateInvoicePdf(context, widget.invoiceData);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        child: Text(
-                          "طباعة الفاتورة",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Cairo',
-                            color: Colors.white,
+                          child: Text(
+                            "طباعة الفاتورة",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cairo',
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    BlocConsumer<PayFullCubit, PayFullState>(
+                      listener: (context, state) {
+                        if (state is PayFullSuccess) {
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.success,
+                            animType: AnimType.bottomSlide,
+                            title: 'تم بنجاح',
+                            desc: 'تم دفع باقي المبلغ بنجاح.',
+                            btnOkOnPress: () {},
+                            btnOkText: 'حسناً',
+                            btnOkColor: const Color.fromARGB(255, 33, 243, 61),
+                            titleTextStyle: const TextStyle(
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 20,
+                            ),
+                            descTextStyle: const TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ).show();
+                        } else if (state is PayFullFailure) {
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.error,
+                            animType: AnimType.bottomSlide,
+                            title: 'تنبيه',
+                            // لو الباك إند بيبعت رسالة معينة بنعرضها، غير كده بنعرض رسالة عامة
+                            desc: 'حدث خطأ أثناء الدفع، يرجى المحاولة لاحقاً.',
+                            btnOkOnPress: () {},
+                            btnOkText: 'إغلاق',
+                            btnOkColor: Colors.red,
+                            titleTextStyle: const TextStyle(
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 20,
+                            ),
+                            descTextStyle: const TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ).show();
+                        }
+                      },
+                      builder: (context, state) {
+                        return Center(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // هنا بنعمل تشيك لو الفاتورة مدفوعة أصلاً أو مفيش مبلغ متبقي
+                                // (استبدل remainingAmount بالمتغير الصح اللي عندك في الـ invoiceData)
+                                bool noInvoicesToPay =
+                                    widget.invoiceData.remainingAmount == 0;
+
+                                if (noInvoicesToPay) {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.info,
+                                    animType: AnimType.bottomSlide,
+                                    title: 'معلومة',
+                                    desc: 'لا يوجد فواتير للسداد.',
+                                    btnOkOnPress: () {},
+                                    btnOkText: 'حسناً',
+                                    btnOkColor: Colors.blue,
+                                    titleTextStyle: const TextStyle(
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 20,
+                                    ),
+                                    descTextStyle: const TextStyle(
+                                      fontFamily: 'Cairo',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ).show();
+                                  return; // بنوقف الكود هنا عشان ميبعتش الريكويست
+                                }
+
+                                // لو في فواتير والستيت مش لودينج، ابعت الريكويست
+                                if (state is! PayFullLoading) {
+                                  payFullCubit.payFull(
+                                    id: widget.invoiceData.invoiceNumber!,
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 33, 243, 61),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 18),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                              ),
+                              child: state is PayFullLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : const Text(
+                                      "دفع الفاتورة كاملة",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.normal,
+                                        fontFamily: 'Cairo',
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildCustomerInfo() {
     DateTime createdAt;
-    if (invoiceData.createdAt is String) {
-      createdAt = DateTime.tryParse(invoiceData.createdAt!)
+    if (widget.invoiceData.createdAt is String) {
+      createdAt = DateTime.tryParse(widget.invoiceData.createdAt!)
               ?.toLocal()
               .add(const Duration(hours: 2)) ??
           DateTime.now().add(const Duration(hours: 2));
-    } else if (invoiceData.createdAt is DateTime) {
-      createdAt = (invoiceData.createdAt as DateTime)
+    } else if (widget.invoiceData.createdAt is DateTime) {
+      createdAt = (widget.invoiceData.createdAt as DateTime)
           .toLocal()
           .add(const Duration(hours: 2));
     } else {
@@ -113,7 +235,7 @@ class InvoicePageDetails extends StatelessWidget {
                   const Icon(Icons.receipt_long, color: Colors.blue),
                   const SizedBox(width: 8),
                   Text(
-                    "رقم الفاتورة: ${invoiceData.invoiceNumber}",
+                    "رقم الفاتورة: ${widget.invoiceData.invoiceNumber}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -125,7 +247,7 @@ class InvoicePageDetails extends StatelessWidget {
                   const Icon(Icons.person, color: Colors.green),
                   const SizedBox(width: 8),
                   Text(
-                    "اسم العميل: ${invoiceData.customerName}",
+                    "اسم العميل: ${widget.invoiceData.customerName}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -137,7 +259,7 @@ class InvoicePageDetails extends StatelessWidget {
                   const Icon(Icons.phone, color: Colors.orange),
                   const SizedBox(width: 8),
                   Text(
-                    "رقم التليفون: ${invoiceData.customerPhone}",
+                    "رقم التليفون: ${widget.invoiceData.customerPhone}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -149,7 +271,7 @@ class InvoicePageDetails extends StatelessWidget {
                   const Icon(Icons.payment, color: Colors.purple),
                   const SizedBox(width: 8),
                   Text(
-                    "طريقة الدفع: ${invoiceData.payType}",
+                    "طريقة الدفع: ${widget.invoiceData.payType}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -161,7 +283,7 @@ class InvoicePageDetails extends StatelessWidget {
                   const Icon(Icons.person_outline, color: Colors.red),
                   const SizedBox(width: 8),
                   Text(
-                    "الكاشير: ${invoiceData.casherName}",
+                    "الكاشير: ${widget.invoiceData.casherName}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -194,7 +316,7 @@ class InvoicePageDetails extends StatelessWidget {
                         const Icon(Icons.receipt_long, color: Colors.blue),
                         const SizedBox(width: 8),
                         Text(
-                          "رقم الفاتورة: ${invoiceData.invoiceNumber}",
+                          "رقم الفاتورة: ${widget.invoiceData.invoiceNumber}",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -206,7 +328,7 @@ class InvoicePageDetails extends StatelessWidget {
                         const Icon(Icons.person, color: Colors.green),
                         const SizedBox(width: 8),
                         Text(
-                          "اسم العميل: ${invoiceData.customerName}",
+                          "اسم العميل: ${widget.invoiceData.customerName}",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -218,7 +340,7 @@ class InvoicePageDetails extends StatelessWidget {
                         const Icon(Icons.phone, color: Colors.orange),
                         const SizedBox(width: 8),
                         Text(
-                          "رقم التليفون: ${invoiceData.customerPhone}",
+                          "رقم التليفون: ${widget.invoiceData.customerPhone}",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -237,7 +359,7 @@ class InvoicePageDetails extends StatelessWidget {
                         const Icon(Icons.payment, color: Colors.purple),
                         const SizedBox(width: 8),
                         Text(
-                          "طريقة الدفع: ${invoiceData.payType}",
+                          "طريقة الدفع: ${widget.invoiceData.payType}",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -249,7 +371,7 @@ class InvoicePageDetails extends StatelessWidget {
                         const Icon(Icons.person_outline, color: Colors.red),
                         const SizedBox(width: 8),
                         Text(
-                          "المحاسب: ${invoiceData.casherName}",
+                          "المحاسب: ${widget.invoiceData.casherName}",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -299,7 +421,7 @@ class InvoicePageDetails extends StatelessWidget {
             },
       children: [
         _buildTableHeader(isMobile),
-        ...?invoiceData.invoiceItems
+        ...?widget.invoiceData.invoiceItems
             ?.map((item) => _buildTableRow(item, isMobile)),
       ],
     );
@@ -362,7 +484,7 @@ class InvoicePageDetails extends StatelessWidget {
 
   Widget _buildTotalSection() {
     String totalPriceWords =
-        convertNumberToArabicWords(invoiceData.invoiceTotalPrice!);
+        convertNumberToArabicWords(widget.invoiceData.invoiceTotalPrice!);
 
     return Center(
       child: Card(
@@ -374,7 +496,7 @@ class InvoicePageDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
+                "السعر الإجمالي: ${widget.invoiceData.invoiceTotalPrice} ج.م",
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -387,6 +509,19 @@ class InvoicePageDetails extends StatelessWidget {
                     color: Colors.grey),
               ),
               const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "مدفوع: ${widget.invoiceData.paidAmount} ج.م",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    "الباقي: ${widget.invoiceData.remainingAmount} ج.م",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -403,7 +538,7 @@ Future<void> generateInvoicePdf(
   final ttf = pw.Font.ttf(fontData);
 
   final ByteData imageData =
-      await rootBundle.load("assets/images/iconapplication.png");
+      await rootBundle.load("assets/images/begreen__iconn.png");
   final Uint8List imageBytes = imageData.buffer.asUint8List();
   final pw.MemoryImage logo = pw.MemoryImage(imageBytes);
 
@@ -450,21 +585,16 @@ Future<void> generateInvoicePdf(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
-                height: 50,
-                width: 50,
-                child: pw.Image(logo),
+                height: 300,
+                width: 300,
+                child: pw.Image(
+                  logo,
+                ),
               ),
               pw.SizedBox(height: 5),
-              pw.Text("المهندس",
-                  style: pw.TextStyle(
-                    font: ttf,
-                    fontSize: 18,
-                    fontWeight: pw.FontWeight.bold,
-                  )),
               pw.Text("فاتورة شراء",
                   style: pw.TextStyle(
                       font: ttf, fontSize: 14, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(height: 5),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -544,68 +674,56 @@ Future<void> generateInvoicePdf(
                   ),
                 ],
               ),
-              pw.SizedBox(height: 5),
-              pw.Align(
-                alignment: pw.Alignment
-                    .bottomLeft, // محاذاة العناصر في أسفل الصفحة من الشمال
-                child: pw.Column(
-                  crossAxisAlignment:
-                      pw.CrossAxisAlignment.start, // محاذاة العناصر على الشمال
-                  children: [
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
-                          style: pw.TextStyle(
-                            font: ttf,
-                            fontSize: 12,
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    pw.SizedBox(height: 5), // مسافة بين العنصر الأول والثاني
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          "($totalPriceWords)",
-                          style: pw.TextStyle(
-                            font: ttf,
-                            fontSize: 10,
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    pw.SizedBox(height: 5), // مسافة بين العنصر الثاني والثالث
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          "مدفوع: ................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10),
-                        ),
-                      ],
-                    ),
-                    pw.SizedBox(height: 5), // مسافة بين العنصر الثالث والرابع
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          "الباقي: ..................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10),
-                        ),
-                      ],
-                    ),
-                  ],
+              pw.SizedBox(height: 10),
+              pw.Table(
+                border: pw.TableBorder.all(color: PdfColors.black, width: 0.8),
+                columnWidths: {
+                  0: pw.FlexColumnWidth(
+                      4.0), // عمود البيان هندي له مساحة أكبر عشان ياخد باقي الصفحة
+                  1: pw.FlexColumnWidth(1.5), // عمود المبلغ
+                },
+                children: [
+                  // صف السعر الإجمالي (بخلفية رصاصي زي جدول المنتجات)
+                  pw.TableRow(
+                    children: [
+                      buildPdfCell("${invoiceData.invoiceTotalPrice} ج.م", ttf,
+                          isHeader: true),
+                      buildPdfCell("السعر الإجمالي", ttf, isHeader: true),
+                    ],
+                  ),
+                  // صف المبلغ المدفوع
+                  pw.TableRow(
+                    children: [
+                      buildPdfCell("${invoiceData.paidAmount} ج.م", ttf),
+                      buildPdfCell("المبلغ المدفوع", ttf, isHeader: true),
+                    ],
+                  ),
+                  // صف المبلغ المتبقي
+                  pw.TableRow(
+                    children: [
+                      buildPdfCell("${invoiceData.remainingAmount} ج.م", ttf),
+                      buildPdfCell("المبلغ المتبقي", ttf, isHeader: true),
+                    ],
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 8),
+              // سطر التفقيط تحت الجدول مباشرة
+              pw.Text(
+                totalPriceWords,
+                textAlign: pw.TextAlign.center,
+                textDirection:
+                    pw.TextDirection.rtl, // تأكيد عشان العربي ميطلعش معكوس
+                style: pw.TextStyle(
+                  font: ttf,
+                  fontSize: 10,
+                  fontWeight: pw.FontWeight.bold,
                 ),
               ),
               pw.Spacer(), // Pushes the following content to the bottom
               pw.Center(
                 child: pw.Text(
-                  "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
+                  "الفرع الأول: سمالوط الظهير الصحراوى الغربي بحرى مصنع الصفوة \n الفرع الثاني: سمالوط الصحراوى الغربي بعد كوبرى سمالوط بـ كيلو",
                   style: pw.TextStyle(
                       font: ttf,
                       fontWeight: pw.FontWeight.bold,
@@ -613,11 +731,12 @@ Future<void> generateInvoicePdf(
                       wordSpacing: 1.5), // Added wordSpacing for better spacing
                 ),
               ),
+              pw.Divider(color: PdfColors.black, thickness: 0.8, height: 20),
               pw.Center(
                 child: pw.Text(
-                  "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
+                  "م/موسي سيد : 01031370040    -    م/شادى رجب : 01143446065",
                   style: pw.TextStyle(
-                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 10),
+                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 13),
                 ),
               ),
             ],

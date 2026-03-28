@@ -154,13 +154,9 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: const Text(
-            'المهندس',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'ArefRuqaa'),
+          title: Image.asset(
+            'assets/images/begreen_iconn.png',
+            width: 200,
           ),
           backgroundColor: Colors.white,
         ),

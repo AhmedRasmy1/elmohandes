@@ -18,6 +18,8 @@ class AddInvoice {
   List<InvoiceItem>? invoiceItems;
   DateTime? createdAt;
   int? totalAmount;
+  double? paidAmount;
+  double? remainingAmount;
 
   AddInvoice({
     this.id,
@@ -31,6 +33,8 @@ class AddInvoice {
     this.createdAt,
     this.totalAmount,
     this.invoiceNumber,
+    this.paidAmount,
+    this.remainingAmount,
   });
 
   factory AddInvoice.fromJson(Map<String, dynamic> json) {
@@ -50,6 +54,8 @@ class AddInvoice {
       createdAt: createdAt.toString(),
       invoiceTotalPrice: totalAmount,
       invoiceNumber: invoiceNumber,
+      paidAmount: paidAmount,
+      remainingAmount: remainingAmount,
     );
   }
 }

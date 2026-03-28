@@ -77,6 +77,7 @@ abstract class ApiService {
     @Field('customerName') String customerName,
     @Field('customerPhone') String customerPhone,
     @Field('payType') String payType,
+    @Field('PaidAmount') double paidAmount,
   );
 
   @GET(ApiConstants.allInvoices)
@@ -94,7 +95,11 @@ abstract class ApiService {
   Future deleteAllInvoices(
     @Header('Authorization') String token,
   );
-
+  @POST('${ApiConstants.payFull}/{id}')
+  Future payFull(
+    @Path('id') String id,
+    @Header('Authorization') String token,
+  );
   @GET(ApiConstants.totalSales)
   Future<TotalSalesModel> getTotalSales(
     @Header('Authorization') String token,

@@ -31,8 +31,6 @@ class InvoicePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeaderSection(),
-                  const SizedBox(height: 20),
                   _buildCustomerInfo(),
                   const SizedBox(height: 20),
                   _buildResponsiveInvoiceTable(constraints.maxWidth),
@@ -78,32 +76,6 @@ class InvoicePage extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildHeaderSection() {
-    return Column(
-      children: [
-        const Center(
-          child: Column(
-            children: [
-              Text(
-                'المهندس',
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
-                    fontFamily: 'ArefRuqaa'),
-              ),
-            ],
-          ),
-        ),
-        const Divider(
-          color: Colors.grey,
-          thickness: 2,
-          height: 30,
-        ),
-      ],
     );
   }
 
@@ -356,11 +328,25 @@ class InvoicePage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                "($totalPriceWords جنيه مصري)", // عرض الرقم بالكلمات
+                "($totalPriceWords جنيه مصري)",
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Colors.grey),
+              ),
+              const SizedBox(height: 15),
+              const Divider(thickness: 2, color: Colors.grey),
+              const SizedBox(height: 15),
+              Text(
+                "المبلغ المدفوع: ${invoiceData.paidAmount} ج.م",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "المتبقي: ${invoiceData.remainingAmount} ج.م",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
             ],
@@ -380,7 +366,7 @@ Future<void> generateInvoicePdf(
   final ttf = pw.Font.ttf(fontData);
 
   final ByteData imageData =
-      await rootBundle.load("assets/images/iconapplication.png");
+      await rootBundle.load("assets/images/begreen__iconn.png");
   final Uint8List imageBytes = imageData.buffer.asUint8List();
   final pw.MemoryImage logo = pw.MemoryImage(imageBytes);
 
@@ -422,14 +408,11 @@ Future<void> generateInvoicePdf(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
-                height: 50,
-                width: 50,
+                height: 300,
+                width: 300,
                 child: pw.Image(logo),
               ),
               pw.SizedBox(height: 5),
-              pw.Text("المهندس",
-                  style: pw.TextStyle(
-                      font: ttf, fontSize: 18, fontWeight: pw.FontWeight.bold)),
               pw.Text("فاتورة شراء",
                   style: pw.TextStyle(
                       font: ttf, fontSize: 14, fontWeight: pw.FontWeight.bold)),
@@ -514,50 +497,65 @@ Future<void> generateInvoicePdf(
                 ],
               ),
               pw.SizedBox(height: 5),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.end,
+              pw.Table(
+                border: pw.TableBorder.all(color: PdfColors.black, width: 0.8),
+                columnWidths: {
+                  0: pw.FlexColumnWidth(
+                      4.0), // عمود البيان هندي له مساحة أكبر عشان ياخد باقي الصفحة
+                  1: pw.FlexColumnWidth(1.5), // عمود المبلغ
+                },
                 children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  pw.TableRow(
                     children: [
-                      pw.Align(
-                        alignment: pw.Alignment.centerLeft,
-                        child: pw.Text(
-                          "السعر الإجمالي: ${invoiceData.invoiceTotalPrice} ج.م",
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 12,
-                              fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Text("($totalPriceWords)",
-                          style: pw.TextStyle(
-                              font: ttf,
-                              fontSize: 10,
-                              fontWeight: pw.FontWeight.bold)),
-                      pw.SizedBox(height: 3),
-                      pw.Text("مدفوع: ................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10)),
-                      pw.Text("الباقي: ..................................",
-                          style: pw.TextStyle(font: ttf, fontSize: 10)),
+                      buildPdfCell("${invoiceData.invoiceTotalPrice} ج.م", ttf,
+                          isHeader: true),
+                      buildPdfCell("السعر الإجمالي", ttf, isHeader: true),
+                    ],
+                  ),
+                  // صف المبلغ المدفوع
+                  pw.TableRow(
+                    children: [
+                      buildPdfCell("${invoiceData.paidAmount} ج.م", ttf),
+                      buildPdfCell("المبلغ المدفوع", ttf, isHeader: true),
+                    ],
+                  ),
+                  // صف المبلغ المتبقي
+                  pw.TableRow(
+                    children: [
+                      buildPdfCell("${invoiceData.remainingAmount} ج.م", ttf),
+                      buildPdfCell("المبلغ المتبقي", ttf, isHeader: true),
                     ],
                   ),
                 ],
               ),
-              pw.SizedBox(height: 5),
+              pw.Text(
+                totalPriceWords,
+                textAlign: pw.TextAlign.center,
+                textDirection:
+                    pw.TextDirection.rtl, // تأكيد عشان العربي ميطلعش معكوس
+                style: pw.TextStyle(
+                  font: ttf,
+                  fontSize: 10,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
               pw.Spacer(),
               pw.Center(
                 child: pw.Text(
-                  "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
+                  "الفرع الأول: سمالوط الظهير الصحراوى الغربي بحرى مصنع الصفوة \n الفرع الثاني: سمالوط الصحراوى الغربي بعد كوبرى سمالوط بـ كيلو",
                   style: pw.TextStyle(
-                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 13),
+                      font: ttf,
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 13,
+                      wordSpacing: 1.5), // Added wordSpacing for better spacing
                 ),
               ),
+              pw.Divider(color: PdfColors.black, thickness: 0.8, height: 20),
               pw.Center(
                 child: pw.Text(
-                  "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
+                  "م/موسي سيد : 01031370040    -    م/شادى رجب : 01143446065",
                   style: pw.TextStyle(
-                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 10),
+                      font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 13),
                 ),
               ),
             ],

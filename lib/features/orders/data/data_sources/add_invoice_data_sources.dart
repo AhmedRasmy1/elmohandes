@@ -6,5 +6,6 @@ abstract class AddInvoiceDataSources {
       {required String token,
       required String customerName,
       required String customerPhone,
-      required String payType});
+      required String payType,
+      required double paidAmount});
 }

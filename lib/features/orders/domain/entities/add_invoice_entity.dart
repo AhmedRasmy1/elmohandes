@@ -10,6 +10,8 @@ class AddInvoiceEntity {
   final String? createdAt;
   final num? invoiceTotalPrice;
   final String? invoiceNumber;
+  final double? paidAmount;
+  final double? remainingAmount;
 
   AddInvoiceEntity(
       {required this.id,
@@ -20,5 +22,7 @@ class AddInvoiceEntity {
       required this.invoiceItems,
       required this.createdAt,
       required this.invoiceTotalPrice,
-      required this.invoiceNumber});
+      required this.invoiceNumber,
+      required this.paidAmount,
+      required this.remainingAmount});
 }

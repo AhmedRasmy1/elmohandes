@@ -11,11 +11,13 @@ class AddInvoiceUseCase {
       {required String token,
       required String customerName,
       required String customerPhone,
-      required String payType}) {
+      required String payType,
+      required double paidAmount}) {
     return addInvoiceRepo.addInvoice(
         token: token,
         customerName: customerName,
         customerPhone: customerPhone,
-        payType: payType);
+        payType: payType,
+        paidAmount: paidAmount);
   }
 }

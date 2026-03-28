@@ -22,6 +22,8 @@ AllInovices _$AllInovicesFromJson(Map<String, dynamic> json) => AllInovices(
           ? null
           : DateTime.parse(json['createdAt'] as String),
       totalAmount: (json['totalAmount'] as num?)?.toInt(),
+      paidAmount: (json['paidAmount'] as num?)?.toDouble(),
+      remainingAmount: (json['remainingAmount'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$AllInovicesToJson(AllInovices instance) =>
@@ -37,4 +39,6 @@ Map<String, dynamic> _$AllInovicesToJson(AllInovices instance) =>
       'invoiceItems': instance.invoiceItems,
       'createdAt': instance.createdAt?.toIso8601String(),
       'totalAmount': instance.totalAmount,
+      'paidAmount': instance.paidAmount,
+      'remainingAmount': instance.remainingAmount,
     };

@@ -22,6 +22,8 @@ AddInvoice _$AddInvoiceFromJson(Map<String, dynamic> json) => AddInvoice(
           : DateTime.parse(json['createdAt'] as String),
       totalAmount: (json['totalAmount'] as num?)?.toInt(),
       invoiceNumber: json['invoiceNumber'] as String?,
+      paidAmount: (json['paidAmount'] as num?)?.toDouble(),
+      remainingAmount: (json['remainingAmount'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$AddInvoiceToJson(AddInvoice instance) =>
@@ -37,4 +39,6 @@ Map<String, dynamic> _$AddInvoiceToJson(AddInvoice instance) =>
       'invoiceItems': instance.invoiceItems,
       'createdAt': instance.createdAt?.toIso8601String(),
       'totalAmount': instance.totalAmount,
+      'paidAmount': instance.paidAmount,
+      'remainingAmount': instance.remainingAmount,
     };

@@ -15,4 +15,5 @@ class ApiConstants {
   static const String totalSales = "api/invoice/total-sales";
   static const String totalSalesByDate = "api/invoice/today-sales";
   static const String invoicePreview = 'api/cart/preview-invoice';
+  static const String payFull = 'api/invoice/pay-full';
 }

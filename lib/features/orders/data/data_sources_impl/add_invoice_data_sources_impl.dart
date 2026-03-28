@@ -14,10 +14,11 @@ class AddInvoiceDataSourcesImpl implements AddInvoiceDataSources {
       {required String token,
       required String customerName,
       required String customerPhone,
-      required String payType}) {
+      required String payType,
+      required double paidAmount}) {
     return executeApi(() async {
       var response = await apiService.addInvoice(
-          token, customerName, customerPhone, payType);
+          token, customerName, customerPhone, payType, paidAmount);
       var data = response.toAddInvoiceEntity();
       return data;
     });

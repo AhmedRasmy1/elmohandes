@@ -396,7 +396,7 @@ class _CartPageState extends State<CartPage> {
     final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
     final ttf = pw.Font.ttf(fontData);
     final ByteData imageData =
-        await rootBundle.load("assets/images/iconapplication.png");
+        await rootBundle.load("assets/images/begreen__iconn.png");
     final Uint8List imageBytes = imageData.buffer.asUint8List();
     final pw.MemoryImage logo = pw.MemoryImage(imageBytes);
 
@@ -439,16 +439,11 @@ class _CartPageState extends State<CartPage> {
               crossAxisAlignment: pw.CrossAxisAlignment.center,
               children: [
                 pw.Container(
-                  height: 50,
-                  width: 50,
+                  height: 300,
+                  width: 300,
                   child: pw.Image(logo),
                 ),
                 pw.SizedBox(height: 5),
-                pw.Text("المهندس",
-                    style: pw.TextStyle(
-                        font: ttf,
-                        fontSize: 18,
-                        fontWeight: pw.FontWeight.bold)),
                 pw.Text("معاينة الفاتورة",
                     style: pw.TextStyle(
                         font: ttf,
@@ -567,20 +562,25 @@ class _CartPageState extends State<CartPage> {
                 pw.Spacer(),
                 pw.Center(
                   child: pw.Text(
-                    "سمالوط الصحراوى الغربي، قبل مدخل سمالوط بـ ٣ كيلومتر، بجوار مصنع الصفوة",
+                    "الفرع الأول: سمالوط الظهير الصحراوى الغربي بحرى مصنع الصفوة \n الفرع الثاني: سمالوط الصحراوى الغربي بعد كوبرى سمالوط بـ كيلو",
                     style: pw.TextStyle(
                         font: ttf,
                         fontWeight: pw.FontWeight.bold,
-                        fontSize: 13),
+                        fontSize: 13,
+                        wordSpacing:
+                            1.5), // Added wordSpacing for better spacing
                   ),
                 ),
+                pw.Divider(color: PdfColors.black, thickness: 0.8, height: 20),
                 pw.Center(
-                  child: pw.Text(
-                    "م/عمر عبدالقادر : 01004130149 - م/محمد عبدالقادر : 01099507608 - م/موسي سيد : 01151312020",
-                    style: pw.TextStyle(
-                        font: ttf,
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 10),
+                  child: pw.Center(
+                    child: pw.Text(
+                      "م/موسي سيد : 01031370040    -    م/شادى رجب : 01143446065",
+                      style: pw.TextStyle(
+                          font: ttf,
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 13),
+                    ),
                   ),
                 ),
               ],

@@ -111,18 +111,8 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Image.asset(
-                                  'assets/images/iconapplication.png',
-                                  width: isMobile ? 100 : 180,
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  "المهندس",
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black87,
-                                    fontFamily: 'ArefRuqaa',
-                                  ),
+                                  'assets/images/begreen_iconn.png',
+                                  width: isMobile ? 100 : 250,
                                 ),
                                 const SizedBox(height: 20),
                                 TextFormField(

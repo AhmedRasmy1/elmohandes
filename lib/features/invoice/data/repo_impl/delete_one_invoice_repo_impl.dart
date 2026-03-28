@@ -11,3 +11,14 @@ class DeleteOneInvoiceRepoImpl implements DeleteOneInvoiceRepo {
     return deleteOneInvoiceDataSources.deleteOneInvoice(id: id, token: token);
   }
 }
+
+//--------------------------------------------------------------
+@Injectable(as: PayFullRepo)
+class PayFullRepoImpl implements PayFullRepo {
+  PayFullDataSources payFullDataSources;
+  PayFullRepoImpl({required this.payFullDataSources});
+  @override
+  Future payFull({required String id, required String token}) {
+    return payFullDataSources.payFull(id: id, token: token);
+  }
+}

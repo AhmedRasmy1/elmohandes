@@ -156,6 +156,8 @@ import '../../features/invoice/presentation/view_models/cubit/delete_all_invoice
     as _i64;
 import '../../features/invoice/presentation/view_models/cubit/delete_one_invoices_cubit.dart'
     as _i630;
+import '../../features/invoice/presentation/view_models/cubit/pay_full_cubit.dart'
+    as _i734;
 import '../../features/invoice/presentation/view_models/cubit/preview_invoice_cubit.dart'
     as _i705;
 import '../../features/invoice/presentation/view_models/cubit/toda_sales_info_cubit.dart'
@@ -204,6 +206,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i406.TodaySalesInfoDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i703.TotalSalesRepo>(
         () => _i16.TotalSalesRepoImpl(gh<_i503.TotalSalesDataSources>()));
+    gh.factory<_i470.PayFullDataSources>(() =>
+        _i1065.PayFullDataSourcesImpl(apiService: gh<_i680.ApiService>()));
     gh.factory<_i322.ProductsRepo>(
         () => _i59.ProductsRepoImpl(gh<_i920.ProductsDataSources>()));
     gh.factory<_i465.DeleteProductFromCartRepo>(() =>
@@ -254,6 +258,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i887.TotalSalesCubit(gh<_i790.TotalSalesUseCase>()));
     gh.factory<_i256.ProductsUseCase>(
         () => _i256.ProductsUseCase(gh<_i322.ProductsRepo>()));
+    gh.factory<_i106.PayFullRepo>(() => _i624.PayFullRepoImpl(
+        payFullDataSources: gh<_i470.PayFullDataSources>()));
     gh.factory<_i219.DeleteAllInvoicesRepo>(() =>
         _i962.DeleteAllInvoicesRepoImpl(
             deleteAllInvoicesDataSources:
@@ -286,6 +292,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i384.AddproductCubit(gh<_i170.AddProductUseCase>()));
     gh.factory<_i630.DeleteOneInvoicesCubit>(() =>
         _i630.DeleteOneInvoicesCubit(gh<_i525.DeleteOneInvoicesUseCase>()));
+    gh.factory<_i525.PayFullUseCase>(
+        () => _i525.PayFullUseCase(payFullRepo: gh<_i106.PayFullRepo>()));
+    gh.factory<_i734.PayFullCubit>(
+        () => _i734.PayFullCubit(gh<_i525.PayFullUseCase>()));
     gh.factory<_i145.AddInvoiceUseCase>(
         () => _i145.AddInvoiceUseCase(gh<_i482.AddInvoiceRepo>()));
     gh.factory<_i185.UpdateProductUseCase>(

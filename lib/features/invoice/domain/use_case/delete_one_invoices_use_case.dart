@@ -9,3 +9,13 @@ class DeleteOneInvoicesUseCase {
     return deleteOneInvoiceRepo.deleteOneInvoice(id: id, token: token);
   }
 }
+
+//--------------------------------------------------------------
+@injectable
+class PayFullUseCase {
+  PayFullRepo payFullRepo;
+  PayFullUseCase({required this.payFullRepo});
+  Future payFull({required String id, required String token}) {
+    return payFullRepo.payFull(id: id, token: token);
+  }
+}

@@ -11,3 +11,14 @@ class DeleteOneInvoiceDataSourcesImpl implements DeleteOneInvoiceDataSources {
     return apiService.deleteOneInvoice(id, token);
   }
 }
+//------------------------------------------------------------------------
+
+@Injectable(as: PayFullDataSources)
+class PayFullDataSourcesImpl implements PayFullDataSources {
+  ApiService apiService;
+  PayFullDataSourcesImpl({required this.apiService});
+  @override
+  Future payFull({required String id, required String token}) {
+    return apiService.payFull(id, token);
+  }
+}

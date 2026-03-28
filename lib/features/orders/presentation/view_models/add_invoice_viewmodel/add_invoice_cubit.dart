@@ -16,13 +16,15 @@ class AddInvoiceCubit extends Cubit<AddInvoiceState> {
       {required String token,
       required String customerName,
       required String customerPhone,
-      required String payType}) async {
+      required String payType,
+      required double paidAmount}) async {
     emit(AddInvoiceLoading());
     final result = await _addInvoiceUseCase.addInvoice(
         token: token,
         customerName: customerName,
         customerPhone: customerPhone,
-        payType: payType);
+        payType: payType,
+        paidAmount: paidAmount);
     switch (result) {
       case Success<AddInvoiceEntity>():
         emit(AddInvoiceSuccess(result.data));

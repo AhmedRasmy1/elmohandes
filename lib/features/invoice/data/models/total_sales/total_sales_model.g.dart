@@ -9,9 +9,13 @@ part of 'total_sales_model.dart';
 TotalSalesModel _$TotalSalesModelFromJson(Map<String, dynamic> json) =>
     TotalSalesModel(
       totalSales: (json['totalSales'] as num?)?.toDouble(),
+      totalPaid: (json['totalPaid'] as num?)?.toDouble(),
+      totalRemaining: (json['totalRemaining'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$TotalSalesModelToJson(TotalSalesModel instance) =>
     <String, dynamic>{
       'totalSales': instance.totalSales,
+      'totalPaid': instance.totalPaid,
+      'totalRemaining': instance.totalRemaining,
     };

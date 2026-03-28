@@ -252,6 +252,7 @@ class _ApiService implements ApiService {
     String customerName,
     String customerPhone,
     String payType,
+    double paidAmount,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -261,6 +262,7 @@ class _ApiService implements ApiService {
       'customerName': customerName,
       'customerPhone': customerPhone,
       'payType': payType,
+      'PaidAmount': paidAmount,
     };
     final _options = _setStreamType<AddInvoice>(
       Options(method: 'POST', headers: _headers, extra: _extra)
@@ -349,6 +351,28 @@ class _ApiService implements ApiService {
           .compose(
             _dio.options,
             'api/Invoice',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> payFull(String id, String token) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<dynamic>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/invoice/pay-full/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

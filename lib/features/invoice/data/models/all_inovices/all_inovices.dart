@@ -18,6 +18,8 @@ class AllInovices {
   List<InvoiceItem>? invoiceItems;
   DateTime? createdAt;
   int? totalAmount;
+  double? paidAmount;
+  double? remainingAmount;
 
   AllInovices({
     this.id,
@@ -31,6 +33,8 @@ class AllInovices {
     this.invoiceItems,
     this.createdAt,
     this.totalAmount,
+    this.paidAmount,
+    this.remainingAmount,
   });
 
   factory AllInovices.fromJson(Map<String, dynamic> json) {
@@ -49,6 +53,8 @@ class AllInovices {
       invoiceItems: invoiceItems,
       createdAt: createdAt.toString(),
       invoiceTotalPrice: totalAmount,
+      paidAmount: paidAmount,
+      remainingAmount: remainingAmount,
     );
   }
 }

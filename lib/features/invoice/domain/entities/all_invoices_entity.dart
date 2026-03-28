@@ -9,6 +9,8 @@ class AllInvoiceEntity {
   final String? createdAt;
   final num? invoiceTotalPrice;
   final String? invoiceNumber;
+  final double? paidAmount;
+  final double? remainingAmount;
 
   AllInvoiceEntity({
     required this.customerName,
@@ -19,5 +21,7 @@ class AllInvoiceEntity {
     required this.createdAt,
     required this.invoiceTotalPrice,
     required this.invoiceNumber,
+    required this.paidAmount,
+    required this.remainingAmount,
   });
 }

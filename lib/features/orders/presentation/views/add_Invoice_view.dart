@@ -23,6 +23,8 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _customerName = TextEditingController();
   final TextEditingController _customerPhone = TextEditingController();
+  final TextEditingController _paidAmount =
+      TextEditingController(); // ضفنا الكنترولر هنا
   String _selectedPaymentMethod = "كاش";
   final List<String> _paymentMethods = ["كاش", "فودافون كاش", "إنستاباى"];
   late AddInvoiceCubit viewModel;
@@ -37,6 +39,7 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
   void dispose() {
     _customerName.dispose();
     _customerPhone.dispose();
+    _paidAmount.dispose(); // عملنا dispose للكنترولر الجديد
     super.dispose();
   }
 
@@ -49,7 +52,9 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
           title: const Text(
             "إضافة فاتورة جديدة",
             style: TextStyle(
-                color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+                color: Colors.black,
+                fontSize: 24,
+                fontWeight: FontWeight.normal),
           ),
           centerTitle: true,
         ),
@@ -84,6 +89,18 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
                       return null;
                     },
                   ),
+                  // ضفنا حقل المبلغ المدفوع هنا في الـ UI
+                  _buildTextField(
+                    controller: _paidAmount,
+                    label: "المبلغ المدفوع",
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الرجاء إدخال المبلغ المدفوع';
+                      }
+                      return null;
+                    },
+                  ),
                   _buildDropdownField(),
                   const SizedBox(height: 25),
                   BlocConsumer<AddInvoiceCubit, AddInvoiceState>(
@@ -103,12 +120,12 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
                       }
                       if (state is AddInvoiceSuccess) {}
                       if (state is AddInvoiceFailure) {
-                        return Center(
+                        return const Center(
                           child: Text(
                             "حدث خطأ ما",
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.normal,
                               fontFamily: 'Cairo',
                               color: Colors.red,
                             ),
@@ -123,25 +140,25 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
                               viewModel.addInvoice(
                                 token:
                                     'Bearer ${CacheService.getData(key: CacheConstants.userToken)}',
-                                customerName:
-                                    _customerName.text, // customerName
+                                customerName: _customerName.text,
                                 customerPhone: _customerPhone.text,
-                                payType: _selectedPaymentMethod, // payType
+                                payType: _selectedPaymentMethod,
+                                paidAmount: double.parse(_paidAmount.text),
                               );
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero, // شيلنا الكيرف
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             "إضافة فاتورة",
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.normal,
                               fontFamily: 'Cairo',
                               color: Colors.white,
                             ),
@@ -174,11 +191,13 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
         textAlign: TextAlign.right,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.zero, // شيلنا الكيرف
+          ),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
           labelStyle:
-              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         ),
         validator: validator,
       ),
@@ -191,9 +210,9 @@ class _AddInvoiceViewState extends State<AddInvoiceView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "طريقة الدفع",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
           ),
           const SizedBox(height: 8),
           Wrap(
