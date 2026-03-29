@@ -91,7 +91,7 @@ flutter_launcher_icons:
   ios: true
   windows:
     generate: true
-    image_path: "assets/images/begreen_iconn.png" # تأكد من وجود الصورة هنا
+    image_path: "assets/images/begreen___icon.jpeg" # تأكد من وجود الصورة هنا
     icon_size: 256 # حجم الأيقونة للويندوز
   image_path: "assets/images/begreen_iconn.png" # تأكد من وجود الصورة هنا # تأكد من وجود الصورة هنا
   adaptive_icon_background: "#ffffff" # لون الخلفية لأيقونة أندرويد المتكيفة
