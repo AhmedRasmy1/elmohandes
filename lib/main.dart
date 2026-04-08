@@ -76,10 +76,8 @@ class _SplashHandlerState extends State<SplashHandler> {
   Future<void> navigateAfterSplash() async {
     final token = await CacheService.getData(key: CacheConstants.userToken);
 
-    /// بعد ما نحدد وجهة المستخدم، نحذف الـ Splash Screen
     FlutterNativeSplash.remove();
 
-    /// تحويل المستخدم إلى الصفحة المناسبة
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -93,8 +91,7 @@ class _SplashHandlerState extends State<SplashHandler> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body:
-          Center(child: CircularProgressIndicator()), // شاشة مؤقتة لحين التوجيه
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/features/invoice/presentation/view_models/cubit/pay_full_cubit.dart';
+import 'package:elmohandes/features/invoice/presentation/view_models/cubit/pay_partial_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/all_invoices_entity.dart';
@@ -22,16 +23,26 @@ class InvoicePageDetails extends StatefulWidget {
 
 class _InvoicePageDetailsState extends State<InvoicePageDetails> {
   late PayFullCubit payFullCubit;
+  late PayPartialCubit payPartialCubit;
+  final TextEditingController amountController = TextEditingController();
   @override
   void initState() {
     payFullCubit = getIt.get<PayFullCubit>();
+    payPartialCubit = getIt.get<PayPartialCubit>();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => payFullCubit,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => payFullCubit,
+        ),
+        BlocProvider(
+          create: (context) => payPartialCubit,
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -139,7 +150,6 @@ class _InvoicePageDetailsState extends State<InvoicePageDetails> {
                                 // (استبدل remainingAmount بالمتغير الصح اللي عندك في الـ invoiceData)
                                 bool noInvoicesToPay =
                                     widget.invoiceData.remainingAmount == 0;
-
                                 if (noInvoicesToPay) {
                                   AwesomeDialog(
                                     context: context,
@@ -196,7 +206,157 @@ class _InvoicePageDetailsState extends State<InvoicePageDetails> {
                           ),
                         );
                       },
-                    )
+                    ),
+                    const SizedBox(height: 10),
+                    BlocConsumer<PayPartialCubit, PayPartialState>(
+                      listener: (context, state) {
+                        if (state is PayPartialSuccess) {
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.success,
+                            animType: AnimType.bottomSlide,
+                            title: 'تم بنجاح',
+                            desc:
+                                state.message ?? 'تم دفع المبلغ الجزئي بنجاح.',
+                            btnOkOnPress: () {},
+                            btnOkText: 'حسناً',
+                            btnOkColor: Colors.green,
+                            titleTextStyle: const TextStyle(
+                                fontFamily: 'Cairo', fontSize: 20),
+                            descTextStyle: const TextStyle(
+                                fontFamily: 'Cairo', fontSize: 16),
+                          ).show();
+                        } else if (state is PayPartialError) {
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.error,
+                            animType: AnimType.bottomSlide,
+                            title: 'خطأ',
+                            desc:
+                                state.message ?? 'حدث خطأ أثناء الدفع الجزئي.',
+                            btnOkOnPress: () {},
+                            btnOkText: 'إغلاق',
+                            btnOkColor: Colors.red,
+                            titleTextStyle: const TextStyle(
+                                fontFamily: 'Cairo', fontSize: 20),
+                            descTextStyle: const TextStyle(
+                                fontFamily: 'Cairo', fontSize: 16),
+                          ).show();
+                        }
+                      },
+                      builder: (context, state) {
+                        return Center(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // 1. تشيك لو الفاتورة خالصة أصلاً
+                                if (widget.invoiceData.remainingAmount == 0) {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.info,
+                                    title: 'تنبيه',
+                                    desc: 'هذه الفاتورة مدفوعة بالكامل.',
+                                    btnOkText: 'حسناً',
+                                  ).show();
+                                  return;
+                                }
+
+                                // 2. إظهار ديالوج إدخال المبلغ
+                                AwesomeDialog(
+                                  context: context,
+                                  animType: AnimType.scale,
+                                  dialogType: DialogType.noHeader,
+                                  title: 'دفع جزئي',
+                                  body: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        const Text(
+                                          'أدخل المبلغ المراد دفعه',
+                                          style: TextStyle(
+                                              fontFamily: 'Cairo',
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        TextField(
+                                          controller: amountController,
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: InputDecoration(
+                                            hintText:
+                                                'المبلغ المتبقي: ${widget.invoiceData.remainingAmount}',
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  btnOkText: 'تأكيد الدفع',
+                                  btnCancelText: 'إلغاء',
+                                  btnCancelOnPress: () {},
+                                  btnOkOnPress: () {
+                                    double? enteredAmount =
+                                        double.tryParse(amountController.text);
+
+                                    if (enteredAmount != null &&
+                                        enteredAmount > 0) {
+                                      // تشيك إن المبلغ المدخل مش أكبر من المتبقي
+                                      if (enteredAmount <=
+                                          widget.invoiceData.remainingAmount!) {
+                                        context
+                                            .read<PayPartialCubit>()
+                                            .payPartial(
+                                              id: widget
+                                                  .invoiceData.invoiceNumber!
+                                                  .toString(),
+                                              amount: enteredAmount,
+                                            );
+                                        amountController
+                                            .clear(); // مسح الخانة بعد الطلب
+                                      } else {
+                                        // رسالة خطأ لو المبلغ أكبر من المديونية
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    'المبلغ المدخل أكبر من المتبقي!')));
+                                      }
+                                    } else {
+                                      // رسالة خطأ لو المدخلات غلط
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'يرجى إدخال مبلغ صحيح')));
+                                    }
+                                  },
+                                ).show();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .blueAccent, // لون مختلف للتميز عن الدفع الكلي
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 18),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero),
+                              ),
+                              child: state is PayPartialLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : const Text(
+                                      "دفع جزء من الفاتورة",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'Cairo',
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

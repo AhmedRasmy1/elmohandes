@@ -12,3 +12,12 @@ abstract class PayFullDataSources {
     required String token,
   });
 }
+
+//--------------------------------------------------------------
+abstract class PayPartialDataSources {
+  Future payPartial({
+    required String id,
+    required String token,
+    required double amount,
+  });
+}

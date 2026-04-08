@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -158,6 +158,8 @@ import '../../features/invoice/presentation/view_models/cubit/delete_one_invoice
     as _i630;
 import '../../features/invoice/presentation/view_models/cubit/pay_full_cubit.dart'
     as _i734;
+import '../../features/invoice/presentation/view_models/cubit/pay_partial_cubit.dart'
+    as _i178;
 import '../../features/invoice/presentation/view_models/cubit/preview_invoice_cubit.dart'
     as _i705;
 import '../../features/invoice/presentation/view_models/cubit/toda_sales_info_cubit.dart'
@@ -213,6 +215,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i465.DeleteProductFromCartRepo>(() =>
         _i460.DeleteProductFromCartRepoImpl(
             gh<_i239.DeleteProductFromCartDataSources>()));
+    gh.factory<_i470.PayPartialDataSources>(() =>
+        _i1065.PayPartialDataSourcesImpl(apiService: gh<_i680.ApiService>()));
     gh.factory<_i790.TotalSalesUseCase>(
         () => _i790.TotalSalesUseCase(gh<_i703.TotalSalesRepo>()));
     gh.factory<_i470.DeleteOneInvoiceDataSources>(() =>
@@ -264,6 +268,8 @@ extension GetItInjectableX on _i174.GetIt {
         _i962.DeleteAllInvoicesRepoImpl(
             deleteAllInvoicesDataSources:
                 gh<_i365.DeleteAllInvoicesDataSources>()));
+    gh.factory<_i106.PayPartialRepo>(() => _i624.PayPartialRepoImpl(
+        payPartialDataSources: gh<_i470.PayPartialDataSources>()));
     gh.factory<_i1003.AllInvoicesUseCase>(
         () => _i1003.AllInvoicesUseCase(gh<_i1044.AllInvoicesRepo>()));
     gh.factory<_i269.TodaySalesInfoUseCase>(
@@ -292,6 +298,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i384.AddproductCubit(gh<_i170.AddProductUseCase>()));
     gh.factory<_i630.DeleteOneInvoicesCubit>(() =>
         _i630.DeleteOneInvoicesCubit(gh<_i525.DeleteOneInvoicesUseCase>()));
+    gh.factory<_i525.PayPartialUseCase>(() =>
+        _i525.PayPartialUseCase(payPartialRepo: gh<_i106.PayPartialRepo>()));
     gh.factory<_i525.PayFullUseCase>(
         () => _i525.PayFullUseCase(payFullRepo: gh<_i106.PayFullRepo>()));
     gh.factory<_i734.PayFullCubit>(
@@ -300,6 +308,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i145.AddInvoiceUseCase(gh<_i482.AddInvoiceRepo>()));
     gh.factory<_i185.UpdateProductUseCase>(
         () => _i185.UpdateProductUseCase(gh<_i712.UpdateProductRepo>()));
+    gh.factory<_i178.PayPartialCubit>(
+        () => _i178.PayPartialCubit(gh<_i525.PayPartialUseCase>()));
     gh.factory<_i473.AddProductToCartUseCase>(
         () => _i473.AddProductToCartUseCase(gh<_i522.AddProductToCartRepo>()));
     gh.factory<_i127.DeleteAllInvoicesUseCase>(() =>

@@ -19,3 +19,14 @@ class PayFullUseCase {
     return payFullRepo.payFull(id: id, token: token);
   }
 }
+
+//--------------------------------------------------------------
+@injectable
+class PayPartialUseCase {
+  PayPartialRepo payPartialRepo;
+  PayPartialUseCase({required this.payPartialRepo});
+  Future payPartial(
+      {required String id, required String token, required double amount}) {
+    return payPartialRepo.payPartial(id: id, token: token, amount: amount);
+  }
+}

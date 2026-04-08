@@ -2,11 +2,13 @@
 
 part of 'api_manager.dart';
 
+// dart format off
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
 class _ApiService implements ApiService {
   _ApiService(this._dio, {this.baseUrl, this.errorLogger}) {
@@ -40,7 +42,7 @@ class _ApiService implements ApiService {
     try {
       _value = Login.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -66,12 +68,10 @@ class _ApiService implements ApiService {
     late List<ProductsModel> _value;
     try {
       _value = _result.data!
-          .map(
-            (dynamic i) => ProductsModel.fromJson(i as Map<String, dynamic>),
-          )
+          .map((dynamic i) => ProductsModel.fromJson(i as Map<String, dynamic>))
           .toList();
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -103,7 +103,7 @@ class _ApiService implements ApiService {
     try {
       _value = AddProductModel.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -143,7 +143,7 @@ class _ApiService implements ApiService {
     try {
       _value = UpdateProduct.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -213,12 +213,10 @@ class _ApiService implements ApiService {
     late List<CartDetails> _value;
     try {
       _value = _result.data!
-          .map(
-            (dynamic i) => CartDetails.fromJson(i as Map<String, dynamic>),
-          )
+          .map((dynamic i) => CartDetails.fromJson(i as Map<String, dynamic>))
           .toList();
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -279,7 +277,7 @@ class _ApiService implements ApiService {
     try {
       _value = AddInvoice.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -306,12 +304,10 @@ class _ApiService implements ApiService {
     late List<AllInovices> _value;
     try {
       _value = _result.data!
-          .map(
-            (dynamic i) => AllInovices.fromJson(i as Map<String, dynamic>),
-          )
+          .map((dynamic i) => AllInovices.fromJson(i as Map<String, dynamic>))
           .toList();
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -384,6 +380,28 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<dynamic> payPartial(String id, String token, double amount) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = {'Amount': amount};
+    final _options = _setStreamType<dynamic>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/invoice/pay-partial/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
   Future<TotalSalesModel> getTotalSales(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -405,7 +423,7 @@ class _ApiService implements ApiService {
     try {
       _value = TotalSalesModel.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -433,7 +451,7 @@ class _ApiService implements ApiService {
     try {
       _value = TodaySalesInfoModel.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -461,7 +479,7 @@ class _ApiService implements ApiService {
     try {
       _value = PreviewInvoice.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -494,3 +512,5 @@ class _ApiService implements ApiService {
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
 }
+
+// dart format on

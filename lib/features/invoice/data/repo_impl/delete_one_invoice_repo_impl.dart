@@ -22,3 +22,16 @@ class PayFullRepoImpl implements PayFullRepo {
     return payFullDataSources.payFull(id: id, token: token);
   }
 }
+
+//--------------------------------------------------------------
+@Injectable(as: PayPartialRepo)
+class PayPartialRepoImpl implements PayPartialRepo {
+  PayPartialDataSources payPartialDataSources;
+  PayPartialRepoImpl({required this.payPartialDataSources});
+  @override
+  Future payPartial(
+      {required String id, required String token, required double amount}) {
+    return payPartialDataSources.payPartial(
+        id: id, token: token, amount: amount);
+  }
+}

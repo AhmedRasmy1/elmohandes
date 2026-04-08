@@ -100,6 +100,12 @@ abstract class ApiService {
     @Path('id') String id,
     @Header('Authorization') String token,
   );
+  @POST('${ApiConstants.payPartial}/{id}')
+  Future payPartial(
+    @Path('id') String id,
+    @Header('Authorization') String token,
+    @Field('Amount') double amount,
+  );
   @GET(ApiConstants.totalSales)
   Future<TotalSalesModel> getTotalSales(
     @Header('Authorization') String token,

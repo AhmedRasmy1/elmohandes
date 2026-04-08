@@ -12,3 +12,12 @@ abstract class PayFullRepo {
     required String token,
   });
 }
+
+//--------------------------------------------------------------
+abstract class PayPartialRepo {
+  Future payPartial({
+    required String id,
+    required String token,
+    required double amount,
+  });
+}

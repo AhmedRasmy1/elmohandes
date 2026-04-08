@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/features/invoice/presentation/views/client_search_screen.dart';
 import '../view_models/cubit/toda_sales_info_cubit.dart';
 import '../view_models/cubit/total_sales_cubit.dart';
 import '../../../../core/di/di.dart';
@@ -65,6 +66,18 @@ class _InvoicesViewState extends State<InvoicesView> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person_2_rounded),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ClientSearchScreen()),
+                );
+              },
+            )
+          ],
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {

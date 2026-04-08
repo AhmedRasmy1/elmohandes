@@ -22,3 +22,15 @@ class PayFullDataSourcesImpl implements PayFullDataSources {
     return apiService.payFull(id, token);
   }
 }
+//------------------------------------------------------------------------
+
+@Injectable(as: PayPartialDataSources)
+class PayPartialDataSourcesImpl implements PayPartialDataSources {
+  ApiService apiService;
+  PayPartialDataSourcesImpl({required this.apiService});
+  @override
+  Future payPartial(
+      {required String id, required String token, required double amount}) {
+    return apiService.payPartial(id, token, amount);
+  }
+}
