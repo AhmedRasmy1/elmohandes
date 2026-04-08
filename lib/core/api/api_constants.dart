@@ -18,4 +18,5 @@ class ApiConstants {
   static const String payFull = 'api/invoice/pay-full';
   static const String payPartial = 'api/invoice/pay-partial';
   static const String customerSearch = 'api/invoice/customer';
+  static const String allCustomers = 'api/invoice/customers-summary';
 }

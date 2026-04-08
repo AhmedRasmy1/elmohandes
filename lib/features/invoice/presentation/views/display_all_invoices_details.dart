@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:elmohandes/core/di/di.dart';
 import 'package:elmohandes/features/invoice/presentation/view_models/cubit/pay_full_cubit.dart';
 import 'package:elmohandes/features/invoice/presentation/view_models/cubit/pay_partial_cubit.dart';
+import 'package:elmohandes/features/invoice/presentation/views/display_all_invoices.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/all_invoices_entity.dart';
@@ -102,7 +103,18 @@ class _InvoicePageDetailsState extends State<InvoicePageDetails> {
                             animType: AnimType.bottomSlide,
                             title: 'تم بنجاح',
                             desc: 'تم دفع باقي المبلغ بنجاح.',
-                            btnOkOnPress: () {},
+
+                            // 👇 السحر كله هنا يا هندسة 👇
+                            btnOkOnPress: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const InvoicesView()),
+                                (route) =>
+                                    false, // السطر ده بيمسح كل الصفحات القديمة عشان ميبقاش في تهنيج
+                              );
+                            },
+
                             btnOkText: 'حسناً',
                             btnOkColor: const Color.fromARGB(255, 33, 243, 61),
                             titleTextStyle: const TextStyle(
@@ -218,7 +230,19 @@ class _InvoicePageDetailsState extends State<InvoicePageDetails> {
                             title: 'تم بنجاح',
                             desc:
                                 state.message ?? 'تم دفع المبلغ الجزئي بنجاح.',
-                            btnOkOnPress: () {},
+
+                            // 👇 السحر هنا تاني 👇
+                            btnOkOnPress: () {
+                              amountController
+                                  .clear(); // اختياري عشان تفضي الخانة
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const InvoicesView()),
+                                (route) => false,
+                              );
+                            },
+
                             btnOkText: 'حسناً',
                             btnOkColor: Colors.green,
                             titleTextStyle: const TextStyle(

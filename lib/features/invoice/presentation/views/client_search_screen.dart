@@ -14,19 +14,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 class ClientSearchScreen extends StatelessWidget {
-  const ClientSearchScreen({super.key});
+  final String? initialPhone; // 👈 ضفنا المتغير ده
+
+  const ClientSearchScreen(
+      {super.key, this.initialPhone}); // 👈 عدلنا الـ Constructor
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt.get<CustomerSearchCubit>(),
-      child: const _ClientSearchView(),
+      child: _ClientSearchView(initialPhone: initialPhone), // 👈 مررناه هنا
     );
   }
 }
 
 class _ClientSearchView extends StatefulWidget {
-  const _ClientSearchView();
+  final String? initialPhone; // 👈 ضفنا المتغير هنا كمان
+  const _ClientSearchView({this.initialPhone});
 
   @override
   State<_ClientSearchView> createState() => _ClientSearchViewState();
@@ -35,12 +39,22 @@ class _ClientSearchView extends StatefulWidget {
 class _ClientSearchViewState extends State<_ClientSearchView> {
   final TextEditingController _ctrl = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // 👈 لو فيه رقم مبعوت، حطه في الـ TextField واعمل بحث فوراً
+    if (widget.initialPhone != null && widget.initialPhone!.isNotEmpty) {
+      _ctrl.text = widget.initialPhone!;
+      // نستخدم Future.microtask عشان نستنى الـ build الأولاني يخلص قبل ما نكلم الـ Cubit
+      Future.microtask(() => _search(context));
+    }
+  }
+
   void _search(BuildContext context) {
     final phone = _ctrl.text.trim();
     if (phone.isEmpty) return;
-    // نستدعي الكيوبيت مباشرة — الـ token بياخده من الـ CacheService جوا الكيوبيت
     context.read<CustomerSearchCubit>().searchCustomer(
-          token: '', // مش محتاجه هنا، الكيوبيت بيجيبه من الـ Cache
+          token: '',
           phone: phone,
         );
   }
@@ -90,14 +104,20 @@ class _ClientSearchViewState extends State<_ClientSearchView> {
                         // ③ النتائج جت بنجاح
                         CustomerSearchSuccess(customers: final customers) =>
                           customers.isEmpty
-                              ? const _NotFoundState()
+                              ? const _NotFoundState() // لو اللستة فاضية (العميل مش موجود)
                               : _ClientResult(
                                   customer: customers.first,
                                 ),
 
                         // ④ في خطأ
                         CustomerSearchError(message: final msg) =>
-                          _ErrorState(message: msg),
+                          // هنا بنتشيك لو رسالة الإيرور معناها إن العميل مش موجود
+                          (msg.toLowerCase().contains('not found') ||
+                                  msg.contains('لا يوجد'))
+                              ? const _NotFoundState() // اعرض شاشة الـ Not Found الشيك
+                              : _ErrorState(
+                                  message:
+                                      msg), // لو إيرور تاني (زي نت قاطع مثلاً) اعرض الـ Error
                       };
                     },
                   ),
@@ -354,7 +374,7 @@ class _ErrorState extends StatelessWidget {
                 size: 72, color: Colors.orange.shade300),
             const SizedBox(height: 16),
             const Text(
-              'حصل مشكلة في الاتصال',
+              "حصلت مشكلة", // 👈 رجعناها عامة
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -362,6 +382,7 @@ class _ErrorState extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(message,
+                textAlign: TextAlign.center, // عشان لو الرسالة طويلة
                 style: TextStyle(fontSize: 13, color: Colors.grey.shade400)),
           ],
         ),

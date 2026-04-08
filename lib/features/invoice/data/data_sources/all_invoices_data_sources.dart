@@ -1,3 +1,4 @@
+import 'package:elmohandes/features/invoice/domain/entities/all_customers_entity.dart';
 import 'package:elmohandes/features/invoice/domain/entities/customer_entity.dart';
 
 import '../../../../core/common/api_result.dart';
@@ -14,4 +15,10 @@ abstract class SearchCustomerDataSources {
     required String token,
     required String phone,
   });
+}
+
+//------------------------------------------------------------------------
+abstract class AllCustomersDataSources {
+  Future<Result<List<AllCustomersEntity>>> getAllCustomers(
+      {required String token});
 }

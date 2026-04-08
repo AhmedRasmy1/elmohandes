@@ -1,3 +1,4 @@
+import 'package:elmohandes/features/invoice/domain/entities/all_customers_entity.dart';
 import 'package:elmohandes/features/invoice/domain/entities/customer_entity.dart';
 
 import '../../../../core/common/api_result.dart';
@@ -22,5 +23,16 @@ class SearchCustomerUseCase {
   Future<Result<List<CustomerEntity>>> searchCustomer(
       {required String token, required String phone}) {
     return searchCustomerRepo.searchCustomer(token: token, phone: phone);
+  }
+}
+
+//------------------------------------------------------------------------
+@injectable
+class AllCustomersUseCase {
+  AllCustomersRepo allCustomersRepo;
+  AllCustomersUseCase(this.allCustomersRepo);
+  Future<Result<List<AllCustomersEntity>>> getAllCustomers(
+      {required String token}) {
+    return allCustomersRepo.getAllCustomers(token: token);
   }
 }

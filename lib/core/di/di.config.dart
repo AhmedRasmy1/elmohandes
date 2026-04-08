@@ -152,6 +152,8 @@ import '../../features/invoice/domain/use_case/today_sales_info_use_case.dart'
     as _i269;
 import '../../features/invoice/domain/use_case/total_sales_use_case.dart'
     as _i790;
+import '../../features/invoice/presentation/view_models/cubit/cubit/all_cutsomer_cubit.dart'
+    as _i556;
 import '../../features/invoice/presentation/view_models/cubit/customer_search_cubit.dart'
     as _i860;
 import '../../features/invoice/presentation/view_models/cubit/delete_all_invoices_cubit.dart'
@@ -234,6 +236,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i376.PreviewInvoiceDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i550.AddProductToCartDataSources>(
         () => _i525.AddProductToCartDataSourcesImpl(gh<_i680.ApiService>()));
+    gh.factory<_i209.AllCustomersDataSources>(
+        () => _i816.AllCustomersDataSourceImpl(gh<_i680.ApiService>()));
     gh.factory<_i319.UpdateProductDataSources>(
         () => _i530.UpdateProductDataSourcesImpl(gh<_i680.ApiService>()));
     gh.factory<_i365.DeleteAllInvoicesDataSources>(
@@ -276,6 +280,8 @@ extension GetItInjectableX on _i174.GetIt {
         payPartialDataSources: gh<_i470.PayPartialDataSources>()));
     gh.factory<_i1003.AllInvoicesUseCase>(
         () => _i1003.AllInvoicesUseCase(gh<_i1044.AllInvoicesRepo>()));
+    gh.factory<_i1044.AllCustomersRepo>(
+        () => _i451.AllCustomersRepoImpl(gh<_i209.AllCustomersDataSources>()));
     gh.factory<_i269.TodaySalesInfoUseCase>(
         () => _i269.TodaySalesInfoUseCase(gh<_i318.TodaySalesInfoRepo>()));
     gh.factory<_i165.AllInvoicesCubit>(
@@ -321,6 +327,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i127.DeleteAllInvoicesUseCase>(() =>
         _i127.DeleteAllInvoicesUseCase(
             deleteAllInvoicesRepo: gh<_i219.DeleteAllInvoicesRepo>()));
+    gh.factory<_i1003.AllCustomersUseCase>(
+        () => _i1003.AllCustomersUseCase(gh<_i1044.AllCustomersRepo>()));
     gh.factory<_i924.UpdateProductsCubit>(
         () => _i924.UpdateProductsCubit(gh<_i185.UpdateProductUseCase>()));
     gh.factory<_i1003.SearchCustomerUseCase>(
@@ -335,6 +343,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i641.LoginCubit(gh<_i1038.LoginUseCase>()));
     gh.factory<_i289.PreviewInvoiceUseCase>(
         () => _i289.PreviewInvoiceUseCase(gh<_i631.PreviewInvoiceRepo>()));
+    gh.factory<_i556.AllCutsomerCubit>(
+        () => _i556.AllCutsomerCubit(gh<_i1003.AllCustomersUseCase>()));
     gh.factory<_i320.DeleteOneProductCubit>(
         () => _i320.DeleteOneProductCubit(gh<_i221.DeleteProductUseCase>()));
     gh.factory<_i486.AddProductToCartCubit>(

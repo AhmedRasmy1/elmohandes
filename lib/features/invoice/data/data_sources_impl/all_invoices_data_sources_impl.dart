@@ -1,3 +1,4 @@
+import 'package:elmohandes/features/invoice/domain/entities/all_customers_entity.dart';
 import 'package:elmohandes/features/invoice/domain/entities/customer_entity.dart';
 
 import '../../../../core/api/api_extentions.dart';
@@ -35,6 +36,23 @@ class SearchCustomerDataSourceImpl implements SearchCustomerDataSources {
       var response = await apiService.customerSearch(token, phone);
       var data =
           [response].map((customer) => customer.toCustomerEntity()).toList();
+      return data;
+    });
+  }
+}
+
+//------------------------------------------------------------------------
+@Injectable(as: AllCustomersDataSources)
+class AllCustomersDataSourceImpl implements AllCustomersDataSources {
+  ApiService apiService;
+  AllCustomersDataSourceImpl(this.apiService);
+  @override
+  Future<Result<List<AllCustomersEntity>>> getAllCustomers(
+      {required String token}) {
+    return executeApi(() async {
+      var response = await apiService.getAllCustomers(token);
+      var data =
+          response.map((customer) => customer.toAllCustomersEntity()).toList();
       return data;
     });
   }

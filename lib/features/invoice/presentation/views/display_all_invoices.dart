@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:elmohandes/features/invoice/presentation/views/all_customer_view.dart';
 import 'package:elmohandes/features/invoice/presentation/views/client_search_screen.dart';
 import '../view_models/cubit/toda_sales_info_cubit.dart';
 import '../view_models/cubit/total_sales_cubit.dart';
@@ -82,7 +83,13 @@ class _InvoicesViewState extends State<InvoicesView> {
                 ),
                 PopupMenuItem(
                   child: const Text('عرض كل العملاء'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AllCustomerView()),
+                    );
+                  },
                 ),
               ],
             )

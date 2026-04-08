@@ -26,7 +26,7 @@ class CustomerSearchCubit extends Cubit<CustomerSearchState> {
         emit(CustomerSearchSuccess(customers: result.data));
         break;
       case Fail<List<CustomerEntity>>():
-        emit(CustomerSearchError(message: 'Error'));
+        emit(CustomerSearchError(message: "لا يوجد عميل بهذا الرقم"));
         break;
     }
   }
