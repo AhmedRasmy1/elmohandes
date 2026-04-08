@@ -67,15 +67,24 @@ class _InvoicesViewState extends State<InvoicesView> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-              icon: const Icon(Icons.person_2_rounded),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ClientSearchScreen()),
-                );
-              },
+            PopupMenuButton(
+              icon: const Icon(Icons.list),
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                  child: const Text('البحث عن عميل'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ClientSearchScreen()),
+                    );
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Text('عرض كل العملاء'),
+                  onTap: () {},
+                ),
+              ],
             )
           ],
           leading: IconButton(

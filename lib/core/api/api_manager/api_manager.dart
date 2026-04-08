@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elmohandes/features/invoice/data/models/all_inovices/customer.dart';
 import '../../../features/invoice/data/models/preview_invoice/preview_invoice.dart';
 import '../../../features/invoice/data/models/today_info/today_sales_info_model.dart';
 import '../../../features/invoice/data/models/total_sales/total_sales_model.dart';
@@ -119,5 +120,10 @@ abstract class ApiService {
   @GET(ApiConstants.invoicePreview)
   Future<PreviewInvoice> getInvoicePreview(
     @Header('Authorization') String token,
+  );
+  @GET('${ApiConstants.customerSearch}/{phone}')
+  Future<CustomerModel> customerSearch(
+    @Header('Authorization') String token,
+    @Path('phone') String phone,
   );
 }
